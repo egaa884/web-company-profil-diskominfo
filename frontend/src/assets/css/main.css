@@ -1,0 +1,4 @@
+/* src/index.css (atau nama file CSS utama Anda) */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
