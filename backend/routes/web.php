@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\BeritaController;
 use App\Http\Controllers\Admin\InfografisController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\ProfilController;
+use App\Http\Controllers\Admin\FaqCategoryController;
+use App\Http\Controllers\Admin\FaqController;
 
 // Route untuk halaman depan
 Route::get('/', function () {
@@ -82,5 +84,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Route untuk profil (CRUD)
         Route::resource('profil', ProfilController::class)->except(['show']);
+
+        // Route untuk FAQ Category (CRUD)
+        Route::resource('faq-categories', FaqCategoryController::class)->except(['show']);
+        // Route untuk FAQ (CRUD)
+        Route::resource('faqs', FaqController::class)->except(['show']);
     });
 });

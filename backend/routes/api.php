@@ -20,6 +20,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 use App\Http\Controllers\Api\ProfilApiController;
 use App\Http\Controllers\Api\BeritaApiController;
+use App\Http\Controllers\Api\FaqCategoryController;
+use App\Http\Controllers\Api\FaqController;
 
 // Public API routes for berita
 Route::get('berita', [BeritaApiController::class, 'index']);
@@ -41,3 +43,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('profil/{profil}/upload-pdf', [ProfilApiController::class, 'uploadPdf']);
     Route::post('profil/{profil}/upload-gambar', [ProfilApiController::class, 'uploadGambar']);
 });
+
+Route::get('faq-categories', [FaqCategoryController::class, 'index']);
+Route::apiResource('faq-categories', FaqCategoryController::class)->except(['index']);
+Route::get('faqs', [FaqController::class, 'index']);
+Route::apiResource('faqs', FaqController::class)->except(['index']);
