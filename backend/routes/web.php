@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\ProfilController;
 use App\Http\Controllers\Admin\FaqCategoryController;
 use App\Http\Controllers\Admin\FaqController;
+use Illuminate\Http\Request;
 
 // Route untuk halaman depan
 Route::get('/', function () {
@@ -50,6 +51,39 @@ Route::get('/test-berita-edit/{id}', function ($id) {
     }
     return response()->json(['message' => 'Not logged in']);
 })->middleware('auth:admin');
+
+// Route untuk testing upload gambar
+Route::get('/test-upload', function () {
+    return view('test-upload');
+});
+
+Route::post('/test-upload', function (Request $request) {
+    try {
+        $request->validate([
+            'gambar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $file = $request->file('gambar');
+        
+        // Test upload sederhana
+        $path = $file->store('test', 'public');
+        
+        return response()->json([
+            'success' => true,
+            'path' => $path,
+            'url' => asset('storage/' . $path),
+            'size' => $file->getSize(),
+            'mime' => $file->getMimeType(),
+            'original_name' => $file->getClientOriginalName()
+        ]);
+        
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage()
+        ], 400);
+    }
+});
 
 // Prefix admin
 Route::prefix('admin')->name('admin.')->group(function () {

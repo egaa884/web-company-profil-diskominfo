@@ -1,0 +1,49 @@
+<template>
+  <article class="card">
+    <div class="thumb" :style="{ backgroundImage: 'url(' + thumbImage + ')' }"></div>
+    <div class="infos">
+      <h2 class="title">{{ title }}<span class="flag"></span></h2>
+      <h3 class="date">{{ date }}</h3>
+      <h3 class="seats">{{ seats }}</h3>
+      <p class="txt">{{ txt }}</p>
+      <h3 class="details">{{ details }}</h3>
+    </div>
+  </article>
+</template>
+
+<script setup>
+import { defineProps } from 'vue';
+const props = defineProps({
+  title: String,
+  date: String,
+  seats: String,
+  txt: String,
+  details: String,
+  thumbImage: String
+});
+</script>
+
+<style scoped>
+@font-face {
+  font-family: "Grotesque";
+  src: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/397014/BrandonGrotesque-Regular.ttf");
+  font-weight: normal;
+}
+@font-face {
+  font-family: "Grotesque Black";
+  src: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/397014/BrandonGrotesque-Black.ttf");
+  font-weight: bold;
+}
+article.card { width: 100%; height: 350px; border-radius: 3px; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3); overflow: hidden; position: relative; }
+article.card .thumb { height: 260px; background-size: cover; border-radius: 3px; }
+article.card .infos { height: 350px; position: relative; padding: 14px 24px; background: #fff; transition: 0.4s 0.15s cubic-bezier(0.17, 0.67, 0.5, 1.03); }
+article.card .infos .title { position: relative; margin: 10px 0; letter-spacing: 3px; color: #152536; font-family: "Grotesque Black", sans-serif; font-size: 1rem; text-transform: uppercase; }
+article.card .infos .flag { position: absolute; top: 50%; right: 0; transform: translateY(-50%); width: 35px; height: 23px; background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/397014/flag.png") no-repeat top right; background-size: 100% auto; display: inline-block; }
+article.card .infos .date, article.card .infos .seats { margin-bottom: 10px; text-transform: uppercase; font-size: 0.85rem; color: rgba(21, 37, 54, 0.7); font-family: "Grotesque", sans-serif; }
+article.card .infos .seats, .txt, .details { opacity: 0; transition: 0.5s 0.25s cubic-bezier(0.17, 0.67, 0.5, 1.03); }
+article.card .infos .seats { display: inline-block; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid rgba(0, 0, 0, 0.2); }
+article.card .infos .txt { font-family: "Merriweather", sans-serif; line-height: 2; font-size: 0.95rem; color: rgba(21, 37, 54, 0.7); }
+article.card .infos .details { position: absolute; left: 0; bottom: 0; margin: 10px 0; padding: 20px 24px; letter-spacing: 1px; color: #4e958b; font-family: "Grotesque Black", sans-serif; font-size: 0.9rem; text-transform: uppercase; cursor: pointer; }
+article.card:hover .infos { transform: translateY(-260px); }
+article.card:hover .infos .seats, article.card:hover .infos .txt, article.card:hover .infos .details { opacity: 1; }
+</style>

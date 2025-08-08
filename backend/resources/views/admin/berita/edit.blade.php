@@ -43,14 +43,63 @@
 
                 <div class="form-group">
                     <label for="gambar">Gambar</label>
-                    <input type="file" name="gambar" class="form-control">
+                    <input type="file" name="gambar" class="form-control" accept="image/jpeg,image/jpg,image/png" onchange="validateImage(this)">
+                    <small class="text-muted">Format: JPG, JPEG, PNG. Maksimal 2MB</small>
                     @if ($berita->gambar)
-                        <img src="{{ asset('storage/' . $berita->gambar) }}" width="150">
+                        <div class="mt-2">
+                            <p class="text-muted">Gambar saat ini:</p>
+                            <img src="{{ asset('storage/' . $berita->gambar) }}" width="150" class="img-thumbnail">
+                        </div>
                     @endif
+                    <div id="imagePreview" class="mt-2" style="display: none;">
+                        <p class="text-muted">Preview gambar baru:</p>
+                        <img id="preview" src="" alt="Preview" class="img-thumbnail" style="max-width: 200px;">
+                    </div>
+                    <div id="imageError" class="text-danger mt-1" style="display: none;"></div>
                 </div>
 
                 <button type="submit" class="btn btn-primary mt-3">Update</button>
             </form>
         </div>
     </div>
+
+<script>
+function validateImage(input) {
+    const file = input.files[0];
+    const errorDiv = document.getElementById('imageError');
+    const previewDiv = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('preview');
+    
+    // Reset error and preview
+    errorDiv.style.display = 'none';
+    previewDiv.style.display = 'none';
+    
+    if (file) {
+        // Check file size (2MB = 2 * 1024 * 1024 bytes)
+        if (file.size > 2 * 1024 * 1024) {
+            errorDiv.textContent = 'Ukuran file terlalu besar. Maksimal 2MB.';
+            errorDiv.style.display = 'block';
+            input.value = '';
+            return;
+        }
+        
+        // Check file type
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+        if (!allowedTypes.includes(file.type)) {
+            errorDiv.textContent = 'Format file tidak didukung. Gunakan JPG, JPEG, atau PNG.';
+            errorDiv.style.display = 'block';
+            input.value = '';
+            return;
+        }
+        
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            previewDiv.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+}
+</script>
 @endsection

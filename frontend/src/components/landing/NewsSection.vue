@@ -3,7 +3,6 @@
     <div class="container">
       <h2 class="section-title">Berita Terkini</h2>
       
-      <!-- Loading state -->
       <div v-if="loading" class="news-grid">
         <div v-for="i in 3" :key="i" class="news-card animate-pulse">
           <div class="news-image bg-gray-300"></div>
@@ -14,11 +13,10 @@
         </div>
       </div>
       
-      <!-- News content -->
       <div v-else-if="newsItems.length > 0" class="news-grid">
         <div
           v-for="(news, index) in newsItems"
-          :key="news.id || index"
+          :key="news.id"
           class="news-card"
           :class="{ 'is-visible': news.isVisible }"
           :style="{ 'transition-delay': news.delay }"
@@ -29,8 +27,8 @@
             :alt="news.judul" 
             class="news-image" 
           />
-          <div v-else class="news-image bg-gray-300 flex items-center justify-center">
-            <span class="text-gray-500 text-sm">No Image</span>
+          <div v-else class="news-image-placeholder">
+            <span class="text-gray-500 text-sm">Tidak ada gambar</span>
           </div>
           <div class="news-content">
             <h3 class="news-title">{{ news.judul }}</h3>
@@ -40,7 +38,6 @@
         </div>
       </div>
       
-      <!-- Empty state -->
       <div v-else class="text-center py-8">
         <p class="text-gray-500">Tidak ada berita terkini saat ini.</p>
       </div>
@@ -49,22 +46,23 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import { beritaService } from '@/service/api.js';
 
-// Reactive data
 const newsItems = ref([]);
 const loading = ref(false);
 let observers = [];
 
-// Fetch news from API
 const fetchNews = async () => {
   try {
     loading.value = true;
     const response = await beritaService.getLatestBerita();
     const newsData = response.data || [];
     
-    // Transform data to match component structure
+    // LOGGING UNTUK DIAGNOSIS
+    console.log('API Response:', response);
+    console.log('Fetched news data:', newsData);
+
     newsItems.value = newsData.map((news, index) => ({
       id: news.id,
       judul: news.judul,
@@ -75,44 +73,14 @@ const fetchNews = async () => {
       isVisible: false,
       delay: `${index * 0.30}s`,
     }));
+
   } catch (error) {
     console.error('Error fetching news:', error);
-    // Fallback to dummy data if API fails
-    newsItems.value = [
-      {
-        id: 1,
-        judul: 'Wawali Gelar Rakor Jalang Charity & Sport Match 2025',
-        gambar: '/src/assets/img/berita1.jpg',
-        created_at: '2025-07-17',
-        category: 'Berita',
-        isVisible: false,
-        delay: '0s',
-      },
-      {
-        id: 2,
-        judul: 'Judul Berita Lainnya di Sini',
-        gambar: '/src/assets/img/berita2.jpg',
-        created_at: '2025-07-16',
-        category: 'Informasi',
-        isVisible: false,
-        delay: '0.2s',
-      },
-      {
-        id: 3,
-        judul: 'Berita Terbaru Hari Ini',
-        gambar: '/src/assets/img/berita3.jpg',
-        created_at: '2025-07-15',
-        category: 'Berita',
-        isVisible: false,
-        delay: '0.4s',
-      },
-    ];
   } finally {
     loading.value = false;
   }
 };
 
-// Format date
 const formatDate = (dateString) => {
   if (!dateString) return '';
   const date = new Date(dateString);
@@ -123,75 +91,68 @@ const formatDate = (dateString) => {
   });
 };
 
-// Get image URL
 const getImageUrl = (imagePath) => {
   if (!imagePath) return null;
-  // If it's already a full URL, return as is
   if (imagePath.startsWith('http')) {
     return imagePath;
   }
-  // Otherwise, construct the full URL
   return `http://localhost:8000/storage/${imagePath}`;
 };
 
-// Handle news click
 const handleNewsClick = (news) => {
   if (news.slug) {
-    // Navigate to news detail page
     window.location.href = `/berita/${news.slug}`;
   }
 };
 
-onMounted(() => {
-  // Fetch news data
-  fetchNews();
-  
-  // Set up intersection observers after data is loaded
-  setTimeout(() => {
-    const cards = document.querySelectorAll('.news-card');
-    
+const setupIntersectionObservers = () => {
+  const cards = document.querySelectorAll('.news-card');
+  if (cards.length > 0) {
+    observers.forEach((observer) => observer.disconnect());
+    observers = [];
+
     cards.forEach((card, index) => {
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              // Kartu masuk ke dalam viewport
               if (newsItems.value[index]) {
                 newsItems.value[index].isVisible = true;
               }
             } else {
-              // Kartu keluar dari viewport
               if (newsItems.value[index]) {
                 newsItems.value[index].isVisible = false;
               }
             }
           });
         },
-        {
-          root: null,
-          rootMargin: '0px',
-          threshold: 0.1,
-        }
+        { root: null, rootMargin: '0px', threshold: 0.1 }
       );
       observer.observe(card);
       observers.push(observer);
     });
-  }, 100); // Small delay to ensure DOM is ready
+  }
+};
+
+onMounted(() => {
+  fetchNews();
+});
+
+watch(newsItems, (newValue) => {
+  if (newValue.length > 0) {
+    setupIntersectionObservers();
+  }
 });
 
 onBeforeUnmount(() => {
-  // Putuskan semua observer saat komponen dilepas
   observers.forEach((observer) => observer.disconnect());
 });
 </script>
 
 <style scoped>
-/* Gaya yang sudah ada tetap sama */
 .news-section {
   background-color: #f8f8f8;
   padding: 80px 16px;
-  position: relative;
-  z-index: 1;
   box-sizing: border-box;
 }
 
@@ -230,21 +191,12 @@ onBeforeUnmount(() => {
   background-color: #fff;
   border-radius: 8px;
   overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.5s ease,
-    transform 0.5s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
   cursor: pointer;
-
-  /* Kondisi awal untuk animasi */
-  opacity: 0;
-  transform: translateY(50px);
-}
-
-.news-card.is-visible {
-  opacity: 1;
-  transform: translateY(0);
+  height: 100%;
 }
 
 .news-card:hover {
@@ -255,25 +207,33 @@ onBeforeUnmount(() => {
 .news-image {
   height: 192px;
   background-color: #ccc;
-  color: #555;
+  object-fit: cover;
+  width: 100%;
+}
+.news-image-placeholder {
+  height: 192px;
+  background-color: #ccc;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 14px;
-  object-fit: cover;
-  width: 100%;
+  color: #555;
 }
 
 .news-content {
   padding: 24px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .news-title {
   font-size: 18px;
   font-weight: 600;
   color: #222;
-  margin-bottom: 8px;
+  margin: 0 0 8px 0;
   line-height: 1.4;
+  text-decoration: none;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -283,7 +243,7 @@ onBeforeUnmount(() => {
 .news-date {
   font-size: 14px;
   color: #777;
-  margin-bottom: 4px;
+  margin: 0 0 4px 0;
 }
 
 .news-category {
@@ -293,28 +253,9 @@ onBeforeUnmount(() => {
   padding: 2px 8px;
   border-radius: 12px;
   display: inline-block;
+  margin-top: auto;
 }
 
-@media (max-width: 768px) {
-  .news-section {
-    padding: 60px 16px;
-  }
-  .section-title {
-    font-size: 24px;
-    margin-bottom: 30px;
-  }
-}
-
-@media (max-width: 480px) {
-  .news-section {
-    padding: 40px 16px;
-  }
-  .section-title {
-    font-size: 20px;
-  }
-}
-
-/* Loading animation */
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
