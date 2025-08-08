@@ -26,7 +26,7 @@
                         <small>
                             <strong>Status:</strong> {{ ucfirst($berita->status ?? 'draft') }}<br>
                             @if ($berita->published_at)
-                                <strong>Dipublikasikan pada:</strong> {{ $berita->published_at->format('d M Y H:i') }}
+                                <strong>Dipublikasikan pada:</strong> {{ \Carbon\Carbon::parse($berita->published_at)->format('d M Y H:i') }}
                             @endif
                         </small>
                     </div>
