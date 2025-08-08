@@ -2,7 +2,7 @@
   <section class="news-section">
     <div class="container">
       <h2 class="section-title">Berita Terkini</h2>
-      
+
       <!-- Loading state -->
       <div v-if="loading" class="news-grid">
         <div v-for="i in 3" :key="i" class="news-card animate-pulse">
@@ -13,7 +13,7 @@
           </div>
         </div>
       </div>
-      
+
       <!-- News content -->
       <div v-else-if="newsItems.length > 0" class="news-grid">
         <div
@@ -22,24 +22,30 @@
           class="news-card"
           :class="{ 'is-visible': news.isVisible }"
           :style="{ 'transition-delay': news.delay }"
-          @click="handleNewsClick(news)">
-          <img 
-            v-if="news.gambar" 
-            :src="getImageUrl(news.gambar)" 
-            :alt="news.judul" 
-            class="news-image" 
+          @click="handleNewsClick(news)"
+        >
+          <img
+            v-if="news.gambar"
+            :src="getImageUrl(news.gambar)"
+            :alt="news.judul"
+            class="news-image"
           />
-          <div v-else class="news-image bg-gray-300 flex items-center justify-center">
+          <div
+            v-else
+            class="news-image bg-gray-300 flex items-center justify-center"
+          >
             <span class="text-gray-500 text-sm">No Image</span>
           </div>
           <div class="news-content">
             <h3 class="news-title">{{ news.judul }}</h3>
             <p class="news-date">{{ formatDate(news.created_at) }}</p>
-            <p v-if="news.category" class="news-category">{{ news.category }}</p>
+            <p v-if="news.category" class="news-category">
+              {{ news.category }}
+            </p>
           </div>
         </div>
       </div>
-      
+
       <!-- Empty state -->
       <div v-else class="text-center py-8">
         <p class="text-gray-500">Tidak ada berita terkini saat ini.</p>
@@ -49,8 +55,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
-import { beritaService } from '@/service/api.js';
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import { beritaService } from "@/service/api.js";
 
 // Reactive data
 const newsItems = ref([]);
@@ -63,7 +69,7 @@ const fetchNews = async () => {
     loading.value = true;
     const response = await beritaService.getLatestBerita();
     const newsData = response.data || [];
-    
+
     // Transform data to match component structure
     newsItems.value = newsData.map((news, index) => ({
       id: news.id,
@@ -73,40 +79,11 @@ const fetchNews = async () => {
       category: news.category,
       slug: news.slug,
       isVisible: false,
-      delay: `${index * 0.30}s`,
+      delay: `${index * 0.3}s`,
     }));
   } catch (error) {
-    console.error('Error fetching news:', error);
+    console.error("Error fetching news:", error);
     // Fallback to dummy data if API fails
-    newsItems.value = [
-      {
-        id: 1,
-        judul: 'Wawali Gelar Rakor Jalang Charity & Sport Match 2025',
-        gambar: '/src/assets/img/berita1.jpg',
-        created_at: '2025-07-17',
-        category: 'Berita',
-        isVisible: false,
-        delay: '0s',
-      },
-      {
-        id: 2,
-        judul: 'Judul Berita Lainnya di Sini',
-        gambar: '/src/assets/img/berita2.jpg',
-        created_at: '2025-07-16',
-        category: 'Informasi',
-        isVisible: false,
-        delay: '0.2s',
-      },
-      {
-        id: 3,
-        judul: 'Berita Terbaru Hari Ini',
-        gambar: '/src/assets/img/berita3.jpg',
-        created_at: '2025-07-15',
-        category: 'Berita',
-        isVisible: false,
-        delay: '0.4s',
-      },
-    ];
   } finally {
     loading.value = false;
   }
@@ -114,12 +91,12 @@ const fetchNews = async () => {
 
 // Format date
 const formatDate = (dateString) => {
-  if (!dateString) return '';
+  if (!dateString) return "";
   const date = new Date(dateString);
-  return date.toLocaleDateString('id-ID', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
+  return date.toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
   });
 };
 
@@ -127,7 +104,7 @@ const formatDate = (dateString) => {
 const getImageUrl = (imagePath) => {
   if (!imagePath) return null;
   // If it's already a full URL, return as is
-  if (imagePath.startsWith('http')) {
+  if (imagePath.startsWith("http")) {
     return imagePath;
   }
   // Otherwise, construct the full URL
@@ -145,11 +122,11 @@ const handleNewsClick = (news) => {
 onMounted(() => {
   // Fetch news data
   fetchNews();
-  
+
   // Set up intersection observers after data is loaded
   setTimeout(() => {
-    const cards = document.querySelectorAll('.news-card');
-    
+    const cards = document.querySelectorAll(".news-card");
+
     cards.forEach((card, index) => {
       const observer = new IntersectionObserver(
         (entries) => {
@@ -169,7 +146,7 @@ onMounted(() => {
         },
         {
           root: null,
-          rootMargin: '0px',
+          rootMargin: "0px",
           threshold: 0.1,
         }
       );
@@ -320,11 +297,12 @@ onBeforeUnmount(() => {
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
-    opacity: .5;
+    opacity: 0.5;
   }
 }
 </style>
