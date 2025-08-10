@@ -44,14 +44,18 @@ import KategoriSidebar from '../components/kabarwarga/KategoriSidebar.vue';
 // Impor gambar lokal secara eksplisit menggunakan alias @
 import image1 from '@/assets/img/1.jpeg';
 import image2 from '@/assets/img/2.jpeg';
+import image3 from '@/assets/img/3.jpg';
+import image4 from '@/assets/img/4.jpg';
+import image5 from '@/assets/img/5.jpg';
+import image6 from '@/assets/img/6.jpg';
 
 const newsItems = ref([
   { id: 1, title: 'Artificial Intelligence Dalam Ruang Persidangan', date: 'november 2 - 4', seats: 'seats remaining: 2', txt: 'Join us for our Live Infinity Session in beautiful New York City.', details: 'event details', thumbImage: image1 },
   { id: 2, title: 'Cegah Bullying dari Rumah', date: 'december 10 - 12', seats: 'seats remaining: 5', txt: 'A 3 day intensive workshop where you\'ll learn how to become a better version of...', details: 'event details', thumbImage: image2 },
-  { id: 3, title: 'Cegah Stunting dan Anemia, RSU Darmayu Edukasi Gizi Seimbang untuk Generasi Muda', date: 'january 5 - 7', seats: 'seats remaining: 10', txt: 'This is a 3 day intensive workshop where you\'ll learn how to become a better version of...', details: 'event details', thumbImage: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/397014/new-york-city.png' },
-  { id: 4, title: 'Memahami KBLI: Kunci Sukses Perizinan Usaha dan Investasi di Madiun', date: 'february 1 - 3', seats: 'seats remaining: 8', txt: 'Join us for our Live Infinity Session in beautiful New York City.', details: 'event details', thumbImage: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/397014/new-york-city.png' },
-  { id: 5, title: 'Baznas Kota Madiun Gencar Edukasi Zakat dan Luncurkan Program Masyarakat', date: 'march 20 - 22', seats: 'seats remaining: 3', txt: 'A 3 day intensive workshop where you\'ll learn how to become a better version of...', details: 'event details', thumbImage: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/397014/new-york-city.png' },
-  { id: 6, title: 'Kota Madiun Perkuat Kesehatan Santri Melalui 15 Poskestren', date: 'april 15 - 17', seats: 'seats remaining: 1', txt: 'This is a 3 day intensive workshop where you\'ll learn how to become a better version of...', details: 'event details', thumbImage: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/397014/new-york-city.png' },
+  { id: 3, title: 'Cegah Stunting dan Anemia, RSU Darmayu Edukasi Gizi Seimbang untuk Generasi Muda', date: 'january 5 - 7', seats: 'seats remaining: 10', txt: 'This is a 3 day intensive workshop where you\'ll learn how to become a better version of...', details: 'event details', thumbImage: image3 },
+  { id: 4, title: 'Memahami KBLI: Kunci Sukses Perizinan Usaha dan Investasi di Madiun', date: 'february 1 - 3', seats: 'seats remaining: 8', txt: 'Join us for our Live Infinity Session in beautiful New York City.', details: 'event details', thumbImage: image4 },
+  { id: 5, title: 'Baznas Kota Madiun Gencar Edukasi Zakat dan Luncurkan Program Masyarakat', date: 'march 20 - 22', seats: 'seats remaining: 3', txt: 'A 3 day intensive workshop where you\'ll learn how to become a better version of...', details: 'event details', thumbImage: image5 },
+  { id: 6, title: 'Kota Madiun Perkuat Kesehatan Santri Melalui 15 Poskestren', date: 'april 15 - 17', seats: 'seats remaining: 1', txt: 'This is a 3 day intensive workshop where you\'ll learn how to become a better version of...', details: 'event details', thumbImage: image6 },
 ]);
 
 const categories = ref([

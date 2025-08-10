@@ -2,7 +2,7 @@
   <article class="card">
     <div class="thumb" :style="{ backgroundImage: 'url(' + thumbImage + ')' }"></div>
     <div class="infos">
-      <h2 class="title">{{ title }}<span class="flag"></span></h2>
+      <h2 class="title">{{ title }}</h2>
       <h3 class="date">{{ date }}</h3>
       <h3 class="seats">{{ seats }}</h3>
       <p class="txt">{{ txt }}</p>
