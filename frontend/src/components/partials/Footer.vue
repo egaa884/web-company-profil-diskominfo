@@ -2,7 +2,6 @@
   <footer class="footer">
     <div class="footer-container">
       <div class="footer-grid">
-        <!-- Informasi -->
         <div class="footer-column">
           <h3 class="footer-heading">Informasi</h3>
           <ul class="footer-links">
@@ -14,7 +13,6 @@
           </ul>
         </div>
 
-        <!-- Layanan Publik -->
         <div class="footer-column">
           <h3 class="footer-heading">Layanan Publik</h3>
           <ul class="footer-links">
@@ -25,7 +23,6 @@
           </ul>
         </div>
 
-        <!-- Tautan Cepat -->
         <div class="footer-column">
           <h3 class="footer-heading">Tautan Cepat</h3>
           <ul class="footer-links">
@@ -37,14 +34,12 @@
           </ul>
         </div>
 
-        <!-- Media Sosial -->
         <div class="footer-column">
           <h3 class="footer-heading">Ikuti Kami</h3>
           <div class="footer-social">
-           <a href="#"><i class="ri-facebook-fill"></i></a>
-           <a href="#"><i class="ri-instagram-fill"></i></a>
-           <a href="#"><i class="ri-twitter-x-fill"></i></a>
-           <a href="https://www.youtube.com/@PemkotMadiun"><i class="ri-youtube-fill"></i></a>
+            <a href="https://www.facebook.com/share/1716Qjuhxn/"><i class="ri-facebook-fill"></i></a>
+            <a href="https://www.instagram.com/diskominfomadiunkota?igsh=bnFkZjF2cnBhbjdn"><i class="ri-instagram-fill"></i></a>
+            <a href="https://www.youtube.com/@PemkotMadiun"><i class="ri-youtube-fill"></i></a>
           </div>
         </div>
       </div>
@@ -122,22 +117,78 @@
   color: #007BFF;
 }
 
-/* Sosial Media */
+/* Sosial Media dengan Animasi */
 .footer-social {
   display: flex;
   gap: 16px;
   margin-top: 8px;
+  /* Properti yang ditambahkan untuk efek rotasi */
+  perspective: 1000px;
 }
 
 .footer-social a {
+  width: 40px;
+  height: 40px;
+  background-color: #fff;
+  text-align: center;
   font-size: 20px;
-  color: #555;
-  transition: color 0.3s;
+  
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #555;
+  z-index: 1;
+
+  /* Properti yang ditambahkan untuk efek rotasi */
+  transform-style: preserve-3d;
 }
 
-.footer-social a:hover {
-  color: #007BFF;
+.footer-social a i {
+  position: relative;
+  color: #555;
+  transition: transform .5s;
+  z-index: 3;
+  /* Transform awal dihilangkan agar rotasi berfungsi */
 }
+
+.footer-social a:hover i {
+  color: #fff;
+  transform: rotateY(360deg);
+}
+
+.footer-social a::before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #f00;
+  transition: .5s;
+  z-index: 2;
+}
+
+.footer-social a:hover::before {
+  top: 0;
+}
+
+/* Warna spesifik untuk setiap ikon */
+.footer-social a:nth-child(1)::before {
+  background: #3b5999;
+}
+
+.footer-social a:nth-child(2)::before {
+  background: #c13584;
+}
+
+.footer-social a:nth-child(3)::before {
+  background: #ff0000;
+}
+
 
 .footer-separator {
   border: none;
