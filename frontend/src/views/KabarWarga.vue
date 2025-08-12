@@ -1,6 +1,5 @@
 <template>
   <div class="page-wrapper">
-    <div class="header-placeholder">Header</div>
     <div class="container">
       <div class="main-content">
         <div class="kabar-warga-section">
@@ -51,7 +50,6 @@ import image6 from '@/assets/img/6.jpg';
 
 const newsItems = ref([
   { id: 1, title: 'Artificial Intelligence Dalam Ruang Persidangan', date: 'november 2 - 4', seats: 'seats remaining: 2', txt: 'Join us for our Live Infinity Session in beautiful New York City.', details: 'event details', thumbImage: image1 },
-  { id: 2, title: 'Cegah Bullying dari Rumah', date: 'december 10 - 12', seats: 'seats remaining: 5', txt: 'A 3 day intensive workshop where you\'ll learn how to become a better version of...', details: 'event details', thumbImage: image2 },
   { id: 3, title: 'Cegah Stunting dan Anemia, RSU Darmayu Edukasi Gizi Seimbang untuk Generasi Muda', date: 'january 5 - 7', seats: 'seats remaining: 10', txt: 'This is a 3 day intensive workshop where you\'ll learn how to become a better version of...', details: 'event details', thumbImage: image3 },
   { id: 4, title: 'Memahami KBLI: Kunci Sukses Perizinan Usaha dan Investasi di Madiun', date: 'february 1 - 3', seats: 'seats remaining: 8', txt: 'Join us for our Live Infinity Session in beautiful New York City.', details: 'event details', thumbImage: image4 },
   { id: 5, title: 'Baznas Kota Madiun Gencar Edukasi Zakat dan Luncurkan Program Masyarakat', date: 'march 20 - 22', seats: 'seats remaining: 3', txt: 'A 3 day intensive workshop where you\'ll learn how to become a better version of...', details: 'event details', thumbImage: image5 },
@@ -83,11 +81,12 @@ const goToPage = (page) => {
 </script>
 
 <style scoped>
-.page-wrapper { background-color: #f0f2f5; }
+.page-wrapper { background-color: #f0f2f5; margin-top:6%;}
 .header-placeholder, .footer-placeholder { background-color: #1a1a1a; color: #fff; padding: 20px; text-align: center; }
 .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: flex; gap: 30px; }
 .main-content { flex: 1; } /* Perubahan: hapus display: flex dan gap: 20px; */
 .kabar-warga-section { flex: 1; } /* Perubahan: flex menjadi 1 */
+.h2 {font-weight: 100;}
 .kabar-warga-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 20px; }
 h2, h3 { border-bottom: 2px solid #ccc; padding-bottom: 10px; margin-bottom: 20px; }
 .pagination { margin-top: 20px; text-align: center; }
