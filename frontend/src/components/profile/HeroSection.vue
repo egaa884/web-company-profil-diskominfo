@@ -1,78 +1,99 @@
 <template>
   <div class="hero-section">
     <div class="hero-main-gradient-overlay"></div>
-
     <div class="hero-logo-background"></div>
-
+    <div class="welcome-text-wrapper">
+        <h1 class="welcome-text">
+          <span v-for="(char, index) in welcomeText" :key="'welcome-' + index" class="char">{{ char === ' ' ? '&nbsp;' : char }}</span>
+        </h1>
+        <h1 class="welcome-text">
+          <span v-for="(char, index) in secondLineText" :key="'second-' + index" class="char">{{ char === ' ' ? '&nbsp;' : char }}</span>
+        </h1>
+        <h1 class="welcome-text">
+          <span v-for="(char, index) in thirdLineText" :key="'third-' + index" class="char">{{ char === ' ' ? '&nbsp;' : char }}</span>
+        </h1>
+      </div>
+    
     <div class="hero-decorative-elements">
       <div class="decorative-circle-1"></div>
       <div class="decorative-circle-2"></div>
     </div>
-
+    
     <div class="hero-content-wrapper">
       <div class="hero-text-container">
-        <h1 class="hero-title-profil">
-          Profil
-        </h1>
-        <div class="hero-divider"></div>
-        <h2 class="hero-title-diskominfo">
-          DINAS KOMUNIKASI
-        </h2>
-        <h3 class="hero-title-diskominfo">
-          DAN INFORMATIKA 
-        </h3>
+      
       </div>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'HeroSection'
-}
-</script>
+<script setup>
+import { ref } from 'vue';
 
+const welcomeText = ref('SELAMAT DATANG DI');
+const secondLineText = ref('WEBSITE DISKOMINFO');
+const thirdLineText = ref('KOTA MADIUN');
+</script>
 <style scoped>
 /* Container utama */
 .hero-section {
   position: relative;
-  min-height: 500px; /* Tinggi minimum hero section */
+  min-height: 500px;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 5rem 1rem; /* Padding vertikal dan horizontal */
-  overflow: hidden; /* Penting untuk mengelola elemen absolut di dalamnya */
+  padding: 5rem 1rem;
+  overflow: hidden;
   height: 100vh;
 }
 
-/* Latar Belakang Gradasi Utama (Biru tua ke Putih) */
+
+.welcome-text-wrapper {
+  background-color: transparent;
+  padding: 50%;
+  pointer-events: auto; /* Ini kunci agar hover event bisa diterima */
+  z-index: 3; /* Pastikan kontainer teks di atas semua overlay */
+  text-align: center;
+}
+
+.welcome-text {
+  color: white;
+  font-size: 3em;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  margin: 0;
+  
+  gap: 0.2em;
+  line-height: 1.2;
+}
+
+/* Latar Belakang Gradasi Utama */
 .hero-main-gradient-overlay {
-  position: absolute;
+  position:absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, #01458E 0%, #FFFFFF 100%); /* Gradasi dari atas ke bawah */
-  z-index: 0; /* Lapisan paling bawah */
+  background: linear-gradient(to bottom, #01458E 0%, #FFFFFF 100%);
+  z-index: 0;
 }
 
-/* Gambar Logo Kominfo di atas Gradasi Utama */
+/* Gambar Logo Kominfo */
 .hero-logo-background {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('../../assets/img/logo-kominfo.png'); /* Gambar logo Anda */
-  background-size: contain; /* Mengandung gambar di dalam, tidak memotong */
-  background-repeat: no-repeat; /* Tidak mengulang */
-  background-position: center; /* Posisikan di tengah */
-  opacity: 0.3; /* Transparansi 30% */
-  z-index: 1; /* Di atas gradasi utama, di bawah konten dan elemen dekoratif lain */
+  background-image: url('../../assets/img/logo-kominfo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.3;
+  z-index: 1;
 }
 
-/* Background Decorative Elements (lingkaran) - Opsional, sesuaikan z-index jika perlu */
-/* Saya mempertahankan ini dan menempatkannya di z-index 2 (di atas logo background) */
+/* Background Decorative Elements (lingkaran) */
 .hero-decorative-elements {
   position: absolute;
   top: 0;
@@ -81,8 +102,8 @@ export default {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  z-index: 2; /* Di atas logo background, di bawah konten teks */
-  pointer-events: none; /* Agar tidak menghalangi interaksi mouse jika ada */
+  z-index: 2;
+  pointer-events: none;
 }
 
 .decorative-circle-1 {
@@ -91,9 +112,9 @@ export default {
   right: -5rem;
   width: 24rem;
   height: 24rem;
-  background-color: rgba(147, 197, 253, 0.2); /* bg-blue-300 opacity-20 */
+  background-color: rgba(147, 197, 253, 0.2);
   border-radius: 9999px;
-  transform: rotate(12deg);
+  animation: dynamic-bounce-1 12s infinite ease-in-out; /* Durasi lebih panjang untuk pergerakan halus */
 }
 
 .decorative-circle-2 {
@@ -102,77 +123,68 @@ export default {
   left: -5rem;
   width: 20rem;
   height: 20rem;
-  background-color: rgba(96, 165, 250, 0.15); /* bg-blue-400 opacity-15 */
+  background-color: rgba(96, 165, 250, 0.15);
   border-radius: 9999px;
-  transform: rotate(-12deg);
+  animation: dynamic-bounce-2 10s infinite ease-in-out; /* Durasi lebih panjang untuk pergerakan halus */
+}
+
+/* Keyframes untuk animasi lingkaran yang lebih dinamis */
+@keyframes dynamic-bounce-1 {
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  25% {
+    transform: translate(-50px, 80px) scale(1.1) rotate(15deg);
+  }
+  50% {
+    transform: translate(-100px, 0) scale(1) rotate(0deg);
+  }
+  75% {
+    transform: translate(-50px, -80px) scale(0.9) rotate(-15deg);
+  }
+  100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes dynamic-bounce-2 {
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  25% {
+    transform: translate(80px, -50px) scale(0.9) rotate(-15deg);
+  }
+  50% {
+    transform: translate(0, -100px) scale(1.1) rotate(0deg);
+  }
+  75% {
+    transform: translate(-80px, -50px) scale(1) rotate(15deg);
+  }
+  100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
 }
 
 /* Wrapper Konten Teks */
 .hero-content-wrapper {
   position: relative;
-  z-index: 10; /* Lapisan paling atas untuk teks */
-  width: 100%; /* Agar container MX-auto berfungsi */
-  max-width: 1200px; /* Lebar maksimal konten */
+  z-index: 10;
+  width: 100%;
+  max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
   padding-left: 1rem;
   padding-right: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
+/* Teks lama sudah dihapus */
 .hero-text-container {
   text-align: center;
-  display: flex; /* Menggunakan flexbox untuk penataan item vertikal */
+  display: flex;
   flex-direction: column;
-  align-items: center; /* Pusatkan item secara horizontal */
-}
-
-/* Teks "Profil" */
-.hero-title-profil {
-  font-size: 2.25rem; /* text-4xl */
-  font-weight: 700; /* font-bold */
-  color: #FFFFFF; /* Warna Putih */
-  margin-bottom: 1rem; /* mb-4 */
-}
-
-@media (min-width: 768px) {
-  .hero-title-profil {
-    font-size: 3.75rem; /* md:text-6xl */
-  }
-}
-
-/* Garis di bawah teks "Profil" */
-.hero-divider {
-  width: 20rem; /* w-24, sesuaikan panjangnya */
-  height: 0.25rem; /* h-1 */
-  background-color: #000000; /* Garis Hitam */
-  margin-left: auto; /* mx-auto */
-  margin-right: auto; /* mx-auto */
-  margin-bottom: 1.5rem; /* mb-6 */
-}
-
-/* Teks "DINAS KOMUNIKASI DAN INFORMATIKA" */
-.hero-title-diskominfo {
-  font-size: 1.875rem; /* text-3xl */
-  font-weight: 700; /* font-bold */
-  margin-bottom: 0.5rem; /* mb-2 */
-  text-transform: uppercase; /* Kapital semua */
-
-  /* Efek Gradasi Radial pada Teks */
-  background-image: radial-gradient(
-    circle at center,
-    #0093DD 0%, /* Warna di tengah teks */
-    #29166F 100% /* Warna di pinggir teks */
-  );
-  -webkit-background-clip: text; /* Penting untuk mengaplikasikan gradasi ke teks */
-  background-clip: text;
-  -webkit-text-fill-color: transparent; /* Membuat teks transparan agar gradasi terlihat */
-  color: transparent; /* Fallback untuk browser lama */
-}
-
-/* Penyesuaian responsif untuk teks DINAS KOMUNIKASI DAN INFORMATIKA */
-@media (min-width: 768px) {
-  .hero-title-diskominfo {
-    font-size: 3rem; /* md:text-5xl */
-  }
+  align-items: center;
 }
 </style>

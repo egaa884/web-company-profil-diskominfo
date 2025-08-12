@@ -104,6 +104,11 @@
           Selengkapnya Tentang Struktur Organisasi
         </button>
       </div>
+      <div class="so-button-wrapper">
+  <router-link to="/galeri" class="so-more-button">
+    Selengkapnya Tentang Galeri
+  </router-link>
+</div>
     </div>
   </section>
 </template>
