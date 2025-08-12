@@ -5,6 +5,8 @@ import AdminDashboard from "@/views/AdminDashboard.vue";
 import Beritakominfo from "@/views/Beritakominfo.vue";
 import Profil from "@/views/Profil.vue";
 import KabarWarga from "@/views/KabarWarga.vue";
+import SiaranPers from "@/views/SiaranPers.vue";
+import InfoGrafis from "@/views/InfoGrafis.vue";
 
 const routes = [
   {
@@ -23,6 +25,16 @@ const routes = [
     component: Beritakominfo,
   },
   {
+    path: "/siaranpers",
+    name: "siaranpers",
+    component: SiaranPers,
+  },
+  {
+    path: "/infografis",
+    name: "infografis",
+    component: InfoGrafis,
+  },
+  {
     path: "/profil",
     name: "profil",
     component: Profil,
@@ -36,6 +48,11 @@ const routes = [
     path: '/faq',
     name: 'Faq',
     component: () => import('../views/Faq.vue'),
+  },
+  {
+    path: '/galeri',
+    name: 'galeri',
+    component: () => import('../views/GalleryPage.vue'),
   },
 ];
 

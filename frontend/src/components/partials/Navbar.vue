@@ -104,8 +104,8 @@ const navItems = ref([
       { name: 'Kabar Warga', link: '/kabarwarga' },
       { name: 'Arsip Berita', link: 'https://kominfo.madiunkota.go.id/arsipberita' },
       { name: 'Radio Suara Madiun', link: 'https://kominfo.madiunkota.go.id/radiosuara' },
-      { name: 'Siaran Pers Madiun', link: 'https://kominfo.madiunkota.go.id/siaranpers' },
-      { name: 'Infografis Madiun', link: 'https://kominfo.madiunkota.go.id/infografis' }
+      { name: 'Siaran Pers Madiun', link: '/siaranpers' },
+      { name: 'Infografis Madiun', link: '/infografis' }
     ]
   },
   { name: 'Profil', link: '/profil', type: 'link' },
