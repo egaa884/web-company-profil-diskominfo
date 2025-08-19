@@ -6,6 +6,7 @@ import AboutSection from '../components/landing/AboutSection.vue';
 import Kerjasama from "../components/landing/Kerjasama.vue";
 import NewsSection from "@/components/landing/NewsSection.vue";
 import ServiceSection from "@/components/landing/ServiceSection.vue";
+import BannerLinkMadiun from "@/components/landing/BannerLinkMadiun.vue";
 
 // state untuk simpan data
 const profils = ref([]);
@@ -42,6 +43,7 @@ const fetchAgendas = () => {
   <NewsSection />
   <ServiceSection />
   <Kerjasama />
+  <BannerLinkMadiun />
 </template>
 
 <style scoped>
