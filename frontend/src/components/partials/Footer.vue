@@ -219,6 +219,6 @@
 .footer-description i {
   margin-right: 6px;
   color: #555;
-  margin-top: 10px;
+  
 }
 </style>

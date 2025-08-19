@@ -70,5 +70,6 @@ const infographics = ref([
 </script>
 
 <style scoped>
+
 /* Anda bisa menambahkan gaya CSS tambahan di sini jika diperlukan */
 </style>

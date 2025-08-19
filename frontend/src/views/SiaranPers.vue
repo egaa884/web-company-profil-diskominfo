@@ -1,4 +1,7 @@
 <template>
+    <div class="container">
+        <h1></h1>
+    </div>
   <div class="card-page">
     <div class="card-container">
       <CardItem 

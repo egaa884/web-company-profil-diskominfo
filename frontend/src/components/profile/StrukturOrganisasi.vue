@@ -332,7 +332,6 @@ export default {
     background: #727171; /* Warna latar belakang default, sesuaikan dengan tema Anda */
     color: white;
     border: none;
-    border-radius: 1%;
     border-radius: 50px;
     font-size: 1rem;
     font-weight: 600;

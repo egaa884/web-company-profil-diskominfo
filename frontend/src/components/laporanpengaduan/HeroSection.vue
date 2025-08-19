@@ -54,7 +54,6 @@ const welcomeText = computed(() => props.line1);
 const secondLineText = computed(() => props.line2);
 </script>
 
-
 <style scoped>
 /* Container utama */
 .hero-section {

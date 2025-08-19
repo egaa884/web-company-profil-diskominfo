@@ -42,7 +42,6 @@ import KategoriSidebar from '../components/kabarwarga/KategoriSidebar.vue';
 
 // Impor gambar lokal secara eksplisit menggunakan alias @
 import image1 from '@/assets/img/1.jpeg';
-import image2 from '@/assets/img/2.jpeg';
 import image3 from '@/assets/img/3.jpg';
 import image4 from '@/assets/img/4.jpg';
 import image5 from '@/assets/img/5.jpg';
