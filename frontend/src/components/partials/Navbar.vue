@@ -124,10 +124,10 @@ const navItems = ref([
     name: 'Publikasi',
     type: 'dropdown',
     items: [
-      { name: 'Laporan Pengaduan Pelayanan Publik', link: '#majalah' },
-      { name: 'Laporan Penerima Layanan Publik', link: '#buletin' },
-      { name: 'Survei Kepuasan Masyarakat', link: '#infografis' },
-      { name: 'Survei Evaluasi Pelayanan Publik', link: '#data-terkini' }
+      { name: 'Laporan Pengaduan Pelayanan Publik', link: '/pengaduan' },
+      { name: 'Laporan Penerima Layanan Publik', link: '/penerima' },
+      { name: 'Survei Kepuasan Masyarakat', link: '/surveikepuasan' },
+      { name: 'Survei Evaluasi Pelayanan Publik', link: '/surveievaluasi' }
     ]
   }
 ])
