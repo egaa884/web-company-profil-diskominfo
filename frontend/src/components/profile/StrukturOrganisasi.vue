@@ -54,20 +54,11 @@
               />
             </div>
             <div v-else class="so-profile-image-placeholder">
-              <span class="so-image-text">Foto Kepala Dinas</span>
+              <img src="../../assets/img/noor-aflah.png" alt="">
             </div>
+           
             
-            <div class="so-name-section">
-              <div class="so-city-logo-placeholder">
-                <span class="so-city-logo-text">KOTA MADIUN</span>
-              </div>
-              <h4 class="so-kepala-dinas-name">Noor Aflah, S.Kom.</h4>
-            </div>
             
-            <div class="so-position-box">
-              <p class="so-position-text">KEPALA DINAS KOMUNIKASI</p>
-              <p class="so-position-text">DAN INFORMATIKA</p>
-            </div>
           </div>
         </div>
 
@@ -236,7 +227,6 @@ export default {
 .so-kepala-dinas-card {
   background-color: #ffffff;
   border-radius: 0.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
   padding: 2rem;
   max-width: 28rem;
   margin-left: auto;
@@ -244,41 +234,9 @@ export default {
 }
 
 /* Profile Image */
-.so-profile-image-container {
-  width: 12rem;
-  height: 12rem;
-  border-radius: 9999px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 1.5rem;
-  overflow: hidden;
-}
 
-.so-profile-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
 
-.so-profile-image-placeholder {
-  width: 12rem;
-  height: 12rem;
-  background-color: #d1d5db;
-  border-radius: 9999px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
-.so-image-text {
-  color: #4b5563;
-  font-size: 1.125rem;
-  line-height: 1.75rem;
-  font-weight: 500;
-}
 
 /* Logo and Name Section */
 .so-name-section {
@@ -363,28 +321,50 @@ export default {
 }
 
 /* Button */
+/* Styling dasar tombol */
 .so-button-wrapper {
-  text-align: center;
-  margin-top: 3rem;
+    margin-top: 30px; /* Jarak atas */
+    text-align: center; /* Posisikan tombol di tengah */
 }
 
 .so-more-button {
-  background-image: linear-gradient(to right, #16a34a, #2563eb);
-  color: #ffffff;
-  padding-left: 2rem;
-  padding-right: 2rem;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  display: inline-block;
-  transition: all 0.3s ease;
+    padding: 14px 32px;
+    background: #727171; /* Warna latar belakang default, sesuaikan dengan tema Anda */
+    color: white;
+    border: none;
+    border-radius: 1%;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transisi untuk efek hover */
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
 }
 
+/* Animasi saat tombol di-hover */
 .so-more-button:hover {
-  background-image: linear-gradient(to right, #15803d, #1d4ed8);
-  transform: scale(1.05);
+    transform: translateY(-3px); /* Tombol naik sedikit saat di-hover */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Efek bayangan */
+}
+
+/* Efek background gradien saat di-hover */
+.so-more-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #2F7B52, #0292D8); /* Warna gradien, sesuaikan */
+    z-index: -1;
+    transform: scaleX(0); /* Awalnya tersembunyi */
+    transform-origin: left;
+    transition: transform 0.5s ease;
+}
+
+.so-more-button:hover::before {
+    transform: scaleX(1); /* Efek muncul dari kiri ke kanan */
 }
 </style>
