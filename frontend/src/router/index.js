@@ -7,8 +7,17 @@ import Profil from "@/views/Profil.vue";
 import KabarWarga from "@/views/KabarWarga.vue";
 import SiaranPers from "@/views/SiaranPers.vue";
 import InfoGrafis from "@/views/InfoGrafis.vue";
+import LaporanPengaduan from "@/views/LaporanPengaduan.vue";
+import LaporanPenerima from "@/views/LaporanPenerima.vue";
+import SurveiKepuasan from "@/views/SurveiKepuasan.vue";
+import SurveiEvaluasi from "@/views/SurveiEvaluasi.vue";
 
 const routes = [
+  
+  {
+    path: "/",
+    redirect: "/home",
+  },
   {
     path: "/home",
     name: "home",
@@ -43,6 +52,26 @@ const routes = [
     path: "/kabarwarga",
     name: "kabarwarga",
     component: KabarWarga,
+  },
+  {
+    path: '/pengaduan',
+    name: 'pengaduan',
+    component: LaporanPengaduan,
+  },
+  {
+    path: '/penerima',
+    name: 'penerima',
+    component: LaporanPenerima,
+  },
+  {
+    path: '/surveikepuasan',
+    name: 'kepuasan',
+    component: SurveiKepuasan,
+  },
+  {
+    path: '/surveievaluasi',
+    name: 'evaluasi',
+    component: SurveiEvaluasi,
   },
   {
     path: '/faq',
