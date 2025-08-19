@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import HeroSection from '@/components/profile/HeroSection.vue'
+import HeroSection from '@/components/global/HeroSection.vue'
 import SekilasDinas from '@/components/profile/SekilasDinas.vue'
 import KantorDinas from '@/components/profile/KantorDinas.vue'
 import VisiMisi from '@/components/profile/VisiMisi.vue'
