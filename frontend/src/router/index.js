@@ -11,6 +11,7 @@ import LaporanPengaduan from "@/views/LaporanPengaduan.vue";
 import LaporanPenerima from "@/views/LaporanPenerima.vue";
 import SurveiKepuasan from "@/views/SurveiKepuasan.vue";
 import SurveiEvaluasi from "@/views/SurveiEvaluasi.vue";
+import RadioSuaraMadiun from "@/views/RadioSuaraMadiun.vue";
 
 const routes = [
   
@@ -72,6 +73,11 @@ const routes = [
     path: '/surveievaluasi',
     name: 'evaluasi',
     component: SurveiEvaluasi,
+  },
+  {
+    path: '/radio',
+    name: 'radio',
+    component: RadioSuaraMadiun,
   },
   {
     path: '/faq',
