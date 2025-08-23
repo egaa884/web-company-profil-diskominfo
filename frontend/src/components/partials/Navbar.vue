@@ -103,7 +103,7 @@ const navItems = ref([
       { name: 'Madiun Today', link: 'https://madiuntoday.id/' },
       { name: 'Kabar Warga', link: '/kabarwarga' },
       { name: 'Arsip Berita', link: 'https://kominfo.madiunkota.go.id/arsipberita' },
-      { name: 'Radio Suara Madiun', link: 'https://kominfo.madiunkota.go.id/radiosuara' },
+      { name: 'Radio Suara Madiun', link: '/radio' },
       { name: 'Siaran Pers Madiun', link: '/siaranpers' },
       { name: 'Infografis Madiun', link: '/infografis' }
     ]

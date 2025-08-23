@@ -53,6 +53,9 @@
         </p>
       </div>
     </div>
+
+    <!-- Logo background -->
+    <div class="footer-logo"></div>
   </footer>
 </template>
 
@@ -62,16 +65,33 @@
 
 <style scoped>
 .footer {
-  background-color: #f5f5f5;
-  color: #333;
+  background-color: #0059A6; /* warna utama footer */
+  color: #fff;
   padding: 64px 16px;
   font-family: Arial, sans-serif;
   font-size: 14px;
+  position: relative; /* untuk positioning logo */
+  overflow: hidden;
 }
 
 .footer-container {
   max-width: 1200px;
   margin: 0 auto;
+  position: relative;
+  z-index: 2; /* agar konten tetap di atas logo */
+}
+
+.footer-logo {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: url('../../assets/img/logo-madiun.png') no-repeat center;
+  background-size: 120px auto;
+  width: 120px;
+  height: 120px;
+  opacity: 0.3; /* transparansi logo */
+  pointer-events: none; /* tidak ganggu klik */
+  z-index: 1;
 }
 
 .footer-grid {
@@ -96,6 +116,7 @@
   font-weight: bold;
   text-transform: uppercase;
   margin-bottom: 16px;
+  color: #fff;
 }
 
 .footer-links {
@@ -109,12 +130,13 @@
 }
 
 .footer-links a {
-  color: #333;
+  color: #f0f0f0;
   text-decoration: none;
+  transition: color 0.3s ease;
 }
 
 .footer-links a:hover {
-  color: #007BFF;
+  color: #FFD700;
 }
 
 /* Sosial Media dengan Animasi */
@@ -122,7 +144,6 @@
   display: flex;
   gap: 16px;
   margin-top: 8px;
-  /* Properti yang ditambahkan untuk efek rotasi */
   perspective: 1000px;
 }
 
@@ -132,27 +153,22 @@
   background-color: #fff;
   text-align: center;
   font-size: 20px;
-  
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  
   border-radius: 50%;
   position: relative;
   overflow: hidden;
-  border: 2px solid #555;
+  border: 2px solid #fff;
   z-index: 1;
-
-  /* Properti yang ditambahkan untuk efek rotasi */
   transform-style: preserve-3d;
 }
 
 .footer-social a i {
   position: relative;
-  color: #555;
-  transition: transform .5s;
+  color: #0059A6;
+  transition: transform .5s, color .3s;
   z-index: 3;
-  /* Transform awal dihilangkan agar rotasi berfungsi */
 }
 
 .footer-social a:hover i {
@@ -167,7 +183,6 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: #f00;
   transition: .5s;
   z-index: 2;
 }
@@ -176,23 +191,14 @@
   top: 0;
 }
 
-/* Warna spesifik untuk setiap ikon */
-.footer-social a:nth-child(1)::before {
-  background: #3b5999;
-}
-
-.footer-social a:nth-child(2)::before {
-  background: #c13584;
-}
-
-.footer-social a:nth-child(3)::before {
-  background: #ff0000;
-}
-
+/* Warna spesifik ikon */
+.footer-social a:nth-child(1)::before { background: #3b5999; }
+.footer-social a:nth-child(2)::before { background: #c13584; }
+.footer-social a:nth-child(3)::before { background: #ff0000; }
 
 .footer-separator {
   border: none;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid rgba(255,255,255,0.3);
   margin: 32px 0;
 }
 
@@ -211,14 +217,13 @@
 }
 
 .footer-description {
-  color: #777;
+  color: #f0f0f0;
   font-size: 13px;
   line-height: 1.5;
 }
 
 .footer-description i {
-  margin-right: 6px;
-  color: #555;
-  
+  margin-right: 10px;
+  color: #FFD700;
 }
 </style>

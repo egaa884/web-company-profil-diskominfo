@@ -64,13 +64,16 @@ defineProps({
 /* === sama dengan style yang sudah kamu buat === */
 .hero-section {
   position: relative;
+  width: 100vw; /* pakai viewport penuh */
+  margin-left: calc(-50vw + 50%); /* trik biar keluar dari container */
   min-height: 500px;
+  height: 100vh;
+
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 5rem 1rem;
   overflow: hidden;
-  height: 100vh;
+  padding: 0; /* jangan ada padding */
 }
 
 .welcome-text-wrapper {
