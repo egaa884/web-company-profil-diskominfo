@@ -29,6 +29,20 @@
                     <p>{{ \App\Models\Berita::where('status', 'draft')->count() }}</p>
                     <a href="{{ route('admin.berita.index') }}" class="btn btn-outline-primary btn-sm mt-3">Lihat Detail</a>
                 </div>
+
+                <!-- Statistik Laporan Pengaduan -->
+                <div class="stat">
+                    <h5>Total Laporan Pengaduan</h5>
+                    <p>{{ \App\Models\LaporanPengaduanAdmin::count() }}</p>
+                    <a href="{{ route('admin.laporan-pengaduan-admin.index') }}" class="btn btn-outline-primary btn-sm mt-3">Lihat Detail</a>
+                </div>
+
+                <!-- Statistik Laporan Dipublikasi -->
+                <div class="stat">
+                    <h5>Laporan Dipublikasi</h5>
+                    <p>{{ \App\Models\LaporanPengaduanAdmin::where('is_published', true)->count() }}</p>
+                    <a href="{{ route('admin.laporan-pengaduan-admin.index') }}?status=published" class="btn btn-outline-success btn-sm mt-3">Lihat Detail</a>
+                </div>
             </div>
         </div>
     </div>

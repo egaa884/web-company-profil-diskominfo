@@ -9,6 +9,7 @@ import SiaranPers from "@/views/SiaranPers.vue";
 import InfoGrafis from "@/views/InfoGrafis.vue";
 import LaporanPengaduan from "@/views/LaporanPengaduan.vue";
 import LaporanPenerima from "@/views/LaporanPenerima.vue";
+import LaporanDetail from "@/views/LaporanDetail.vue";
 import SurveiKepuasan from "@/views/SurveiKepuasan.vue";
 import SurveiEvaluasi from "@/views/SurveiEvaluasi.vue";
 
@@ -57,6 +58,11 @@ const routes = [
     path: '/pengaduan',
     name: 'pengaduan',
     component: LaporanPengaduan,
+  },
+  {
+    path: '/pengaduan/:id',
+    name: 'pengaduan.detail',
+    component: LaporanDetail,
   },
   {
     path: '/penerima',

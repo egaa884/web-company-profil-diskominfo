@@ -7,7 +7,7 @@ const apiClient = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
-  timeout: 10000, // 10 detik timeout
+  timeout: 30000, // 30 detik timeout
 });
 
 // Request interceptor untuk menangani request
@@ -34,6 +34,12 @@ apiClient.interceptors.response.use(
     // Handle specific error cases
     if (error.code === 'ECONNREFUSED') {
       console.error('Backend server tidak berjalan. Pastikan Laravel server sudah dijalankan di port 8000');
+    } else if (error.code === 'ECONNABORTED') {
+      console.error('Request timeout. Server mungkin lambat atau tidak merespons.');
+    } else if (error.response?.status === 500) {
+      console.error('Server error (500). Ada masalah di backend.');
+    } else if (error.response?.status === 404) {
+      console.error('Endpoint tidak ditemukan (404).');
     }
     
     return Promise.reject(error);
@@ -161,6 +167,162 @@ export const profilService = {
       return response;
     } catch (error) {
       console.error('Error fetching profil by ID:', error);
+      throw error;
+    }
+  }
+};
+
+export const laporanPengaduanService = {
+  // Get all laporan pengaduan with pagination and filters
+  async getAllLaporanPengaduan(params = {}) {
+    const maxRetries = 3;
+    let lastError;
+    
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        console.log(`Attempt ${attempt} to fetch laporan pengaduan`);
+        const response = await apiClient.get('/laporan-pengaduan', { params });
+        return response;
+      } catch (error) {
+        lastError = error;
+        console.error(`Error fetching laporan pengaduan (attempt ${attempt}):`, error);
+        
+        if (attempt < maxRetries) {
+          // Wait before retrying (exponential backoff)
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        }
+      }
+    }
+    
+    throw lastError;
+  },
+  
+  // Get laporan pengaduan by ID
+  async getLaporanPengaduanById(id) {
+    try {
+      const response = await apiClient.get(`/laporan-pengaduan/${id}`);
+      return response;
+    } catch (error) {
+      console.error('Error fetching laporan pengaduan by ID:', error);
+      throw error;
+    }
+  },
+  
+  // Get categories
+  async getCategories() {
+    try {
+      const response = await apiClient.get('/laporan-pengaduan/categories');
+      return response;
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      throw error;
+    }
+  },
+  
+  // Get statistics
+  async getStatistics() {
+    try {
+      const response = await apiClient.get('/laporan-pengaduan/statistics');
+      return response;
+    } catch (error) {
+      console.error('Error fetching statistics:', error);
+      throw error;
+    }
+  },
+  
+  // Create new laporan pengaduan
+  async createLaporanPengaduan(data) {
+    try {
+      const response = await apiClient.post('/laporan-pengaduan', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response;
+    } catch (error) {
+      console.error('Error creating laporan pengaduan:', error);
+      throw error;
+    }
+  }
+};
+
+// New service for admin-generated reports
+export const laporanPengaduanAdminService = {
+  // Get all admin-generated reports with pagination and filters
+  async getAllLaporanPengaduanAdmin(params = {}) {
+    try {
+      const response = await apiClient.get('/laporan-pengaduan-admin', { params });
+      return response;
+    } catch (error) {
+      console.error('Error fetching admin laporan pengaduan:', error);
+      throw error;
+    }
+  },
+  
+  // Get admin-generated report by ID
+  async getLaporanPengaduanAdminById(id) {
+    try {
+      const response = await apiClient.get(`/laporan-pengaduan-admin/${id}`);
+      return response;
+    } catch (error) {
+      console.error('Error fetching admin laporan pengaduan by ID:', error);
+      throw error;
+    }
+  },
+  
+  // Get statistics for admin-generated reports
+  async getStatistics() {
+    try {
+      const response = await apiClient.get('/laporan-pengaduan-admin/statistics');
+      return response;
+    } catch (error) {
+      console.error('Error fetching admin statistics:', error);
+      throw error;
+    }
+  },
+  
+  // Get available years
+  async getYears() {
+    try {
+      const response = await apiClient.get('/laporan-pengaduan-admin/years');
+      return response;
+    } catch (error) {
+      console.error('Error fetching years:', error);
+      throw error;
+    }
+  },
+  
+  // Get available months
+  async getMonths() {
+    try {
+      const response = await apiClient.get('/laporan-pengaduan-admin/months');
+      return response;
+    } catch (error) {
+      console.error('Error fetching months:', error);
+      throw error;
+    }
+  },
+  
+  // Get latest reports
+  async getLatest(limit = 5) {
+    try {
+      const response = await apiClient.get('/laporan-pengaduan-admin/latest', { params: { limit } });
+      return response;
+    } catch (error) {
+      console.error('Error fetching latest reports:', error);
+      throw error;
+    }
+  },
+  
+  // Download file
+  async downloadFile(id) {
+    try {
+      const response = await apiClient.get(`/laporan-pengaduan-admin/${id}/download`, {
+        responseType: 'blob'
+      });
+      return response;
+    } catch (error) {
+      console.error('Error downloading file:', error);
       throw error;
     }
   }

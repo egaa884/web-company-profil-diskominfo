@@ -6,9 +6,9 @@
 </template>
 
 <script>
-// Komponen yang sama diimpor dari lokasi yang sama
-import HeroSection from '@/components/laporanpengaduan/HeroSection.vue';
-import CardList from '@/components/laporanpengaduan/CardList.vue';
+
+import HeroSection from '@/components/laporanpenerimaan/HeroSection.vue';
+import CardList from '@/components/laporanpengaduanadmin/CardList.vue';
 
 // Impor foto lokal yang berbeda
 import fotoA from '@/assets/img/berita/laporan1.jpeg';
@@ -57,6 +57,5 @@ export default {
 </script>
 
 <style scoped>
-/* Anda bisa menambahkan styling spesifik untuk halaman ini jika diperlukan,
-   tetapi untuk tampilan card, style-nya sudah ada di CardList.vue */
+
 </style>

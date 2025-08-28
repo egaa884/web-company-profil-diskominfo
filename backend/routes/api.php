@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\ProfilApiController;
 use App\Http\Controllers\Api\BeritaApiController;
 use App\Http\Controllers\Api\FaqCategoryController;
 use App\Http\Controllers\Api\FaqController;
+use App\Http\Controllers\Api\LaporanPengaduanController;
 
 // Public API routes for berita
 Route::get('berita', [BeritaApiController::class, 'index']);
@@ -38,10 +39,31 @@ Route::get('profil/all-categories', [ProfilApiController::class, 'getAllCategori
 Route::get('profil/category/{kategori}', [ProfilApiController::class, 'byCategory']);
 Route::get('profil/{profil}', [ProfilApiController::class, 'show']);
 
+// Public API routes for laporan pengaduan
+Route::get('laporan-pengaduan', [LaporanPengaduanController::class, 'index']);
+Route::get('laporan-pengaduan/categories', [LaporanPengaduanController::class, 'categories']);
+Route::get('laporan-pengaduan/statistics', [LaporanPengaduanController::class, 'statistics']);
+Route::post('laporan-pengaduan', [LaporanPengaduanController::class, 'store']);
+Route::get('laporan-pengaduan/{laporanPengaduan}', [LaporanPengaduanController::class, 'show']);
+
+// Public API routes for laporan pengaduan admin
+Route::get('laporan-pengaduan-admin', [\App\Http\Controllers\Api\LaporanPengaduanAdminApiController::class, 'index']);
+Route::get('laporan-pengaduan-admin/statistics', [\App\Http\Controllers\Api\LaporanPengaduanAdminApiController::class, 'statistics']);
+Route::get('laporan-pengaduan-admin/years', [\App\Http\Controllers\Api\LaporanPengaduanAdminApiController::class, 'years']);
+Route::get('laporan-pengaduan-admin/months', [\App\Http\Controllers\Api\LaporanPengaduanAdminApiController::class, 'months']);
+Route::get('laporan-pengaduan-admin/latest', [\App\Http\Controllers\Api\LaporanPengaduanAdminApiController::class, 'latest']);
+Route::get('laporan-pengaduan-admin/{laporanPengaduanAdmin}', [\App\Http\Controllers\Api\LaporanPengaduanAdminApiController::class, 'show']);
+Route::get('laporan-pengaduan-admin/{laporanPengaduanAdmin}/download', [\App\Http\Controllers\Api\LaporanPengaduanAdminApiController::class, 'downloadFile']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('profil', ProfilApiController::class)->except(['index', 'show']);
     Route::post('profil/{profil}/upload-pdf', [ProfilApiController::class, 'uploadPdf']);
     Route::post('profil/{profil}/upload-gambar', [ProfilApiController::class, 'uploadGambar']);
+    
+    // Protected API routes for laporan pengaduan (admin only)
+    Route::apiResource('laporan-pengaduan', LaporanPengaduanController::class)->except(['index', 'show', 'store']);
+    Route::patch('laporan-pengaduan/{laporanPengaduan}/status', [LaporanPengaduanController::class, 'updateStatus']);
+    Route::get('laporan-pengaduan/{laporanPengaduan}/download', [LaporanPengaduanController::class, 'downloadAttachment']);
 });
 
 Route::get('faq-categories', [FaqCategoryController::class, 'index']);

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\ProfilController;
 use App\Http\Controllers\Admin\FaqCategoryController;
 use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\LaporanPengaduanController;
 use Illuminate\Http\Request;
 
 // Route untuk halaman depan
@@ -123,5 +124,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('faq-categories', FaqCategoryController::class)->except(['show']);
         // Route untuk FAQ (CRUD)
         Route::resource('faqs', FaqController::class)->except(['show']);
+
+        // Route untuk Laporan Pengaduan (CRUD)
+        Route::resource('laporan-pengaduan', LaporanPengaduanController::class);
+        Route::patch('/laporan-pengaduan/{laporanPengaduan}/status', [LaporanPengaduanController::class, 'updateStatus'])->name('laporan-pengaduan.update-status');
+        Route::get('/laporan-pengaduan/{laporanPengaduan}/download', [LaporanPengaduanController::class, 'downloadAttachment'])->name('laporan-pengaduan.download');
+
+        // Route untuk Laporan Pengaduan Admin (CRUD)
+        Route::resource('laporan-pengaduan-admin', \App\Http\Controllers\Admin\LaporanPengaduanAdminController::class);
+        Route::patch('/laporan-pengaduan-admin/{laporanPengaduanAdmin}/toggle-publish', [\App\Http\Controllers\Admin\LaporanPengaduanAdminController::class, 'togglePublish'])->name('laporan-pengaduan-admin.toggle-publish');
+        Route::get('/laporan-pengaduan-admin/{laporanPengaduanAdmin}/download', [\App\Http\Controllers\Admin\LaporanPengaduanAdminController::class, 'downloadFile'])->name('laporan-pengaduan-admin.download');
     });
 });
