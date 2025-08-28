@@ -4,78 +4,73 @@
       <h2 class="text-center text-3xl font-bold leading-8 text-gray-900">
         Bekerja Sama Dengan
       </h2>
+    </div>
 
-      <div class="scroller-container mt-11 w-full overflow-hidden">
-        <div ref="leftScroller" class="overflow-hidden">
-          <ul
-            ref="leftInner"
-            class="scroller__inner flex whitespace-nowrap items-center gap-16 py-2 animate-scroll-left"
-            style="--duration: 10s;"
+    <!-- Buat scroller full width -->
+    <div class="mt-11 w-full overflow-hidden relative">
+      <!-- Scroller kiri -->
+      <div class="scroller">
+        <div class="scroller__inner animate-scroll-left" style="--duration: 25s;">
+          <div
+            v-for="(card, index) in [...cardData, ...cardData]"
+            :key="'left-' + index"
+            class="card"
           >
-            <li
-              v-for="(card, index) in scrollListCards"
-              :key="'left-' + index"
-              class="min-w-fit transition duration-1000 hover:scale-105"
+            <div
+              class="flex flex-col items-start p-4 rounded-md bg-gradient-to-r from-[#2E7A52] to-[#0292D7] text-white w-[250px] h-[120px] justify-between"
             >
-              <div
-                class="flex flex-col items-start p-4 rounded-md bg-gradient-to-r from-[#2E7A52] to-[#0292D7] text-white w-[250px] h-[120px] justify-between"
-              >
-                <div class="flex items-center gap-2">
-                  <img
-                    :src="card.imgSrc"
-                    alt="logo perusahaan"
-                    class="w-[50px] h-[50px] object-contain rounded-md"
-                  />
-                  <p class="text-lg font-semibold">{{ card.text }}</p>
-                </div>
-                <div class="w-full h-px bg-white/50 my-2"></div>
-                <a
-                  :href="card.url"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-sm cursor-pointer flex items-center text-white no-underline hover:underline"
-                >
-                  Selengkapnya <span class="ml-1">&gt;</span>
-                </a>
+              <div class="flex items-center gap-2">
+                <img
+                  :src="card.imgSrc"
+                  alt="logo perusahaan"
+                  class="w-[50px] h-[50px] object-contain rounded-md"
+                />
+                <p class="text-lg font-semibold">{{ card.text }}</p>
               </div>
-            </li>
-          </ul>
+              <div class="w-full h-px bg-white/50 my-2"></div>
+              <a
+                :href="card.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-sm cursor-pointer flex items-center text-white no-underline hover:underline"
+              >
+                Selengkapnya <span class="ml-1">&gt;</span>
+              </a>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div ref="rightScroller" class="mt-4 overflow-hidden">
-          <ul
-            ref="rightInner"
-            class="scroller__inner flex whitespace-nowrap items-center gap-16 py-2 animate-scroll-right"
-            style="--duration: 10s;"
+      <!-- Scroller kanan -->
+      <div class="scroller mt-6">
+        <div class="scroller__inner animate-scroll-right" style="--duration: 25s;">
+          <div
+            v-for="(card, index) in [...cardData.slice().reverse(), ...cardData.slice().reverse()]"
+            :key="'right-' + index"
+            class="card"
           >
-            <li
-              v-for="(card, index) in scrollListReversedCards"
-              :key="'right-' + index"
-              class="min-w-fit transition duration-1000 hover:scale-105"
+            <div
+              class="flex flex-col items-start p-4 rounded-md bg-gradient-to-r from-[#2E7A52] to-[#0292D7] text-white w-[250px] h-[120px] justify-between"
             >
-              <div
-                class="flex flex-col items-start p-4 rounded-md bg-gradient-to-r from-[#2E7A52] to-[#0292D7] text-white w-[250px] h-[120px] justify-between"
-              >
-                <div class="flex items-center gap-2">
-                  <img
-                    :src="card.imgSrc"
-                    alt="Logo Perusahaan"
-                    class="w-[50px] h-[50px] object-contain rounded-md"
-                  />
-                  <p class="text-lg font-semibold">{{ card.text }}</p>
-                </div>
-                <div class="w-full h-px bg-white/50 my-2"></div>
-                <a
-                  :href="card.url"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-sm cursor-pointer flex items-center text-white no-underline hover:underline"
-                >
-                  Selengkapnya <span class="ml-1">&gt;</span>
-                </a>
+              <div class="flex items-center gap-2">
+                <img
+                  :src="card.imgSrc"
+                  alt="logo perusahaan"
+                  class="w-[50px] h-[50px] object-contain rounded-md"
+                />
+                <p class="text-lg font-semibold">{{ card.text }}</p>
               </div>
-            </li>
-          </ul>
+              <div class="w-full h-px bg-white/50 my-2"></div>
+              <a
+                :href="card.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-sm cursor-pointer flex items-center text-white no-underline hover:underline"
+              >
+                Selengkapnya <span class="ml-1">&gt;</span>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -83,7 +78,6 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
 import logoMadiun from '../../assets/img/logo-madiun.png';
 import logoMadiunToday from '../../assets/img/logo-madiun-today.png';
 import logoPecel from '../../assets/img/logo-pecel.png';
@@ -105,53 +99,43 @@ const cardData = [
   { imgSrc: logoMadiun, text: 'SPBE Kota Madiun', url: 'https://spbe.madiunkota.go.id/' },
   { imgSrc: logoSuaraMadiun, text: 'Suara Radio Madiun', url: 'https://93fm.madiunkota.go.id/' },
 ];
-
-const scrollListCards = [...cardData];
-const scrollListReversedCards = [...cardData.slice().reverse()];
-
-const leftInner = ref(null);
-const rightInner = ref(null);
-
-onMounted(() => {
-  duplicateImages(leftInner.value, 2);
-  duplicateImages(rightInner.value, 2);
-});
-
-function duplicateImages(ulElement, times) {
-  const items = Array.from(ulElement.children);
-  for (let i = 0; i < times; i++) {
-    items.forEach((item) => {
-      const clone = item.cloneNode(true);
-      clone.setAttribute('aria-hidden', 'true');
-      ulElement.appendChild(clone);
-    });
-  }
-}
 </script>
 
 <style scoped>
-@keyframes scroll-left {
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(-100%);
-  }
+.scroller {
+  width: 100vw; /* full lebar layar */
+  overflow: hidden;
+  position: relative;
+  margin-left: calc(-50vw + 50%); /* hilangkan padding container */
 }
 
+.scroller__inner {
+  display: flex;
+  gap: 4rem;
+  width: max-content;
+}
+
+.card {
+  min-width: fit-content;
+  transition: transform 1s;
+}
+.card:hover {
+  transform: scale(1.05);
+}
+
+/* Animasi infinite tanpa pause */
+@keyframes scroll-left {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
 @keyframes scroll-right {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(0%);
-  }
+  0%   { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
 }
 
 .animate-scroll-left {
   animation: scroll-left var(--duration) linear infinite;
 }
-
 .animate-scroll-right {
   animation: scroll-right var(--duration) linear infinite;
 }
