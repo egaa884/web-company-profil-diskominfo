@@ -1,6 +1,6 @@
 <template>
   <div class="faq-list">
-    <FAQItem v-for="(faq, idx) in faqs" :key="idx" :question="faq.question" :answer="faq.answer" />
+    <FAQItem v-for="(faq, idx) in faqs" :key="idx" :title="faq.title" :question="faq.question" :answer="faq.answer" />
   </div>
 </template>
 

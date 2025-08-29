@@ -328,4 +328,17 @@ export const laporanPengaduanAdminService = {
   }
 };
 
+// FAQ service
+export const faqService = {
+  async getFaqs(params = {}) {
+    try {
+      const response = await apiClient.get('/faqs', { params });
+      return response;
+    } catch (error) {
+      console.error('Error fetching FAQs:', error);
+      throw error;
+    }
+  }
+};
+
 export default apiClient;

@@ -1,7 +1,10 @@
 <template>
   <div class="faq-item">
     <div class="faq-question" @click="toggle">
-      <span>{{ question }}</span>
+      <div class="faq-question-text">
+        <small class="faq-title" v-if="title">{{ title }}</small>
+        <span>{{ question }}</span>
+      </div>
       <span class="arrow" :class="{ 'rotated': open }">▼</span>
     </div>
     <transition name="slide">
@@ -15,6 +18,7 @@
 <script setup>
 import { ref } from 'vue'
 const props = defineProps({
+  title: String,
   question: String,
   answer: String
 })
@@ -42,6 +46,15 @@ function toggle() {
   background: linear-gradient(to right, #29166F, #01458E, #0093DD);
   color: white;
   transition: all 0.3s ease;
+}
+.faq-question-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.faq-title {
+  font-size: 1.8rem;
+  opacity: 0.85;
 }
 .faq-question:hover {
   background: linear-gradient(to right, #1a0f4a, #013a7a, #0078b8);
