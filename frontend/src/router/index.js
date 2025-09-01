@@ -36,6 +36,11 @@ const routes = [
     component: Beritakominfo,
   },
   {
+    path: "/berita/:slug",
+    name: "berita.detail",
+    component: () => import('../views/BeritaDetail.vue'),
+  },
+  {
     path: "/siaranpers",
     name: "siaranpers",
     component: SiaranPers,
