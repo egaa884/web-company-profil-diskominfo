@@ -112,6 +112,17 @@ export const beritaService = {
       console.error('Error fetching berita by ID:', error);
       throw error;
     }
+  },
+  
+  // Get a specific berita by slug
+  async getBeritaBySlug(slug) {
+    try {
+      const response = await apiClient.get(`/berita/slug/${slug}`);
+      return response;
+    } catch (error) {
+      console.error('Error fetching berita by slug:', error);
+      throw error;
+    }
   }
 };
 
