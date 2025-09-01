@@ -124,7 +124,7 @@ export default {
 <style scoped>
 .hot-news {
   margin-bottom: 2rem;
-  margin-top: 5%;
+  margin-top: 17%;
 }
 
 .line-clamp-3 {
