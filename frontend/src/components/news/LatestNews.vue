@@ -24,7 +24,7 @@
         <div class="w-full h-24 bg-gray-400 overflow-hidden">
           <img 
             v-if="news.gambar" 
-            :src="getImageUrl(news.gambar)" 
+            :src="getImageUrlFromBerita(news)" 
             :alt="news.judul"
             class="w-full h-full object-cover"
           />
@@ -56,6 +56,12 @@ import { beritaService } from '@/service/api.js'
 
 export default {
   name: 'LatestNews',
+  props: {
+    showMargin: {
+      type: Boolean,
+      default: true
+    }
+  },
   data() {
     return {
       latestNews: [],
@@ -84,8 +90,18 @@ export default {
       if (imagePath.startsWith('http')) {
         return imagePath
       }
+      // Remove any leading slashes to avoid double slashes
+      const cleanPath = imagePath.replace(/^\/+/, '')
       // Otherwise, construct the full URL
-      return `http://localhost:8000/storage/${imagePath}`
+      return `http://localhost:8000/storage/${cleanPath}`
+    },
+    
+    getImageUrlFromBerita(berita) {
+      // Use gambar_url if available (from backend), otherwise construct URL
+      if (berita.gambar_url) {
+        return berita.gambar_url
+      }
+      return this.getImageUrl(berita.gambar)
     },
     formatDate(dateString) {
       if (!dateString) return ''
@@ -113,7 +129,7 @@ export default {
 
 <style scoped>
 .latest-news {
-  margin-top: 17%;
+  margin-top: v-bind('showMargin ? "17%" : "17%"');
 }
 
 .line-clamp-2 {
