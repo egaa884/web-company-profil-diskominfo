@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create an axios instance with default configuration
 const apiClient = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  baseURL: import.meta?.env?.VITE_API_BASE_URL || 'http://localhost:8000/api',
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
@@ -347,6 +347,19 @@ export const faqService = {
       return response;
     } catch (error) {
       console.error('Error fetching FAQs:', error);
+      throw error;
+    }
+  }
+};
+
+// Chat service for AI chatbot
+export const chatService = {
+  async sendMessage(payload) {
+    try {
+      const response = await apiClient.post('/chat', payload);
+      return response;
+    } catch (error) {
+      console.error('Error sending chat message:', error);
       throw error;
     }
   }
