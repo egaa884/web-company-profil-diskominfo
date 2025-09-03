@@ -22,11 +22,44 @@ class BeritaApiController extends Controller
         
         // Get paginated results
         $beritas = $query->paginate(10);
+        
+        // Add full image URL for each berita
+        $beritas->getCollection()->each(function ($berita) {
+            if ($berita->gambar) {
+                $berita->gambar_url = url('storage/' . $berita->gambar);
+            }
+        });
+        
         return response()->json($beritas);
     }
 
     public function show(Berita $berita)
     {
+        // Add full image URL if image exists
+        if ($berita->gambar) {
+            $berita->gambar_url = url('storage/' . $berita->gambar);
+        }
+        
+        return response()->json($berita);
+    }
+
+    public function showBySlug($slug)
+    {
+        $berita = Berita::where('slug', $slug)
+            ->where('status', 'published')
+            ->first();
+            
+        if (!$berita) {
+            return response()->json(['message' => 'Berita tidak ditemukan'], 404);
+        }
+        
+        // Add full image URL if image exists
+        if ($berita->gambar) {
+            $berita->gambar_url = url('storage/' . $berita->gambar);
+        }
+        
+
+        
         return response()->json($berita);
     }
 
@@ -37,6 +70,14 @@ class BeritaApiController extends Controller
             ->orderBy('created_at', 'desc')
             ->limit(3)
             ->get();
+            
+        // Add full image URL for each berita
+        $beritas->each(function ($berita) {
+            if ($berita->gambar) {
+                $berita->gambar_url = url('storage/' . $berita->gambar);
+            }
+        });
+        
         return response()->json($beritas);
     }
 
@@ -47,6 +88,14 @@ class BeritaApiController extends Controller
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
+            
+        // Add full image URL for each berita
+        $beritas->each(function ($berita) {
+            if ($berita->gambar) {
+                $berita->gambar_url = url('storage/' . $berita->gambar);
+            }
+        });
+        
         return response()->json($beritas);
     }
 
@@ -56,6 +105,14 @@ class BeritaApiController extends Controller
             ->where('category', $category)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
+            
+        // Add full image URL for each berita
+        $beritas->getCollection()->each(function ($berita) {
+            if ($berita->gambar) {
+                $berita->gambar_url = url('storage/' . $berita->gambar);
+            }
+        });
+        
         return response()->json($beritas);
     }
 

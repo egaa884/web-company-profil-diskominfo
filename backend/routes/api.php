@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// Chatbot AI endpoint
+Route::post('/chat', [ChatController::class, 'chat']);
+
 use App\Http\Controllers\Api\ProfilApiController;
 use App\Http\Controllers\Api\BeritaApiController;
 use App\Http\Controllers\Api\FaqCategoryController;
@@ -30,6 +34,7 @@ Route::get('berita/latest', [BeritaApiController::class, 'latest']);
 Route::get('berita/hot', [BeritaApiController::class, 'hotNews']);
 Route::get('berita/categories', [BeritaApiController::class, 'categories']);
 Route::get('berita/category/{category}', [BeritaApiController::class, 'byCategory']);
+Route::get('berita/slug/{slug}', [BeritaApiController::class, 'showBySlug']);
 Route::get('berita/{berita}', [BeritaApiController::class, 'show']);
 
 // Public API routes for profil

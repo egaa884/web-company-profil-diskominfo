@@ -96,7 +96,9 @@ const getImageUrl = (imagePath) => {
   if (imagePath.startsWith('http')) {
     return imagePath;
   }
-  return `http://localhost:8000/storage/${imagePath}`;
+  // Remove any leading slashes to avoid double slashes
+  const cleanPath = imagePath.replace(/^\/+/, '');
+  return `http://localhost:8000/storage/${cleanPath}`;
 };
 
 const handleNewsClick = (news) => {

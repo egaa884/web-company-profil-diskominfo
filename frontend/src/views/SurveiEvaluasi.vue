@@ -1,11 +1,11 @@
 <template>
   <div class="sertifikat-page min-h-screen bg-gray-100">
     <!-- Hero Section -->
-    <HeroSection 
+     <HeroSection 
       firstLine="SURVEI"
       secondLine="PELAYANAN PUBLIK"
       thirdLine="DISKOMINFO KOTA MADIUN"
-      backgroundImage="@/assets/img/logo-kominfo.png"
+      :backgroundImage="LogoKominfo"
     />
 
     <!-- Main Content -->
@@ -22,6 +22,7 @@
 
 <script setup>
 import HeroSection from "@/components/global/HeroSection.vue";
+import LogoKominfo from "@/assets/img/logo-kominfo.png";
 import SertifikatCard from "@/components/global/SertifikatCard.vue";
 import SertifImage from "@/assets/img/sertif2.jpg";
 </script>

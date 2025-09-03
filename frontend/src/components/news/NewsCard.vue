@@ -71,8 +71,10 @@ export default {
       if (imagePath.startsWith('http')) {
         return imagePath
       }
+      // Remove any leading slashes to avoid double slashes
+      const cleanPath = imagePath.replace(/^\/+/, '')
       // Otherwise, construct the full URL
-      return `http://localhost:8000/storage/${imagePath}`
+      return `http://localhost:8000/storage/${cleanPath}`
     },
     handleClick() {
       if (this.slug) {

@@ -13,6 +13,7 @@ import LaporanDetail from "@/views/LaporanDetail.vue";
 import SurveiKepuasan from "@/views/SurveiKepuasan.vue";
 import SurveiEvaluasi from "@/views/SurveiEvaluasi.vue";
 import RadioSuaraMadiun from "@/views/RadioSuaraMadiun.vue";
+import LayananPengaduanAI from "@/views/LayananPengaduanAI.vue";
 
 const routes = [
   
@@ -34,6 +35,11 @@ const routes = [
     path: "/berita",
     name: "berita",
     component: Beritakominfo,
+  },
+  {
+    path: "/berita/:slug",
+    name: "berita.detail",
+    component: () => import('../views/BeritaDetail.vue'),
   },
   {
     path: "/siaranpers",
@@ -59,6 +65,11 @@ const routes = [
     path: '/pengaduan',
     name: 'pengaduan',
     component: LaporanPengaduan,
+  },
+  {
+    path: '/layanan-pengaduan',
+    name: 'layanan.pengaduan.ai',
+    component: LayananPengaduanAI,
   },
   {
     path: '/pengaduan/:id',

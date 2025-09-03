@@ -6,12 +6,11 @@
 </template>
 
 <script setup>
-const downloadLink = 'https://play.google.com/store/apps/details?id=com.kominfo.lppl_93fm_suara_madiun&hl=id'; // Ganti dengan link unduhan yang sebenarnya
+const downloadLink = 'https://play.google.com/store/apps/details?id=com.kominfo.lppl_93fm_suara_madiun&hl=id'; 
 </script>
 
 <style scoped>
 .download-button {
-  /* Ubah background dan bentuk agar sama dengan RadioPlayer */
   background-color: #ffffff;
   color: #194a8f; 
   padding: 27px 60px; 

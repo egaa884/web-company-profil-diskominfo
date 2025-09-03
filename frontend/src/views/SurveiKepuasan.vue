@@ -3,7 +3,7 @@
       firstLine="SURVEI"
       secondLine="KEPUASAN MASYARAKAT"
       thirdLine="DISKOMINFO KOTA MADIUN"
-      backgroundImage="@/assets/img/logo-kominfo.png"
+      :backgroundImage="LogoKominfo"
     />
   <div class="min-h-screen bg-gray-100 flex flex-col items-center py-20">
     <h1 class="text-3xl font-bold mb-10">Survei Kepuasan Masyarakat</h1>
@@ -19,6 +19,7 @@
 
 <script setup>
 import SertifikatCard from "@/components/global/SertifikatCard.vue";
+import LogoKominfo from "@/assets/img/logo-kominfo.png";
 import HeroSection from "@/components/global/HeroSection.vue";
 import SertifImage from "@/assets/img/sertif1.0.png"
 </script>

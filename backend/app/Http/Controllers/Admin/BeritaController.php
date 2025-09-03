@@ -69,6 +69,30 @@ class BeritaController extends Controller
         ];
     }
 
+    // Generate unique slug
+    private function generateUniqueSlug($title, $excludeId = null)
+    {
+        $baseSlug = Str::slug($title);
+        $slug = $baseSlug;
+        $counter = 1;
+
+        $query = Berita::where('slug', $slug);
+        if ($excludeId) {
+            $query->where('id', '!=', $excludeId);
+        }
+
+        while ($query->exists()) {
+            $slug = $baseSlug . '-' . $counter;
+            $query = Berita::where('slug', $slug);
+            if ($excludeId) {
+                $query->where('id', '!=', $excludeId);
+            }
+            $counter++;
+        }
+
+        return $slug;
+    }
+
     // Menampilkan form untuk membuat berita baru
     public function create()
     {
@@ -152,7 +176,7 @@ class BeritaController extends Controller
             ]);
 
             $data = $request->all();
-            $data['slug'] = Str::slug($request->judul);
+            $data['slug'] = $this->generateUniqueSlug($request->judul);
             $data['admin_id'] = Auth::guard('admin')->id();
 
             // Menyimpan gambar jika ada
@@ -206,7 +230,7 @@ class BeritaController extends Controller
             ]);
 
             $data = $request->all();
-            $data['slug'] = Str::slug($request->judul);
+            $data['slug'] = $this->generateUniqueSlug($request->judul, $berita->id);
 
             // Memperbarui gambar jika ada
             if ($request->hasFile('gambar')) {

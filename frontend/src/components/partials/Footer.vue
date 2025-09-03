@@ -52,6 +52,11 @@
           <i class="fas fa-envelope"></i> Email: diskominfo@madiunkota.go.id
         </p>
       </div>
+      <div class="w-full text-white py-3 text-center mt-10">
+      <p>
+      &copy; {{ new Date().getFullYear() }} Copyright By UNIPMA.
+    </p>
+      </div>
     </div>
 
     <!-- Logo background -->
