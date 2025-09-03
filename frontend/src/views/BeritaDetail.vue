@@ -31,7 +31,7 @@
     </div>
 
     <!-- Content -->
-    <div v-else-if="berita" class="container mx-auto px-4 py-8">
+    <div v-else-if="berita" class="container mx-auto px-4 py-8 mt-16">
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
         <!-- Left Column - Berita Detail -->
         <div class="lg:col-span-3">
