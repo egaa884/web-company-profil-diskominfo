@@ -19,9 +19,10 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:5173', 'http://127.0.0.1:5173'],
+    'allowed_origins' => [],
 
-    'allowed_origins_patterns' => [],
+    // Allow any localhost/127.0.0.1 port during development (e.g., 5173, 5174, Vite variants)
+    'allowed_origins_patterns' => ['/^http:\/\/localhost(:[0-9]+)?$/', '/^http:\/\/127\\.0\\.0\\.1(:[0-9]+)?$/'],
 
     'allowed_headers' => ['*'],
 
