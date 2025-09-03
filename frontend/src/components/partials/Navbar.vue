@@ -109,7 +109,7 @@ const navItems = ref([
     ]
   },
   { name: 'Profil', link: '/profil', type: 'link' },
-  { name: 'Layanan Pengaduan', link: 'https://awaksigap.madiunkota.go.id/', type: 'link' },
+  { name: 'Layanan Pengaduan', link: '/layanan-pengaduan', type: 'link' },
   { name: 'FaQ', link: '/faq', type: 'link' },
   {
     name: 'Informasi Publik',
