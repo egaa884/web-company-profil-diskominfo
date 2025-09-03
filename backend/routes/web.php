@@ -134,5 +134,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('laporan-pengaduan-admin', \App\Http\Controllers\Admin\LaporanPengaduanAdminController::class);
         Route::patch('/laporan-pengaduan-admin/{laporanPengaduanAdmin}/toggle-publish', [\App\Http\Controllers\Admin\LaporanPengaduanAdminController::class, 'togglePublish'])->name('laporan-pengaduan-admin.toggle-publish');
         Route::get('/laporan-pengaduan-admin/{laporanPengaduanAdmin}/download', [\App\Http\Controllers\Admin\LaporanPengaduanAdminController::class, 'downloadFile'])->name('laporan-pengaduan-admin.download');
+
+        // Route untuk Publikasi (CRUD)
+        Route::resource('publikasi', \App\Http\Controllers\Admin\PublikasiController::class);
+        Route::get('/publikasi/{publikasi}/download', [\App\Http\Controllers\Admin\PublikasiController::class, 'download'])->name('publikasi.download');
     });
 });

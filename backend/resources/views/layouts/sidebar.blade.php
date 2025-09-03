@@ -12,6 +12,7 @@
         @if(Auth::guard('admin')->user()->role === 'admin')
             <li><a href="{{ route('admin.infografis.index') }}" class="sidebar-link">Infografis</a></li>
         @endif
+        <li><a href="{{ route('admin.publikasi.index') }}" class="sidebar-link">Publikasi</a></li>
         <li><a href="{{ route('admin.laporan-pengaduan.index') }}" class="sidebar-link">Laporan Pengaduan</a></li>
         <li><a href="{{ route('admin.faqs.index') }}" class="sidebar-link">FAQ</a></li>
     </ul>

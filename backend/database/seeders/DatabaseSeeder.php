@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             BeritaSeeder::class,
             ProfilSeeder::class,
             LaporanPengaduanAdminSeeder::class,
+            PublikasiSeeder::class,
         ]);
     }
 }

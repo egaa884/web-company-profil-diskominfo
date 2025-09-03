@@ -123,7 +123,7 @@
 import { ref, onMounted } from 'vue';
 import HeroSection from '@/components/laporanpengaduanadmin/HeroSection.vue';
 import CardList from '@/components/laporanpengaduanadmin/CardList.vue';
-import { laporanPengaduanAdminService } from '@/service/api.js';
+import { publikasiService } from '@/service/api.js';
 
 export default {
   name: 'LaporanPengaduan',
@@ -150,16 +150,17 @@ export default {
         loading.value = true;
         error.value = null;
         
-        console.log('Fetching admin laporan pengaduan...');
+        console.log('Fetching publikasi pengaduan...');
         
         const params = {
           page: pagination.value?.current_page || 1,
+          kategori: 'pengaduan',
           ...filters.value
         };
         
         console.log('Request params:', params);
         
-        const response = await laporanPengaduanAdminService.getAllLaporanPengaduanAdmin(params);
+        const response = await publikasiService.getAllPublikasi(params);
         
         console.log('Response received:', response);
         console.log('Response data:', response.data);
@@ -167,34 +168,34 @@ export default {
         if (response.data && response.data.data) {
           laporanList.value = response.data.data.map(item => ({
             id: item.id,
-            foto: item.file_lampiran ? item.file_lampiran : '/src/assets/img/berita/laporan1.jpeg',
-            judul: item.full_title,
-            tanggal: new Date(item.tanggal_publikasi || item.created_at).toLocaleDateString('id-ID', {
+            foto: item.file_path ? item.file_path : '/src/assets/img/berita/laporan1.jpeg',
+            judul: item.judul,
+            tanggal: new Date(item.published_at || item.created_at).toLocaleDateString('id-ID', {
               year: 'numeric',
               month: 'long',
               day: 'numeric'
             }),
-            penjelasan: item.deskripsi,
-            status: item.published_label,
-            prioritas: `${item.total_pengaduan} Total`,
+            penjelasan: item.ringkasan || item.isi,
+            status: item.meta?.status || 'diproses',
+            prioritas: item.meta?.total_pengaduan ? `${item.meta.total_pengaduan} Total` : 'Normal',
             kategori: item.kategori,
             link: `#laporan-${item.id}`,
-            period: item.period,
-            total_pengaduan: item.total_pengaduan,
-            pengaduan_selesai: item.pengaduan_selesai,
-            pengaduan_diproses: item.pengaduan_diproses,
-            pengaduan_ditolak: item.pengaduan_ditolak,
-            file_lampiran: item.file_lampiran
+            period: item.meta?.period,
+            total_pengaduan: item.meta?.total_pengaduan,
+            pengaduan_selesai: item.meta?.pengaduan_selesai,
+            pengaduan_diproses: item.meta?.pengaduan_diproses,
+            pengaduan_ditolak: item.meta?.pengaduan_ditolak,
+            file_lampiran: item.file_path
           }));
           
-          pagination.value = response.data;
+          pagination.value = response.data.pagination;
           console.log('Data processed successfully. Total items:', laporanList.value.length);
         } else {
           console.error('Invalid response structure:', response);
           error.value = 'Format data tidak valid. Silakan coba lagi.';
         }
       } catch (err) {
-        console.error('Error fetching admin laporan pengaduan:', err);
+        console.error('Error fetching publikasi pengaduan:', err);
         console.error('Error details:', {
           message: err.message,
           status: err.response?.status,
@@ -217,17 +218,17 @@ export default {
 
     const fetchStatistics = async () => {
       try {
-        const response = await laporanPengaduanAdminService.getStatistics();
+        const response = await publikasiService.getStatistics({ kategori: 'pengaduan' });
         statistics.value = response.data.data;
       } catch (err) {
-        console.error('Error fetching admin statistics:', err);
+        console.error('Error fetching pengaduan statistics:', err);
         // Tidak set error utama karena ini bukan data kritis
       }
     };
 
     const fetchCategories = async () => {
       try {
-        const response = await laporanPengaduanAdminService.getMonths();
+        const response = await publikasiService.getMonths({ kategori: 'pengaduan' });
         categories.value = response.data.data;
       } catch (err) {
         console.error('Error fetching months:', err);

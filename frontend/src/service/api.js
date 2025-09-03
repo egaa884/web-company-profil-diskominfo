@@ -98,12 +98,12 @@ export const beritaService = {
       const response = await apiClient.get('/berita/categories');
       return response;
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      console.error('Error fetching berita categories:', error);
       throw error;
     }
   },
   
-  // Get a specific berita by ID
+  // Get berita by ID
   async getBeritaById(id) {
     try {
       const response = await apiClient.get(`/berita/${id}`);
@@ -115,8 +115,9 @@ export const beritaService = {
   }
 };
 
+// Profil service
 export const profilService = {
-  // Get all profil data
+  // Get all profil with pagination and category filter
   async getAllProfil(params = {}) {
     try {
       const response = await apiClient.get('/profil', { params });
@@ -128,9 +129,9 @@ export const profilService = {
   },
   
   // Get profil by category
-  async getProfilByCategory(kategori) {
+  async getProfilByCategory(category) {
     try {
-      const response = await apiClient.get(`/profil/category/${kategori}`);
+      const response = await apiClient.get(`/profil/category/${category}`);
       return response;
     } catch (error) {
       console.error('Error fetching profil by category:', error);
@@ -149,7 +150,7 @@ export const profilService = {
     }
   },
   
-  // Get all profil data grouped by category
+  // Get all categories (detailed)
   async getAllCategories() {
     try {
       const response = await apiClient.get('/profil/all-categories');
@@ -160,7 +161,7 @@ export const profilService = {
     }
   },
   
-  // Get a specific profil by ID
+  // Get profil by ID
   async getProfilById(id) {
     try {
       const response = await apiClient.get(`/profil/${id}`);
@@ -172,35 +173,118 @@ export const profilService = {
   }
 };
 
-export const laporanPengaduanService = {
-  // Get all laporan pengaduan with pagination and filters
-  async getAllLaporanPengaduan(params = {}) {
-    const maxRetries = 3;
-    let lastError;
-    
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      try {
-        console.log(`Attempt ${attempt} to fetch laporan pengaduan`);
-        const response = await apiClient.get('/laporan-pengaduan', { params });
-        return response;
-      } catch (error) {
-        lastError = error;
-        console.error(`Error fetching laporan pengaduan (attempt ${attempt}):`, error);
-        
-        if (attempt < maxRetries) {
-          // Wait before retrying (exponential backoff)
-          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-        }
-      }
+// New unified publikasi service (replaces laporan pengaduan service)
+export const publikasiService = {
+  // Get all publikasi with pagination and filters
+  async getAllPublikasi(params = {}) {
+    try {
+      const response = await apiClient.get('/publikasi', { params });
+      return response;
+    } catch (error) {
+      console.error('Error fetching all publikasi:', error);
+      throw error;
     }
-    
-    throw lastError;
   },
   
+  // Get publikasi by ID
+  async getPublikasiById(id) {
+    try {
+      const response = await apiClient.get(`/publikasi/${id}`);
+      return response;
+    } catch (error) {
+      console.error('Error fetching publikasi by ID:', error);
+      throw error;
+    }
+  },
+  
+  // Get categories
+  async getCategories() {
+    try {
+      const response = await apiClient.get('/publikasi/categories');
+      return response;
+    } catch (error) {
+      console.error('Error fetching publikasi categories:', error);
+      throw error;
+    }
+  },
+  
+  // Get statistics
+  async getStatistics(params = {}) {
+    try {
+      const response = await apiClient.get('/publikasi/statistics', { params });
+      return response;
+    } catch (error) {
+      console.error('Error fetching publikasi statistics:', error);
+      throw error;
+    }
+  },
+  
+  // Get months (for pengaduan category)
+  async getMonths(params = {}) {
+    try {
+      const response = await apiClient.get('/publikasi/months', { params });
+      return response;
+    } catch (error) {
+      console.error('Error fetching publikasi months:', error);
+      throw error;
+    }
+  },
+  
+  // Get years
+  async getYears(params = {}) {
+    try {
+      const response = await apiClient.get('/publikasi/years', { params });
+      return response;
+    } catch (error) {
+      console.error('Error fetching publikasi years:', error);
+      throw error;
+    }
+  },
+  
+  // Create new publikasi
+  async createPublikasi(data) {
+    try {
+      const response = await apiClient.post('/publikasi', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response;
+    } catch (error) {
+      console.error('Error creating publikasi:', error);
+      throw error;
+    }
+  },
+  
+  // Update publikasi
+  async updatePublikasi(id, data) {
+    try {
+      const response = await apiClient.put(`/publikasi/${id}`, data);
+      return response;
+    } catch (error) {
+      console.error('Error updating publikasi:', error);
+      throw error;
+    }
+  },
+  
+  // Delete publikasi
+  async deletePublikasi(id) {
+    try {
+      const response = await apiClient.delete(`/publikasi/${id}`);
+      return response;
+    } catch (error) {
+      console.error('Error deleting publikasi:', error);
+      throw error;
+    }
+  }
+};
+
+// Legacy laporan pengaduan service (for backward compatibility)
+export const laporanPengaduanService = {
   // Get laporan pengaduan by ID
   async getLaporanPengaduanById(id) {
     try {
-      const response = await apiClient.get(`/laporan-pengaduan/${id}`);
+      const response = await apiClient.get(`/publikasi/${id}?kategori=pengaduan`);
       return response;
     } catch (error) {
       console.error('Error fetching laporan pengaduan by ID:', error);
@@ -211,7 +295,7 @@ export const laporanPengaduanService = {
   // Get categories
   async getCategories() {
     try {
-      const response = await apiClient.get('/laporan-pengaduan/categories');
+      const response = await apiClient.get('/publikasi/categories');
       return response;
     } catch (error) {
       console.error('Error fetching categories:', error);
@@ -222,7 +306,7 @@ export const laporanPengaduanService = {
   // Get statistics
   async getStatistics() {
     try {
-      const response = await apiClient.get('/laporan-pengaduan/statistics');
+      const response = await apiClient.get('/publikasi/statistics?kategori=pengaduan');
       return response;
     } catch (error) {
       console.error('Error fetching statistics:', error);
@@ -233,7 +317,8 @@ export const laporanPengaduanService = {
   // Create new laporan pengaduan
   async createLaporanPengaduan(data) {
     try {
-      const response = await apiClient.post('/laporan-pengaduan', data, {
+      const dataWithCategory = { ...data, kategori: 'pengaduan' };
+      const response = await apiClient.post('/publikasi', dataWithCategory, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
