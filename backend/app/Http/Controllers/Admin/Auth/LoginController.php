@@ -20,6 +20,7 @@ class LoginController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|min:6',
+            'g-recaptcha-response' => 'required|captcha',
         ]);
 
         // Ambil kredensial dari request

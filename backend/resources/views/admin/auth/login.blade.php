@@ -6,6 +6,7 @@
 <title>Login Admin Kominfo</title>
 
 <!-- Link ke font Google -->
+{!! NoCaptcha::renderJs() !!}
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
 
 <style>
@@ -152,6 +153,9 @@
     <div class="mb-3">
       <label for="password" class="form-label">Password</label>
       <input type="password" id="password" name="password" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      {!! NoCaptcha::display() !!}
     </div>
     <button type="submit" class="btn-primary">Login</button>
   </form>

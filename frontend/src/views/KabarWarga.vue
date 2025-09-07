@@ -5,7 +5,18 @@
         <div class="lg:col-span-3">
           <div class="kabar-warga-section">
             <h2>Kabar Warga</h2>
-            <div v-if="newsItems.length > 0" class="kabar-warga-grid">
+            
+            <div v-if="loading" class="text-center py-8 text-gray-500">
+              <p>Memuat data Kabar Warga...</p>
+            </div>
+            
+            <div v-else-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-center">
+              <p class="font-bold">Error!</p>
+              <p>{{ error }}</p>
+              <button @click="fetchKabarWarga" class="mt-2 text-blue-600 hover:text-blue-800">Coba Lagi</button>
+            </div>
+            
+            <div v-else-if="newsItems.length > 0" class="kabar-warga-grid">
               <NewsCard 
                 v-for="item in displayedNews"
                 :key="item.id"
@@ -17,9 +28,11 @@
                 :slug="item.slug" 
               />
             </div>
+            
             <div v-else class="text-center p-8 text-gray-500">
               <p>Tidak ada berita yang ditemukan.</p>
             </div>
+            
             <div class="pagination" v-if="totalPages > 1">
               <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1">‹</button>
               <button
@@ -51,12 +64,20 @@ import axios from 'axios';
 import NewsCard from '@/components/global/NewsCard.vue';
 import LatestNews from '@/components/news/LatestNews.vue';
 
+// Reactive data
 const newsItems = ref([]);
+const categories = ref([]); // Kept for consistency, though not used in this template
+const loading = ref(true);
+const error = ref(null);
 const currentPage = ref(1);
 const itemsPerPage = 6;
 
+// Fetch Kabar Warga data from backend
 const fetchKabarWarga = async () => {
   try {
+    loading.value = true;
+    error.value = null;
+
     const response = await axios.get('http://localhost:8000/api/berita/category/Kabar%20Warga');
     
     if (response.data && response.data.data) {
@@ -65,11 +86,16 @@ const fetchKabarWarga = async () => {
       console.error('API response format is not as expected:', response.data);
       newsItems.value = [];
     }
-  } catch (error) {
-    console.error('Gagal mengambil data kabar warga:', error);
+  } catch (err) {
+    console.error('Error fetching Kabar Warga:', err);
+    error.value = 'Gagal memuat data Kabar Warga';
+    newsItems.value = [];
+  } finally {
+    loading.value = false;
   }
 };
 
+// Pagination logic
 const displayedNews = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
@@ -84,6 +110,7 @@ const goToPage = (page) => {
   }
 };
 
+// Initialize data on component mount
 onMounted(() => {
   fetchKabarWarga();
 });
@@ -108,10 +135,5 @@ h2, h3 { border-bottom: 2px solid #ccc; padding-bottom: 10px; margin-bottom: 20p
   align-self: flex-start;
   height: calc(100vh - 120px); 
   overflow-y: auto; 
-}
-
-/* Perbaikan untuk LatestNews */
-.latest-news {
-  margin-top: 0 !important;
 }
 </style>

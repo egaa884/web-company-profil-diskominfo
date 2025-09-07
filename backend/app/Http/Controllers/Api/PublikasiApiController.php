@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Publikasi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class PublikasiApiController extends Controller
 {
@@ -140,9 +142,10 @@ class PublikasiApiController extends Controller
             $months = Publikasi::where('kategori', 'pengaduan')
                 ->where('is_published', true)
                 ->whereNotNull('meta->bulan')
-                ->distinct()
-                ->pluck('meta->bulan')
+                ->get()
+                ->pluck('meta.bulan')
                 ->filter()
+                ->unique()
                 ->values();
                 
             return response()->json([
@@ -169,7 +172,7 @@ class PublikasiApiController extends Controller
         
         $years = $query->whereNotNull('published_at')
             ->distinct()
-            ->pluck(\DB::raw('YEAR(published_at)'))
+            ->pluck(DB::raw('YEAR(published_at)'))
             ->filter()
             ->sort()
             ->values();
@@ -201,7 +204,7 @@ class PublikasiApiController extends Controller
         }
 
         $data = $request->all();
-        $data['slug'] = \Str::slug($request->judul);
+        $data['slug'] = Str::slug($request->judul);
         $data['is_published'] = true;
         
         if (!$request->has('published_at')) {
@@ -240,7 +243,7 @@ class PublikasiApiController extends Controller
         $data = $request->all();
         
         if ($request->has('judul')) {
-            $data['slug'] = \Str::slug($request->judul);
+            $data['slug'] = Str::slug($request->judul);
         }
 
         $publikasi->update($data);

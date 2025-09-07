@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\ProfilController;
 use App\Http\Controllers\Admin\FaqCategoryController;
 use App\Http\Controllers\Admin\FaqController;
-use App\Http\Controllers\Admin\LaporanPengaduanController;
 use Illuminate\Http\Request;
 
 // Route Jembatan untuk Login Admin
@@ -25,6 +24,11 @@ Route::get('/', function () {
 
 // Route untuk home (setelah login)
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+// Route login untuk web guard (redirect ke admin login)
+Route::get('/login', function () {
+    return redirect('/admin/login');
+})->name('login');
 
 // Route test untuk debugging
 Route::get('/test-user', function () {
@@ -116,6 +120,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/berita/{berita}', [BeritaController::class, 'destroy'])->name('berita.destroy');
         Route::get('/berita/{berita}', [BeritaController::class, 'show'])->name('berita.show');
 
+        // Route untuk menghapus gambar individual dari galeri berita
+        Route::delete('/berita/image/{imageId}', [BeritaController::class, 'deleteImage'])->name('berita.image.delete');
+
         // Route untuk infografis (CRUD lengkap)
         Route::get('/infografis', [InfografisController::class, 'index'])->name('infografis.index');
         Route::get('/infografis/create', [InfografisController::class, 'create'])->name('infografis.create');
@@ -132,10 +139,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Route untuk FAQ (CRUD)
         Route::resource('faqs', FaqController::class)->except(['show']);
 
-        // Route untuk Laporan Pengaduan (CRUD)
-        Route::resource('laporan-pengaduan', LaporanPengaduanController::class);
-        Route::patch('/laporan-pengaduan/{laporanPengaduan}/status', [LaporanPengaduanController::class, 'updateStatus'])->name('laporan-pengaduan.update-status');
-        Route::get('/laporan-pengaduan/{laporanPengaduan}/download', [LaporanPengaduanController::class, 'downloadAttachment'])->name('laporan-pengaduan.download');
 
         // Route untuk Laporan Pengaduan Admin (CRUD)
         Route::resource('laporan-pengaduan-admin', \App\Http\Controllers\Admin\LaporanPengaduanAdminController::class);
