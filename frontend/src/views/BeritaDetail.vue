@@ -57,8 +57,17 @@
               
               <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ berita.judul }}</h1>
               
-              <div class="flex items-center text-sm text-gray-500">
-                <span>Oleh: Admin Diskominfo</span>
+              <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                <div class="flex items-center space-x-4">
+                  <span>Oleh: {{ berita.nama_pembuat || 'Admin Diskominfo' }}</span>
+                  <span>•</span>
+                  <span>{{ formatDate(berita.created_at) }}</span>
+                </div>
+              </div>
+
+              <!-- Deskripsi singkat -->
+              <div v-if="berita.deskripsi_singkat" class="mb-4 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r">
+                <p class="text-gray-700 italic">{{ berita.deskripsi_singkat }}</p>
               </div>
             </div>
 
@@ -77,6 +86,14 @@
             <div class="p-6">
               <div class="prose prose-lg max-w-none">
                 <div v-html="berita.konten"></div>
+              </div>
+              
+              <!-- Lampiran PDF -->
+              <div v-if="berita.pdf_url" class="mt-8 pt-6 border-t border-gray-200">
+                <PdfViewer 
+                  :pdf-url="berita.pdf_url" 
+                  :file-name="getPdfFileName(berita.lampiran_pdf)"
+                />
               </div>
               
               <!-- Tags -->
@@ -155,11 +172,13 @@
 <script>
 import { beritaService } from '@/service/api.js'
 import LatestNews from '@/components/news/LatestNews.vue'
+import PdfViewer from '@/components/news/PdfViewer.vue'
 
 export default {
   name: 'BeritaDetail',
   components: {
-    LatestNews
+    LatestNews,
+    PdfViewer
   },
   data() {
     return {
@@ -279,6 +298,13 @@ export default {
       if (parent) {
         parent.innerHTML = '<div class="w-full h-full flex items-center justify-center bg-gray-300"><span class="text-gray-500 text-xs">No Image</span></div>'
       }
+    },
+    
+    getPdfFileName(pdfPath) {
+      if (!pdfPath) return 'document.pdf'
+      // Extract filename from path
+      const parts = pdfPath.split('/')
+      return parts[parts.length - 1] || 'document.pdf'
     }
   }
 }

@@ -25,10 +25,7 @@
                 <input type="text" name="judul" id="judul" class="form-control" value="{{ old('judul') }}" required>
             </div>
 
-            <div class="mb-3">
-                <label for="deskripsi_singkat" class="form-label">Deskripsi Singkat</label>
-                <textarea name="deskripsi_singkat" id="deskripsi_singkat" class="form-control" rows="3" placeholder="Masukkan deskripsi singkat berita (opsional)">{{ old('deskripsi_singkat') }}</textarea>
-            </div>
+          
 
             <div class="mb-3">
                 <label for="konten" class="form-label">Konten</label>

@@ -54,7 +54,7 @@ const props = defineProps({
   border-radius: 5px;
   overflow: hidden;
   z-index: 0;
-  height: 400px; /* --- PERUBAHAN: TINGGI CARD DIBUAT TETAP --- */
+  height: 400px;  
 }
 
 .blog-card a {

@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import NewsCard from './NewsCard.vue'
+import NewsCard from '@/components/global/NewsCard.vue'
 import { beritaService } from '@/service/api.js'
 
 export default {
