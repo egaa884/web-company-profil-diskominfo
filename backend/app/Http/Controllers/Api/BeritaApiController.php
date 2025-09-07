@@ -28,13 +28,8 @@ class BeritaApiController extends Controller
             if ($berita->gambar) {
                 $berita->gambar_url = url('storage/' . $berita->gambar);
             }
-<<<<<<< HEAD
             if ($berita->lampiran_pdf) {
                 $berita->pdf_url = url('storage/' . $berita->lampiran_pdf);
-=======
-            if ($berita->pdf) {
-                $berita->pdf_url = url('storage/' . $berita->pdf);
->>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
             }
         });
         
@@ -53,21 +48,12 @@ class BeritaApiController extends Controller
         if ($berita->gambar) {
             $berita->gambar_url = url('storage/' . $berita->gambar);
         }
-<<<<<<< HEAD
         
         // Add full PDF URL if PDF exists
         if ($berita->lampiran_pdf) {
             $berita->pdf_url = url('storage/' . $berita->lampiran_pdf);
         }
         
-=======
-
-        // Add full PDF URL if PDF exists
-        if ($berita->pdf) {
-            $berita->pdf_url = url('storage/' . $berita->pdf);
-        }
-
->>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
         return response()->json($berita);
     }
 
@@ -88,21 +74,12 @@ class BeritaApiController extends Controller
         if ($berita->gambar) {
             $berita->gambar_url = url('storage/' . $berita->gambar);
         }
-<<<<<<< HEAD
         
         // Add full PDF URL if PDF exists
         if ($berita->lampiran_pdf) {
             $berita->pdf_url = url('storage/' . $berita->lampiran_pdf);
         }
         
-=======
-
-        // Add full PDF URL if PDF exists
-        if ($berita->pdf) {
-            $berita->pdf_url = url('storage/' . $berita->pdf);
-        }
-
->>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
         return response()->json($berita);
     }
 
@@ -119,13 +96,8 @@ class BeritaApiController extends Controller
             if ($berita->gambar) {
                 $berita->gambar_url = url('storage/' . $berita->gambar);
             }
-<<<<<<< HEAD
             if ($berita->lampiran_pdf) {
                 $berita->pdf_url = url('storage/' . $berita->lampiran_pdf);
-=======
-            if ($berita->pdf) {
-                $berita->pdf_url = url('storage/' . $berita->pdf);
->>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
             }
         });
 
@@ -145,13 +117,8 @@ class BeritaApiController extends Controller
             if ($berita->gambar) {
                 $berita->gambar_url = url('storage/' . $berita->gambar);
             }
-<<<<<<< HEAD
             if ($berita->lampiran_pdf) {
                 $berita->pdf_url = url('storage/' . $berita->lampiran_pdf);
-=======
-            if ($berita->pdf) {
-                $berita->pdf_url = url('storage/' . $berita->pdf);
->>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
             }
         });
 
@@ -170,13 +137,8 @@ class BeritaApiController extends Controller
             if ($berita->gambar) {
                 $berita->gambar_url = url('storage/' . $berita->gambar);
             }
-<<<<<<< HEAD
             if ($berita->lampiran_pdf) {
                 $berita->pdf_url = url('storage/' . $berita->lampiran_pdf);
-=======
-            if ($berita->pdf) {
-                $berita->pdf_url = url('storage/' . $berita->pdf);
->>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
             }
         });
 
