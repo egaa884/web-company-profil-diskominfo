@@ -1,26 +1,34 @@
 <template>
-    <div class="container">
-        <h1></h1>
+  <div class="container">
+    <h1>Siaran Pers</h1>
+    <!-- Loading state -->
+    <div v-if="loading" class="loading-container">
+      <p>Loading siaran pers...</p>
     </div>
-  <div class="card-page">
-    <div class="card-container">
-      <CardItem 
-        v-for="card in cards" 
-        :key="card.id" 
-        :cardData="card" 
-      />
+    <!-- Error state -->
+    <div v-else-if="error" class="error-container">
+      <p>{{ error }}</p>
+      <button @click="fetchSiaranPers" class="retry-btn">Coba Lagi</button>
+    </div>
+    <!-- Content -->
+    <div v-else class="card-page">
+      <div v-if="cards.length === 0" class="no-data">
+        <p>Tidak ada siaran pers yang tersedia saat ini.</p>
+      </div>
+      <div v-else class="card-container">
+        <CardItem
+          v-for="card in cards"
+          :key="card.id"
+          :cardData="card"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import CardItem from '../components/siaranpers/CardItem.vue'; // Sesuaikan path jika folder CardItem berbeda
-
-// Impor gambar dari folder assets
-import image1 from '@/assets/img/1.jpeg';
-import image2 from '@/assets/img/2.jpeg';
-import image3 from '@/assets/img/3.jpg';
-import image4 from '@/assets/img/4.jpg';
+import CardItem from '../components/siaranpers/CardItem.vue';
+import { beritaService } from '../service/api.js';
 
 export default {
   name: 'SiaranPers',
@@ -29,33 +37,45 @@ export default {
   },
   data() {
     return {
-      cards: [
-        {
-          id: 1,
-          title: 'Pengenalan Keterbukaan Informasi Publik',
-          description: 'Diskominfostandi Kota Depok menggelar sosialisasi Pengenalan Keterbukaan Informasi Publik (KIP) dengan tema “Pola Interaksi dan Pola Komunikasi di Era Digital” di Balai Kota Depok pada 26 Juli 2023.',
-          imageUrl: image1,
-        },
-        {
-          id: 2,
-          title: 'Gerakan Masyarakat Hidup Sehat',
-          description: 'Diskominfostandi Kota Depok bersama perangkat daerah lainnya turut menyukseskan Gerakan Masyarakat Hidup Sehat dengan 15.000 peserta senam di Lapangan Balai Kota Depok.',
-          imageUrl: image2,
-        },
-        {
-          id: 3,
-          title: 'Peringatan Hari Pers Nasional 2024',
-          description: 'Walikota Depok, Mohammad Idris, secara simbolis menyerahkan piagam penghargaan dan santunan kepada 5 orang jurnalis Kota Depok saat acara Peringatan Hari Pers Nasional 2024.',
-          imageUrl: image3,
-        },
-        {
-          id: 4,
-          title: 'Penyerahan Santunan Satlinmas Program JKK-JKM',
-          description: 'Diskominfostandi Kota Depok menyerahkan santunan Jaminan Kematian (JKK) kepada 28 orang Satuan Perlindungan Masyarakat (Satlinmas) di Aula Balai Kota Depok.',
-          imageUrl: image4,
-        },
-      ],
+      cards: [],
+      loading: true,
+      error: null,
     };
+  },
+  mounted() {
+    this.fetchSiaranPers();
+  },
+  methods: {
+    async fetchSiaranPers() {
+      try {
+        this.loading = true;
+        this.error = null;
+
+        // Fetch berita with category "Siaran Pers Madiun"
+        const response = await beritaService.getBeritaByCategory('Siaran Pers Madiun');
+
+        // Transform API data to match CardItem component format
+        this.cards = response.data.data.map(berita => ({
+          id: berita.id,
+          title: berita.judul,
+          description: this.truncateText(berita.konten, 150), // Truncate content for card display
+          imageUrl: berita.gambar_url || '/img/default-news.jpg', // Fallback image if no image
+          pdfUrl: berita.pdf_url || null, // PDF URL if available
+          images: berita.images || [], // Multiple images array
+        }));
+
+      } catch (error) {
+        console.error('Error fetching siaran pers:', error);
+        this.error = 'Gagal memuat data siaran pers. Silakan coba lagi.';
+      } finally {
+        this.loading = false;
+      }
+    },
+    truncateText(text, maxLength) {
+      if (!text) return '';
+      if (text.length <= maxLength) return text;
+      return text.substring(0, maxLength) + '...';
+    }
   },
 };
 </script>

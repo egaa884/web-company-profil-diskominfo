@@ -35,7 +35,7 @@ export default {
   },
   data() {
     return {
-      selectedCategory: 'all'
+      selectedCategory: 'Berita Kominfo Madiun'
     }
   },
   methods: {

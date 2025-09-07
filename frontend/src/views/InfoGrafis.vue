@@ -17,56 +17,69 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import InfographicSidebar from '../components/infografis/SideBar.vue';
 import InfographicCard from '../components/infografis/Card.vue';
+import { beritaService } from '../service/api.js';
 
-// Data untuk kategori
-const categories = ref([
-  { name: 'Culture', count: 5 },
-  { name: 'Government', count: 4 },
-  { name: 'Music', count: 6 },
-  { name: 'Organizations', count: 7 },
-  { name: 'Sport', count: 8 },
-  { name: 'Festival', count: 9 },
-]);
+// Reactive data
+const categories = ref([]);
+const infographics = ref([]);
+const loading = ref(true);
+const error = ref(null);
 
-// Data untuk daftar infografis
-const infographics = ref([
-  {
-    id: 1,
-    imageSrc: 'http://googleusercontent.com/file_content/1',
-    category: 'Infografis',
-    day: '25',
-    month: 'Jun',
-    year: '2025',
-    title: 'Waspada Modus Penipuan Aktivasi IKD',
-    admin: 'Admin',
-    publishedDate: '09 Jun 2025',
-  },
-  {
-    id: 2,
-    imageSrc: 'https://i.ibb.co/3sX86kP/infografis-sekolah.jpg',
-    category: 'Infografis',
-    day: '18',
-    month: 'May',
-    year: '2025',
-    title: 'Sebentar Lagi Anak Daftar Sekolah, Kenali Jalur Penerimaannya!',
-    admin: 'Admin',
-    publishedDate: '08 May 2025',
-  },
-  {
-    id: 3,
-    imageSrc: 'https://i.ibb.co/w0m1tG1/infografis-indeks.jpg',
-    category: 'Infografis',
-    day: '06',
-    month: 'May',
-    year: '2025',
-    title: 'Tren Peningkatan Indeks Reformasi Birokrasi Pemerintah Kota Madiun',
-    admin: 'Admin',
-    publishedDate: '05 May 2025',
-  },
-]);
+// Fetch infografis data from backend
+const fetchInfografis = async () => {
+  try {
+    loading.value = true;
+    error.value = null;
+
+    const response = await beritaService.getBeritaByCategory('Infografis Madiun');
+    const data = response.data.data || response.data;
+
+    // Transform data to match component structure
+    infographics.value = data.map(item => ({
+      id: item.id,
+      imageSrc: item.gambar_url || '/img/default-infografis.jpg',
+      category: item.category,
+      day: new Date(item.created_at).getDate().toString(),
+      month: new Date(item.created_at).toLocaleDateString('id-ID', { month: 'short' }),
+      year: new Date(item.created_at).getFullYear().toString(),
+      title: item.judul,
+      admin: 'Admin',
+      publishedDate: new Date(item.created_at).toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      }),
+      pdfUrl: item.pdf_url || null
+    }));
+
+  } catch (err) {
+    console.error('Error fetching infografis:', err);
+    error.value = 'Gagal memuat data infografis';
+    infographics.value = [];
+  } finally {
+    loading.value = false;
+  }
+};
+
+// Fetch categories
+const fetchCategories = async () => {
+  try {
+    const response = await beritaService.getCategories();
+    categories.value = response.data || [];
+  } catch (err) {
+    console.error('Error fetching categories:', err);
+    categories.value = [];
+  }
+};
+
+// Initialize data on component mount
+onMounted(() => {
+  fetchInfografis();
+  fetchCategories();
+});
 </script>
 
 <style scoped>

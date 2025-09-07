@@ -19,6 +19,22 @@
                     {{ session('error') }}
                 </div>
             @endif
+
+            <!-- Filter Kategori -->
+            <div class="mb-3">
+                <form method="GET" class="d-flex gap-2 align-items-center">
+                    <label for="category" class="form-label mb-0">Filter Kategori:</label>
+                    <select name="category" id="category" class="form-select" style="width: auto;" onchange="this.form.submit()">
+                        <option value="">Semua Kategori</option>
+                        @foreach($categories as $cat)
+                            <option value="{{ $cat }}" {{ request('category') == $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                        @endforeach
+                    </select>
+                    @if(request('category'))
+                        <a href="{{ route('admin.berita.index') }}" class="btn btn-outline-secondary btn-sm">Reset Filter</a>
+                    @endif
+                </form>
+            </div>
             <table class="table table-striped">
                 <thead>
                     <tr>

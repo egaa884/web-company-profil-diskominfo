@@ -12,8 +12,14 @@ class Berita extends Model
     protected $table = 'beritas'; 
 
     // Kolom yang dapat diisi massal
-    protected $fillable = ['judul', 'konten', 'status', 'gambar', 'slug', 'admin_id', 'category'];
+    protected $fillable = ['judul', 'konten', 'status', 'gambar', 'pdf', 'slug', 'admin_id', 'category'];
 
     // Tanggal yang di-cast ke objek Carbon
     protected $dates = ['published_at'];
+
+    // Relationship with BeritaImage
+    public function images()
+    {
+        return $this->hasMany(BeritaImage::class)->orderBy('sort_order');
+    }
 }

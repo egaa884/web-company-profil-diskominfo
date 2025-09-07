@@ -36,17 +36,26 @@ class BeritaController extends Controller
     }
 
     // Menampilkan daftar berita dengan pagination
-    public function index()
+    public function index(Request $request)
     {
-        $beritas = Berita::latest()->paginate(10); // Menggunakan pagination
-        return view('admin.berita.index', compact('beritas'));
+        $query = Berita::query();
+
+        // Filter berdasarkan kategori jika ada
+        if ($request->has('category') && $request->category) {
+            $query->where('category', $request->category);
+        }
+
+        $beritas = $query->latest()->paginate(10); // Menggunakan pagination
+        $categories = self::categories();
+
+        return view('admin.berita.index', compact('beritas', 'categories'));
     }
 
     // Menampilkan detail berita (untuk user)
     public function show(Berita $berita)
     {
         // Debug: cek berita
-        \Log::info('User trying to view berita', [
+        Log::info('User trying to view berita', [
             'berita_id' => $berita->id,
             'berita_judul' => $berita->judul,
             'user_id' => Auth::guard('admin')->user()->id ?? 'not logged in'
@@ -163,6 +172,106 @@ class BeritaController extends Controller
         }
     }
 
+    // Method untuk menangani upload PDF
+    private function handlePdfUpload($file, $oldPdf = null)
+    {
+        try {
+            // Validasi file lebih ketat
+            if (!$file->isValid()) {
+                throw new \Exception('File tidak valid');
+            }
+
+            // Cek MIME type
+            $allowedMimes = ['application/pdf'];
+            if (!in_array($file->getMimeType(), $allowedMimes)) {
+                throw new \Exception('Format file tidak didukung. Gunakan file PDF.');
+            }
+
+            // Cek ukuran file (10MB)
+            if ($file->getSize() > 10 * 1024 * 1024) {
+                throw new \Exception('Ukuran file terlalu besar. Maksimal 10MB.');
+            }
+
+            // Hapus PDF lama jika ada
+            if ($oldPdf && Storage::disk('public')->exists($oldPdf)) {
+                Storage::disk('public')->delete($oldPdf);
+            }
+
+            // Generate nama file yang unik
+            $fileName = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+            $path = 'berita/' . $fileName;
+
+            // Simpan file
+            $file->storeAs('berita', $fileName, 'public');
+
+            Log::info('PDF uploaded successfully', ['path' => $path]);
+            return $path;
+
+        } catch (\Exception $e) {
+            Log::error('PDF upload failed', [
+                'error' => $e->getMessage(),
+                'file' => $file->getClientOriginalName()
+            ]);
+            throw $e;
+        }
+    }
+
+    // Method untuk menangani upload multiple images
+    private function handleMultipleImageUpload($files, $beritaId)
+    {
+        $uploadedImages = [];
+
+        if ($files) {
+            foreach ($files as $index => $file) {
+                try {
+                    // Validasi file lebih ketat
+                    if (!$file->isValid()) {
+                        throw new \Exception('File tidak valid');
+                    }
+
+                    // Cek MIME type
+                    $allowedMimes = ['image/jpeg', 'image/jpg', 'image/png'];
+                    if (!in_array($file->getMimeType(), $allowedMimes)) {
+                        throw new \Exception('Format file tidak didukung. Gunakan JPG, JPEG, atau PNG.');
+                    }
+
+                    // Cek ukuran file (2MB)
+                    if ($file->getSize() > 2 * 1024 * 1024) {
+                        throw new \Exception('Ukuran file terlalu besar. Maksimal 2MB.');
+                    }
+
+                    // Generate nama file yang unik
+                    $fileName = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+                    $path = 'berita/' . $fileName;
+
+                    // Simpan file
+                    $file->storeAs('berita', $fileName, 'public');
+
+                    // Simpan ke database
+                    $beritaImage = \App\Models\BeritaImage::create([
+                        'berita_id' => $beritaId,
+                        'image_path' => $path,
+                        'image_name' => $file->getClientOriginalName(),
+                        'sort_order' => $index
+                    ]);
+
+                    $uploadedImages[] = $beritaImage;
+
+                    Log::info('Image uploaded successfully', ['path' => $path]);
+
+                } catch (\Exception $e) {
+                    Log::error('Image upload failed', [
+                        'error' => $e->getMessage(),
+                        'file' => $file->getClientOriginalName()
+                    ]);
+                    throw $e;
+                }
+            }
+        }
+
+        return $uploadedImages;
+    }
+
     // Menyimpan berita baru ke database
     public function store(Request $request)
     {
@@ -171,6 +280,9 @@ class BeritaController extends Controller
                 'judul' => 'required|string|max:255',
                 'konten' => 'required',
                 'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+                'images' => 'nullable|array',
+                'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
+                'pdf' => 'nullable|file|mimes:pdf|max:10240',
                 'status' => 'required|in:draft,published',
                 'category' => 'required|string',
             ]);
@@ -184,12 +296,22 @@ class BeritaController extends Controller
                 $data['gambar'] = $this->handleImageUpload($request->file('gambar'));
             }
 
+            // Menyimpan PDF jika ada
+            if ($request->hasFile('pdf')) {
+                $data['pdf'] = $this->handlePdfUpload($request->file('pdf'));
+            }
+
             // Jika status published, set published_at
             if ($request->status === 'published') {
                 $data['published_at'] = now();
             }
 
-            Berita::create($data);
+            $berita = Berita::create($data);
+
+            // Menyimpan multiple images jika ada
+            if ($request->hasFile('images')) {
+                $this->handleMultipleImageUpload($request->file('images'), $berita->id);
+            }
             return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil ditambahkan.');
 
         } catch (\Exception $e) {
@@ -207,7 +329,7 @@ class BeritaController extends Controller
     {
         // Debug: cek role user
         $user = Auth::guard('admin')->user();
-        \Log::info('User trying to edit berita', [
+        Log::info('User trying to edit berita', [
             'user_id' => $user->id,
             'user_name' => $user->name,
             'user_role' => $user->role,
@@ -225,6 +347,9 @@ class BeritaController extends Controller
                 'judul' => 'required|string|max:255',
                 'konten' => 'required',
                 'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+                'images' => 'nullable|array',
+                'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
+                'pdf' => 'nullable|file|mimes:pdf|max:10240',
                 'status' => 'required|in:draft,published',
                 'category' => 'required|string',
             ]);
@@ -237,12 +362,22 @@ class BeritaController extends Controller
                 $data['gambar'] = $this->handleImageUpload($request->file('gambar'), $berita->gambar);
             }
 
+            // Memperbarui PDF jika ada
+            if ($request->hasFile('pdf')) {
+                $data['pdf'] = $this->handlePdfUpload($request->file('pdf'), $berita->pdf);
+            }
+
             // Jika status published dan belum ada published_at
             if ($request->status === 'published' && !$berita->published_at) {
                 $data['published_at'] = now();
             }
 
             $berita->update($data);
+
+            // Menyimpan multiple images jika ada
+            if ($request->hasFile('images')) {
+                $this->handleMultipleImageUpload($request->file('images'), $berita->id);
+            }
             return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil diperbarui.');
 
         } catch (\Exception $e) {
@@ -260,9 +395,22 @@ class BeritaController extends Controller
     public function destroy(Berita $berita)
     {
         try {
-            // Hapus gambar jika ada
+            // Hapus gambar utama jika ada
             if ($berita->gambar && Storage::disk('public')->exists($berita->gambar)) {
                 Storage::disk('public')->delete($berita->gambar);
+            }
+
+            // Hapus PDF jika ada
+            if ($berita->pdf && Storage::disk('public')->exists($berita->pdf)) {
+                Storage::disk('public')->delete($berita->pdf);
+            }
+
+            // Hapus semua gambar terkait
+            foreach ($berita->images as $image) {
+                if ($image->image_path && Storage::disk('public')->exists($image->image_path)) {
+                    Storage::disk('public')->delete($image->image_path);
+                }
+                $image->delete();
             }
 
             $berita->delete();
