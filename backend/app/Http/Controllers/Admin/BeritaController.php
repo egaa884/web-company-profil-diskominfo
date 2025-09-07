@@ -25,7 +25,7 @@ class BeritaController extends Controller
             
             // Jika user dengan role 'user', izinkan akses ke semua method berita
             if ($user->role === 'user') {
-                $allowedMethods = ['index', 'show', 'create', 'store', 'edit', 'update', 'destroy'];
+                $allowedMethods = ['index', 'show', 'create', 'store', 'edit', 'update', 'destroy', 'deleteImage'];
                 if (!in_array($request->route()->getActionMethod(), $allowedMethods)) {
                     return redirect()->route('admin.berita.index')->with('error', 'Anda tidak memiliki akses untuk melakukan aksi ini.');
                 }
@@ -421,8 +421,36 @@ class BeritaController extends Controller
                 'error' => $e->getMessage(),
                 'berita_id' => $berita->id
             ]);
-            
+
             return back()->withErrors(['error' => 'Gagal menghapus berita: ' . $e->getMessage()]);
+        }
+    }
+
+    // Menghapus gambar individual dari galeri berita
+    public function deleteImage($imageId)
+    {
+        try {
+            $image = \App\Models\BeritaImage::findOrFail($imageId);
+
+            // Hapus file dari storage
+            if ($image->image_path && Storage::disk('public')->exists($image->image_path)) {
+                Storage::disk('public')->delete($image->image_path);
+            }
+
+            // Hapus record dari database
+            $image->delete();
+
+            Log::info('Image deleted successfully', ['image_id' => $imageId]);
+
+            return redirect()->back()->with('success', 'Gambar berhasil dihapus.');
+
+        } catch (\Exception $e) {
+            Log::error('Image deletion failed', [
+                'error' => $e->getMessage(),
+                'image_id' => $imageId
+            ]);
+
+            return redirect()->back()->withErrors(['error' => 'Gagal menghapus gambar: ' . $e->getMessage()]);
         }
     }
 }

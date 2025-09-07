@@ -41,6 +41,7 @@
                         <th>Judul</th>
                         <th>Status</th>
                         <th>Kategori</th>
+                        <th>Dilihat</th>
                         <th>Ditambahkan Pada</th>
                         <th>Aksi</th>
                     </tr>
@@ -51,6 +52,13 @@
                             <td>{{ $berita->judul }}</td>
                             <td>{{ $berita->status }}</td>
                             <td>{{ $berita->category }}</td>
+                            <td>
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <span class="badge bg-primary text-white" style="font-weight: 700; padding: 8px 14px; border-radius: 6px; font-size: 0.9em; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                        👁️ {{ isset($berita->views) ? number_format($berita->views) : '0' }}
+                                    </span>
+                                </div>
+                            </td>
                             <td>{{ $berita->created_at->format('d M Y') }}</td>
                             <td>
                                 <a href="{{ route('admin.berita.show', $berita) }}" class="btn btn-sm btn-info">Lihat</a>
@@ -108,6 +116,30 @@
     .pagination {
         text-align: center;
         margin-top: 20px;
+    }
+
+    /* View Counter Styling */
+    .badge {
+        font-size: 0.9em;
+        font-weight: 700;
+        padding: 8px 14px;
+        border-radius: 6px;
+        display: inline-block;
+        min-width: 50px;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .bg-primary {
+        background: linear-gradient(135deg, #007bff, #0056b3) !important;
+        color: white !important;
+        border: 1px solid #0056b3;
+    }
+
+    .bg-primary:hover {
+        background: linear-gradient(135deg, #0056b3, #004085) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     }
 
     /* Responsiveness */

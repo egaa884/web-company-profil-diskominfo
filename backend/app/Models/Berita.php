@@ -12,7 +12,7 @@ class Berita extends Model
     protected $table = 'beritas'; 
 
     // Kolom yang dapat diisi massal
-    protected $fillable = ['judul', 'konten', 'status', 'gambar', 'pdf', 'slug', 'admin_id', 'category'];
+    protected $fillable = ['judul', 'konten', 'status', 'gambar', 'pdf', 'views', 'slug', 'admin_id', 'category'];
 
     // Tanggal yang di-cast ke objek Carbon
     protected $dates = ['published_at'];
@@ -21,5 +21,18 @@ class Berita extends Model
     public function images()
     {
         return $this->hasMany(BeritaImage::class)->orderBy('sort_order');
+    }
+
+    // Method untuk increment view count
+    public function incrementViews()
+    {
+        $this->increment('views');
+        return $this;
+    }
+
+    // Method untuk mendapatkan formatted view count
+    public function getFormattedViewsAttribute()
+    {
+        return number_format($this->views);
     }
 }

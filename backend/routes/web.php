@@ -18,6 +18,11 @@ Route::get('/', function () {
 // Route untuk home (setelah login)
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+// Route login untuk web guard (redirect ke admin login)
+Route::get('/login', function () {
+    return redirect('/admin/login');
+})->name('login');
+
 // Route test untuk debugging
 Route::get('/test-user', function () {
     if (Auth::guard('admin')->check()) {
@@ -107,6 +112,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('/berita/{berita}', [BeritaController::class, 'update'])->name('berita.update');
         Route::delete('/berita/{berita}', [BeritaController::class, 'destroy'])->name('berita.destroy');
         Route::get('/berita/{berita}', [BeritaController::class, 'show'])->name('berita.show');
+
+        // Route untuk menghapus gambar individual dari galeri berita
+        Route::delete('/berita/image/{imageId}', [BeritaController::class, 'deleteImage'])->name('berita.image.delete');
 
         // Route untuk infografis (CRUD lengkap)
         Route::get('/infografis', [InfografisController::class, 'index'])->name('infografis.index');

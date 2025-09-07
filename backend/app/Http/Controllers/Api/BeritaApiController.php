@@ -41,6 +41,9 @@ class BeritaApiController extends Controller
         // Load images relationship
         $berita->load('images');
 
+        // Increment view count
+        $berita->incrementViews();
+
         // Add full image URL if image exists
         if ($berita->gambar) {
             $berita->gambar_url = url('storage/' . $berita->gambar);
@@ -63,6 +66,9 @@ class BeritaApiController extends Controller
         if (!$berita) {
             return response()->json(['message' => 'Berita tidak ditemukan'], 404);
         }
+
+        // Increment view count
+        $berita->incrementViews();
 
         // Add full image URL if image exists
         if ($berita->gambar) {
