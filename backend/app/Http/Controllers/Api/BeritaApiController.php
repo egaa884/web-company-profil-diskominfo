@@ -28,6 +28,9 @@ class BeritaApiController extends Controller
             if ($berita->gambar) {
                 $berita->gambar_url = url('storage/' . $berita->gambar);
             }
+            if ($berita->lampiran_pdf) {
+                $berita->pdf_url = url('storage/' . $berita->lampiran_pdf);
+            }
         });
         
         return response()->json($beritas);
@@ -38,6 +41,11 @@ class BeritaApiController extends Controller
         // Add full image URL if image exists
         if ($berita->gambar) {
             $berita->gambar_url = url('storage/' . $berita->gambar);
+        }
+        
+        // Add full PDF URL if PDF exists
+        if ($berita->lampiran_pdf) {
+            $berita->pdf_url = url('storage/' . $berita->lampiran_pdf);
         }
         
         return response()->json($berita);
@@ -58,7 +66,10 @@ class BeritaApiController extends Controller
             $berita->gambar_url = url('storage/' . $berita->gambar);
         }
         
-
+        // Add full PDF URL if PDF exists
+        if ($berita->lampiran_pdf) {
+            $berita->pdf_url = url('storage/' . $berita->lampiran_pdf);
+        }
         
         return response()->json($berita);
     }
@@ -75,6 +86,9 @@ class BeritaApiController extends Controller
         $beritas->each(function ($berita) {
             if ($berita->gambar) {
                 $berita->gambar_url = url('storage/' . $berita->gambar);
+            }
+            if ($berita->lampiran_pdf) {
+                $berita->pdf_url = url('storage/' . $berita->lampiran_pdf);
             }
         });
         
@@ -94,6 +108,9 @@ class BeritaApiController extends Controller
             if ($berita->gambar) {
                 $berita->gambar_url = url('storage/' . $berita->gambar);
             }
+            if ($berita->lampiran_pdf) {
+                $berita->pdf_url = url('storage/' . $berita->lampiran_pdf);
+            }
         });
         
         return response()->json($beritas);
@@ -110,6 +127,9 @@ class BeritaApiController extends Controller
         $beritas->getCollection()->each(function ($berita) {
             if ($berita->gambar) {
                 $berita->gambar_url = url('storage/' . $berita->gambar);
+            }
+            if ($berita->lampiran_pdf) {
+                $berita->pdf_url = url('storage/' . $berita->lampiran_pdf);
             }
         });
         

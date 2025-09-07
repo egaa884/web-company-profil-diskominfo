@@ -12,7 +12,7 @@ class Berita extends Model
     protected $table = 'beritas'; 
 
     // Kolom yang dapat diisi massal
-    protected $fillable = ['judul', 'konten', 'status', 'gambar', 'slug', 'admin_id', 'category'];
+    protected $fillable = ['judul', 'konten', 'status', 'gambar', 'lampiran_pdf', 'slug', 'admin_id', 'category', 'nama_pembuat', 'deskripsi_singkat'];
 
     // Tanggal yang di-cast ke objek Carbon
     protected $dates = ['published_at'];

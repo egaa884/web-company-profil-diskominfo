@@ -16,14 +16,11 @@ class BeritaController extends Controller
 {
     public function __construct()
     {
-        // Middleware untuk membatasi akses berdasarkan role
         $this->middleware('auth:admin');
         
-        // Middleware untuk membatasi akses berdasarkan role
         $this->middleware(function ($request, $next) {
             $user = Auth::guard('admin')->user();
             
-            // Jika user dengan role 'user', izinkan akses ke semua method berita
             if ($user->role === 'user') {
                 $allowedMethods = ['index', 'show', 'create', 'store', 'edit', 'update', 'destroy'];
                 if (!in_array($request->route()->getActionMethod(), $allowedMethods)) {
@@ -35,17 +32,24 @@ class BeritaController extends Controller
         });
     }
 
-    // Menampilkan daftar berita dengan pagination
-    public function index()
+    // Menampilkan daftar berita dengan pagination dan filter
+    public function index(Request $request)
     {
-        $beritas = Berita::latest()->paginate(10); // Menggunakan pagination
-        return view('admin.berita.index', compact('beritas'));
+        $selectedCategory = $request->query('category');
+        
+        if ($selectedCategory) {
+            $beritas = Berita::where('category', $selectedCategory)->latest()->paginate(10);
+        } else {
+            $beritas = Berita::latest()->paginate(10);
+        }
+        
+        $categories = self::categories(); 
+
+        return view('admin.berita.index', compact('beritas', 'categories', 'selectedCategory'));
     }
 
-    // Menampilkan detail berita (untuk user)
     public function show(Berita $berita)
     {
-        // Debug: cek berita
         \Log::info('User trying to view berita', [
             'berita_id' => $berita->id,
             'berita_judul' => $berita->judul,
@@ -55,8 +59,7 @@ class BeritaController extends Controller
         return view('admin.berita.show', compact('berita'));
     }
 
-    // Daftar kategori berita
-    private static function categories()
+    public static function categories()
     {
         return [
             'Berita Kominfo Madiun',
@@ -69,7 +72,6 @@ class BeritaController extends Controller
         ];
     }
 
-    // Generate unique slug
     private function generateUniqueSlug($title, $excludeId = null)
     {
         $baseSlug = Str::slug($title);
@@ -93,56 +95,45 @@ class BeritaController extends Controller
         return $slug;
     }
 
-    // Menampilkan form untuk membuat berita baru
     public function create()
     {
         $categories = self::categories();
         return view('admin.berita.create', compact('categories'));
     }
 
-    // Method untuk menangani upload gambar
     private function handleImageUpload($file, $oldImage = null)
     {
         try {
-            // Validasi file lebih ketat
             if (!$file->isValid()) {
                 throw new \Exception('File tidak valid');
             }
 
-            // Cek MIME type
             $allowedMimes = ['image/jpeg', 'image/jpg', 'image/png'];
             if (!in_array($file->getMimeType(), $allowedMimes)) {
                 throw new \Exception('Format file tidak didukung. Gunakan JPG, JPEG, atau PNG.');
             }
 
-            // Cek ukuran file (2MB)
             if ($file->getSize() > 2 * 1024 * 1024) {
                 throw new \Exception('Ukuran file terlalu besar. Maksimal 2MB.');
             }
 
-            // Hapus gambar lama jika ada
             if ($oldImage && Storage::disk('public')->exists($oldImage)) {
                 Storage::disk('public')->delete($oldImage);
             }
 
-            // Generate nama file yang unik
             $fileName = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
             $path = 'berita/' . $fileName;
 
-            // Simpan file original
             $file->storeAs('berita', $fileName, 'public');
 
-            // Optimasi gambar menggunakan Intervention Image
             try {
                 $manager = new ImageManager(new Driver());
                 $image = $manager->read(storage_path('app/public/' . $path));
                 
-                // Resize jika terlalu besar
                 if ($image->width() > 1200) {
                     $image->resize(1200, null);
                 }
                 
-                // Kompres dan simpan gambar
                 $image->save(storage_path('app/public/' . $path), 85);
             } catch (\Exception $e) {
                 Log::warning('Image optimization failed, using original', [
@@ -163,7 +154,43 @@ class BeritaController extends Controller
         }
     }
 
-    // Menyimpan berita baru ke database
+    private function handlePdfUpload($file, $oldPdf = null)
+    {
+        try {
+            if (!$file->isValid()) {
+                throw new \Exception('File tidak valid');
+            }
+
+            $allowedMimes = ['application/pdf'];
+            if (!in_array($file->getMimeType(), $allowedMimes)) {
+                throw new \Exception('Format file tidak didukung. Gunakan file PDF.');
+            }
+
+            if ($file->getSize() > 10 * 1024 * 1024) {
+                throw new \Exception('Ukuran file terlalu besar. Maksimal 10MB.');
+            }
+
+            if ($oldPdf && Storage::disk('public')->exists($oldPdf)) {
+                Storage::disk('public')->delete($oldPdf);
+            }
+
+            $fileName = time() . '_' . Str::random(10) . '.pdf';
+            $path = 'pdf/' . $fileName;
+
+            $file->storeAs('pdf', $fileName, 'public');
+
+            Log::info('PDF uploaded successfully', ['path' => $path]);
+            return $path;
+
+        } catch (\Exception $e) {
+            Log::error('PDF upload failed', [
+                'error' => $e->getMessage(),
+                'file' => $file->getClientOriginalName()
+            ]);
+            throw $e;
+        }
+    }
+
     public function store(Request $request)
     {
         try {
@@ -171,20 +198,27 @@ class BeritaController extends Controller
                 'judul' => 'required|string|max:255',
                 'konten' => 'required',
                 'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+                'lampiran_pdf' => 'nullable|mimes:pdf|max:10240',
                 'status' => 'required|in:draft,published',
                 'category' => 'required|string',
+                // Hapus validasi ini jika kolom tidak ada di database
+                'nama_pembuat' => 'nullable|string|max:255', 
+                'deskripsi_singkat' => 'nullable|string', 
             ]);
 
-            $data = $request->all();
+            // Mengambil semua data kecuali yang tidak ada di database
+            $data = $request->except(['nama_pembuat', 'deskripsi_singkat']);
             $data['slug'] = $this->generateUniqueSlug($request->judul);
             $data['admin_id'] = Auth::guard('admin')->id();
 
-            // Menyimpan gambar jika ada
             if ($request->hasFile('gambar')) {
                 $data['gambar'] = $this->handleImageUpload($request->file('gambar'));
             }
 
-            // Jika status published, set published_at
+            if ($request->hasFile('lampiran_pdf')) {
+                $data['lampiran_pdf'] = $this->handlePdfUpload($request->file('lampiran_pdf'));
+            }
+
             if ($request->status === 'published') {
                 $data['published_at'] = now();
             }
@@ -202,10 +236,8 @@ class BeritaController extends Controller
         }
     }
 
-    // Menampilkan form untuk mengedit berita
     public function edit(Berita $berita)
     {
-        // Debug: cek role user
         $user = Auth::guard('admin')->user();
         \Log::info('User trying to edit berita', [
             'user_id' => $user->id,
@@ -217,7 +249,6 @@ class BeritaController extends Controller
         return view('admin.berita.edit', compact('berita', 'categories'));
     }
 
-    // Memperbarui data berita di database
     public function update(Request $request, Berita $berita)
     {
         try {
@@ -225,19 +256,26 @@ class BeritaController extends Controller
                 'judul' => 'required|string|max:255',
                 'konten' => 'required',
                 'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+                'lampiran_pdf' => 'nullable|mimes:pdf|max:10240',
                 'status' => 'required|in:draft,published',
                 'category' => 'required|string',
+                // Hapus validasi ini jika kolom tidak ada di database
+                'nama_pembuat' => 'nullable|string|max:255',
+                'deskripsi_singkat' => 'nullable|string',
             ]);
-
-            $data = $request->all();
+            
+            // Mengambil semua data kecuali yang tidak ada di database
+            $data = $request->except(['nama_pembuat', 'deskripsi_singkat']);
             $data['slug'] = $this->generateUniqueSlug($request->judul, $berita->id);
 
-            // Memperbarui gambar jika ada
             if ($request->hasFile('gambar')) {
                 $data['gambar'] = $this->handleImageUpload($request->file('gambar'), $berita->gambar);
             }
 
-            // Jika status published dan belum ada published_at
+            if ($request->hasFile('lampiran_pdf')) {
+                $data['lampiran_pdf'] = $this->handlePdfUpload($request->file('lampiran_pdf'), $berita->lampiran_pdf);
+            }
+
             if ($request->status === 'published' && !$berita->published_at) {
                 $data['published_at'] = now();
             }
@@ -256,13 +294,15 @@ class BeritaController extends Controller
         }
     }
 
-    // Menghapus berita
     public function destroy(Berita $berita)
     {
         try {
-            // Hapus gambar jika ada
             if ($berita->gambar && Storage::disk('public')->exists($berita->gambar)) {
                 Storage::disk('public')->delete($berita->gambar);
+            }
+
+            if ($berita->lampiran_pdf && Storage::disk('public')->exists($berita->lampiran_pdf)) {
+                Storage::disk('public')->delete($berita->lampiran_pdf);
             }
 
             $berita->delete();

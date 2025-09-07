@@ -11,6 +11,13 @@ use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\LaporanPengaduanController;
 use Illuminate\Http\Request;
 
+// Route Jembatan untuk Login Admin
+// Middleware auth akan mencari rute bernama 'login', jadi kita definisikan di sini.
+Route::get('/login', function () {
+    return redirect()->route('admin.login');
+})->name('login');
+
+
 // Route untuk halaman depan
 Route::get('/', function () {
     return view('welcome');
