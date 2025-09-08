@@ -17,37 +17,21 @@ class BeritaController extends Controller
     public function __construct()
     {
         $this->middleware('auth:admin');
-        
+
         $this->middleware(function ($request, $next) {
             $user = Auth::guard('admin')->user();
-            
+
             if ($user->role === 'user') {
                 $allowedMethods = ['index', 'show', 'create', 'store', 'edit', 'update', 'destroy', 'deleteImage'];
                 if (!in_array($request->route()->getActionMethod(), $allowedMethods)) {
                     return redirect()->route('admin.berita.index')->with('error', 'Anda tidak memiliki akses untuk melakukan aksi ini.');
                 }
             }
-            
+
             return $next($request);
         });
     }
 
-<<<<<<< HEAD
-    // Menampilkan daftar berita dengan pagination dan filter
-    public function index(Request $request)
-    {
-        $selectedCategory = $request->query('category');
-        
-        if ($selectedCategory) {
-            $beritas = Berita::where('category', $selectedCategory)->latest()->paginate(10);
-        } else {
-            $beritas = Berita::latest()->paginate(10);
-        }
-        
-        $categories = self::categories(); 
-
-        return view('admin.berita.index', compact('beritas', 'categories', 'selectedCategory'));
-=======
     // Menampilkan daftar berita dengan pagination
     public function index(Request $request)
     {
@@ -62,22 +46,17 @@ class BeritaController extends Controller
         $categories = self::categories();
 
         return view('admin.berita.index', compact('beritas', 'categories'));
->>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
     }
 
     public function show(Berita $berita)
     {
-<<<<<<< HEAD
-        \Log::info('User trying to view berita', [
-=======
         // Debug: cek berita
         Log::info('User trying to view berita', [
->>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
             'berita_id' => $berita->id,
             'berita_judul' => $berita->judul,
             'user_id' => Auth::guard('admin')->user()->id ?? 'not logged in'
         ]);
-        
+
         return view('admin.berita.show', compact('berita'));
     }
 
@@ -151,11 +130,11 @@ class BeritaController extends Controller
             try {
                 $manager = new ImageManager(new Driver());
                 $image = $manager->read(storage_path('app/public/' . $path));
-                
+
                 if ($image->width() > 1200) {
                     $image->resize(1200, null);
                 }
-                
+
                 $image->save(storage_path('app/public/' . $path), 85);
             } catch (\Exception $e) {
                 Log::warning('Image optimization failed, using original', [
@@ -176,59 +155,37 @@ class BeritaController extends Controller
         }
     }
 
-<<<<<<< HEAD
-    private function handlePdfUpload($file, $oldPdf = null)
-    {
-        try {
-=======
     // Method untuk menangani upload PDF
     private function handlePdfUpload($file, $oldPdf = null)
     {
         try {
             // Validasi file lebih ketat
->>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
             if (!$file->isValid()) {
                 throw new \Exception('File tidak valid');
             }
 
-<<<<<<< HEAD
-=======
             // Cek MIME type
->>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
             $allowedMimes = ['application/pdf'];
             if (!in_array($file->getMimeType(), $allowedMimes)) {
                 throw new \Exception('Format file tidak didukung. Gunakan file PDF.');
             }
 
-<<<<<<< HEAD
-=======
             // Cek ukuran file (10MB)
->>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
             if ($file->getSize() > 10 * 1024 * 1024) {
                 throw new \Exception('Ukuran file terlalu besar. Maksimal 10MB.');
             }
 
-<<<<<<< HEAD
-=======
             // Hapus PDF lama jika ada
->>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
             if ($oldPdf && Storage::disk('public')->exists($oldPdf)) {
                 Storage::disk('public')->delete($oldPdf);
             }
 
-<<<<<<< HEAD
-            $fileName = time() . '_' . Str::random(10) . '.pdf';
-            $path = 'pdf/' . $fileName;
-
-            $file->storeAs('pdf', $fileName, 'public');
-=======
             // Generate nama file yang unik
             $fileName = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
             $path = 'berita/' . $fileName;
 
             // Simpan file
             $file->storeAs('berita', $fileName, 'public');
->>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
 
             Log::info('PDF uploaded successfully', ['path' => $path]);
             return $path;
@@ -242,8 +199,6 @@ class BeritaController extends Controller
         }
     }
 
-<<<<<<< HEAD
-=======
     // Method untuk menangani upload multiple images
     private function handleMultipleImageUpload($files, $beritaId)
     {
@@ -301,7 +256,6 @@ class BeritaController extends Controller
     }
 
     // Menyimpan berita baru ke database
->>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
     public function store(Request $request)
     {
         try {
@@ -309,18 +263,14 @@ class BeritaController extends Controller
                 'judul' => 'required|string|max:255',
                 'konten' => 'required',
                 'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-<<<<<<< HEAD
-                'lampiran_pdf' => 'nullable|mimes:pdf|max:10240',
-=======
                 'images' => 'nullable|array',
                 'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
                 'pdf' => 'nullable|file|mimes:pdf|max:10240',
->>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
                 'status' => 'required|in:draft,published',
                 'category' => 'required|string',
                 // Hapus validasi ini jika kolom tidak ada di database
-                'nama_pembuat' => 'nullable|string|max:255', 
-                'deskripsi_singkat' => 'nullable|string', 
+                'nama_pembuat' => 'nullable|string|max:255',
+                'deskripsi_singkat' => 'nullable|string',
             ]);
 
             // Mengambil semua data kecuali yang tidak ada di database
@@ -332,19 +282,12 @@ class BeritaController extends Controller
                 $data['gambar'] = $this->handleImageUpload($request->file('gambar'));
             }
 
-<<<<<<< HEAD
-            if ($request->hasFile('lampiran_pdf')) {
-                $data['lampiran_pdf'] = $this->handlePdfUpload($request->file('lampiran_pdf'));
-            }
-
-=======
             // Menyimpan PDF jika ada
             if ($request->hasFile('pdf')) {
                 $data['pdf'] = $this->handlePdfUpload($request->file('pdf'));
             }
 
             // Jika status published, set published_at
->>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
             if ($request->status === 'published') {
                 $data['published_at'] = now();
             }
@@ -362,7 +305,7 @@ class BeritaController extends Controller
                 'error' => $e->getMessage(),
                 'user_id' => Auth::guard('admin')->id()
             ]);
-            
+
             return back()->withInput()->withErrors(['error' => 'Gagal menyimpan berita: ' . $e->getMessage()]);
         }
     }
@@ -387,20 +330,16 @@ class BeritaController extends Controller
                 'judul' => 'required|string|max:255',
                 'konten' => 'required',
                 'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-<<<<<<< HEAD
-                'lampiran_pdf' => 'nullable|mimes:pdf|max:10240',
-=======
                 'images' => 'nullable|array',
                 'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
                 'pdf' => 'nullable|file|mimes:pdf|max:10240',
->>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
                 'status' => 'required|in:draft,published',
                 'category' => 'required|string',
                 // Hapus validasi ini jika kolom tidak ada di database
                 'nama_pembuat' => 'nullable|string|max:255',
                 'deskripsi_singkat' => 'nullable|string',
             ]);
-            
+
             // Mengambil semua data kecuali yang tidak ada di database
             $data = $request->except(['nama_pembuat', 'deskripsi_singkat']);
             $data['slug'] = $this->generateUniqueSlug($request->judul, $berita->id);
@@ -409,19 +348,12 @@ class BeritaController extends Controller
                 $data['gambar'] = $this->handleImageUpload($request->file('gambar'), $berita->gambar);
             }
 
-<<<<<<< HEAD
-            if ($request->hasFile('lampiran_pdf')) {
-                $data['lampiran_pdf'] = $this->handlePdfUpload($request->file('lampiran_pdf'), $berita->lampiran_pdf);
-            }
-
-=======
             // Memperbarui PDF jika ada
             if ($request->hasFile('pdf')) {
                 $data['pdf'] = $this->handlePdfUpload($request->file('pdf'), $berita->pdf);
             }
 
             // Jika status published dan belum ada published_at
->>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
             if ($request->status === 'published' && !$berita->published_at) {
                 $data['published_at'] = now();
             }
@@ -440,7 +372,7 @@ class BeritaController extends Controller
                 'berita_id' => $berita->id,
                 'user_id' => Auth::guard('admin')->id()
             ]);
-            
+
             return back()->withInput()->withErrors(['error' => 'Gagal memperbarui berita: ' . $e->getMessage()]);
         }
     }
@@ -448,18 +380,11 @@ class BeritaController extends Controller
     public function destroy(Berita $berita)
     {
         try {
-<<<<<<< HEAD
-=======
             // Hapus gambar utama jika ada
->>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
             if ($berita->gambar && Storage::disk('public')->exists($berita->gambar)) {
                 Storage::disk('public')->delete($berita->gambar);
             }
 
-<<<<<<< HEAD
-            if ($berita->lampiran_pdf && Storage::disk('public')->exists($berita->lampiran_pdf)) {
-                Storage::disk('public')->delete($berita->lampiran_pdf);
-=======
             // Hapus PDF jika ada
             if ($berita->pdf && Storage::disk('public')->exists($berita->pdf)) {
                 Storage::disk('public')->delete($berita->pdf);
@@ -471,7 +396,6 @@ class BeritaController extends Controller
                     Storage::disk('public')->delete($image->image_path);
                 }
                 $image->delete();
->>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
             }
 
             $berita->delete();
@@ -486,9 +410,6 @@ class BeritaController extends Controller
             return back()->withErrors(['error' => 'Gagal menghapus berita: ' . $e->getMessage()]);
         }
     }
-<<<<<<< HEAD
-}
-=======
 
     // Menghapus gambar individual dari galeri berita
     public function deleteImage($imageId)
@@ -518,4 +439,3 @@ class BeritaController extends Controller
         }
     }
 }
->>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
