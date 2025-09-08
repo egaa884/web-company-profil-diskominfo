@@ -57,6 +57,11 @@ const routes = [
     component: Profil,
   },
   {
+    path: "/profile/tentang",
+    name: "profile.tentang",
+    component: () => import('../views/Tentang.vue'),
+  },
+  {
     path: "/kabarwarga",
     name: "kabarwarga",
     component: KabarWarga,

@@ -53,9 +53,9 @@ defineProps({
   firstLine: { type: String, default: "PROFIL" },
   secondLine: { type: String, default: "DINAS KOMUNIKASI DAN INFORMATIKA" },
   thirdLine: { type: String, default: "KOTA MADIUN" },
-  backgroundImage: { 
-    type: String, 
-    default: new URL('@/assets/img/logo-kominfo.png', import.meta.url).href 
+  backgroundImage: {
+    type: String,
+    default: '/src/assets/img/logo-kominfo.png'
   },
 });
 </script>

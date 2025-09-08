@@ -43,30 +43,37 @@
           <div v-if="profilData?.konten" v-html="profilData.konten"></div>
           <div v-else>
             <p class="sekilas-paragraph">
-              Dinas Komunikasi dan Informatika Kota Madiun adalah instansi pemerintah yang bertanggung jawab 
-              dalam bidang komunikasi, informatika, persandian, dan statistik. Dinas ini dibentuk berdasarkan 
-              Peraturan Daerah Kota Madiun Nomor 04 tahun 2008 tentang Organisasi dan Tata Kerja Dinas Daerah 
+              Dinas Komunikasi dan Informatika Kota Madiun adalah instansi pemerintah yang bertanggung jawab
+              dalam bidang komunikasi, informatika, persandian, dan statistik. Dinas ini dibentuk berdasarkan
+              Peraturan Daerah Kota Madiun Nomor 04 tahun 2008 tentang Organisasi dan Tata Kerja Dinas Daerah
               Kota Madiun.
             </p>
-            
+
             <p class="sekilas-paragraph">
-              Sejak awal berdirinya, Dinas Komunikasi dan Informatika telah mengalami beberapa kali perubahan 
-              lokasi kantor, dimulai dari Jalan Basuki Rahmad, kemudian pindah ke Jalan Hayam Wuruk, 
-              selanjutnya ke Jalan Pahlawan, dan saat ini berlokasi di Jalan Perintis Kemerdekaan Nomor 32, 
+              Sejak awal berdirinya, Dinas Komunikasi dan Informatika telah mengalami beberapa kali perubahan
+              lokasi kantor, dimulai dari Jalan Basuki Rahmad, kemudian pindah ke Jalan Hayam Wuruk,
+              selanjutnya ke Jalan Pahlawan, dan saat ini berlokasi di Jalan Perintis Kemerdekaan Nomor 32,
               Kelurahan Kartoharjo, Kecamatan Kartoharjo, Kota Madiun.
             </p>
-            
+
             <p class="sekilas-paragraph">
-              Saat ini, Dinas Komunikasi dan Informatika Kota Madiun memiliki struktur organisasi Type B 
-              dengan tiga divisi utama: Divisi Pengelolaan Informasi Publik dan Komunikasi, Divisi Pengelolaan 
+              Saat ini, Dinas Komunikasi dan Informatika Kota Madiun memiliki struktur organisasi Type B
+              dengan tiga divisi utama: Divisi Pengelolaan Informasi Publik dan Komunikasi, Divisi Pengelolaan
               Teknologi Informasi dan Komunikasi, serta Divisi Pengelolaan Statistik dan Persandian.
             </p>
-            
+
             <p class="sekilas-paragraph">
-              Dinas ini berperan penting dalam mendukung transformasi digital dan peningkatan pelayanan publik 
-              di Kota Madiun melalui pengembangan teknologi informasi dan komunikasi yang inovatif dan 
+              Dinas ini berperan penting dalam mendukung transformasi digital dan peningkatan pelayanan publik
+              di Kota Madiun melalui pengembangan teknologi informasi dan komunikasi yang inovatif dan
               berkelanjutan.
             </p>
+          </div>
+
+          <!-- Selengkapnya Button -->
+          <div class="sekilas-button-container">
+            <router-link to="/profile/tentang" class="sekilas-button">
+              Selengkapnya
+            </router-link>
           </div>
         </div>
       </div>
@@ -92,8 +99,9 @@ export default {
     async fetchProfilData() {
       try {
         this.loading = true
-        const response = await profilService.getProfilByCategory('sekilas-dinas')
-        this.profilData = response.data
+        const response = await fetch('http://localhost:8000/api/profile-page/sekilas-dinas')
+        const data = await response.json()
+        this.profilData = data
       } catch (error) {
         console.error('Error fetching sekilas dinas data:', error)
         this.profilData = null
@@ -220,5 +228,29 @@ export default {
 .sekilas-paragraph {
   color: #374151;
   line-height: 1.625;
+}
+
+/* Selengkapnya Button */
+.sekilas-button-container {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.sekilas-button {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: #2563eb;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.sekilas-button:hover {
+  background-color: #1d4ed8;
 }
 </style>

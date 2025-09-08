@@ -23,10 +23,15 @@
                     <label for="kategori" class="form-label">Kategori</label>
                     <select name="kategori" id="kategori" class="form-select" required>
                         <option value="">-- Pilih Kategori --</option>
-                        @foreach($categories as $cat)
-                            <option value="{{ $cat }}" {{ old('kategori', $profil->kategori) == $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                        @foreach($categories as $key => $value)
+                            <option value="{{ $key }}" {{ old('kategori', $profil->kategori) == $key ? 'selected' : '' }}>{{ $value }}</option>
                         @endforeach
                     </select>
+                </div>
+                <div class="mb-3">
+                    <label for="judul" class="form-label">Judul</label>
+                    <input type="text" name="judul" id="judul" class="form-control" value="{{ old('judul', $profil->judul) }}" placeholder="Masukkan judul untuk halaman ini">
+                    <small class="text-muted">Judul yang akan ditampilkan di halaman frontend</small>
                 </div>
                 <div class="mb-3">
                     <label for="konten" class="form-label">Konten</label>

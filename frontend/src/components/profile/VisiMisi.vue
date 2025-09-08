@@ -124,8 +124,9 @@ export default {
     async fetchProfilData() {
       try {
         this.loading = true
-        const response = await profilService.getProfilByCategory('visi-misi')
-        this.profilData = response.data
+        const response = await fetch('http://localhost:8000/api/profile-page/visi-misi')
+        const data = await response.json()
+        this.profilData = data
       } catch (error) {
         console.error('Error fetching visi misi data:', error)
         this.profilData = null

@@ -76,7 +76,31 @@
 
 <script>
 export default {
-  name: 'TugasPokokFungsi'
+  name: 'TugasPokokFungsi',
+  data() {
+    return {
+      tugasData: null,
+      loading: false
+    }
+  },
+  async mounted() {
+    await this.fetchTugasData()
+  },
+  methods: {
+    async fetchTugasData() {
+      try {
+        this.loading = true
+        const response = await fetch('http://localhost:8000/api/profile-page/tugas-pokok-fungsi')
+        const data = await response.json()
+        this.tugasData = data
+      } catch (error) {
+        console.error('Error fetching tugas pokok fungsi data:', error)
+        this.tugasData = null
+      } finally {
+        this.loading = false
+      }
+    }
+  }
 }
 </script>
 

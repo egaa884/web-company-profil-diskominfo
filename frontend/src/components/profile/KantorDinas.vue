@@ -22,7 +22,10 @@
               </svg>
               Alamat
             </h3>
-            <p class="text-gray-700 leading-relaxed">
+            <p class="text-gray-700 leading-relaxed" v-if="officeData">
+              {{ officeData.address }}
+            </p>
+            <p class="text-gray-700 leading-relaxed" v-else>
               Jalan Perintis Kemerdekaan Nomor 32<br>
               Kelurahan Kartoharjo, Kecamatan Kartoharjo<br>
               Kota Madiun, Jawa Timur
@@ -37,7 +40,13 @@
               </svg>
               Jam Pelayanan
             </h3>
-            <div class="space-y-3">
+            <div class="space-y-3" v-if="officeData">
+              <div class="flex items-center" v-for="(hours, day) in officeData.hours" :key="day">
+                <div class="w-3 h-3 bg-blue-600 rounded-full mr-3"></div>
+                <span class="text-gray-700">{{ day }} ({{ hours }})</span>
+              </div>
+            </div>
+            <div class="space-y-3" v-else>
               <div class="flex items-center">
                 <div class="w-3 h-3 bg-blue-600 rounded-full mr-3"></div>
                 <span class="text-gray-700">Senin - Kamis (07.00 - 15.30 WIB)</span>
@@ -63,7 +72,31 @@
 
 <script>
 export default {
-  name: 'KantorDinas'
+  name: 'KantorDinas',
+  data() {
+    return {
+      officeData: null,
+      loading: false
+    }
+  },
+  async mounted() {
+    await this.fetchOfficeData()
+  },
+  methods: {
+    async fetchOfficeData() {
+      try {
+        this.loading = true
+        const response = await fetch('http://localhost:8000/api/profile-page/kantor-dinas')
+        const data = await response.json()
+        this.officeData = data
+      } catch (error) {
+        console.error('Error fetching office data:', error)
+        this.officeData = null
+      } finally {
+        this.loading = false
+      }
+    }
+  }
 }
 </script>
 

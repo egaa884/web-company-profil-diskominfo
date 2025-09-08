@@ -27,6 +27,8 @@ use App\Http\Controllers\Api\BeritaApiController;
 use App\Http\Controllers\Api\FaqCategoryController;
 use App\Http\Controllers\Api\FaqController;
 use App\Http\Controllers\Api\PublikasiApiController;
+use App\Http\Controllers\Api\ProfilePageController;
+use App\Http\Controllers\Api\NewProfilePageController;
 
 // Public API routes for berita
 Route::get('berita', [BeritaApiController::class, 'index']);
@@ -43,6 +45,28 @@ Route::get('profil/categories', [ProfilApiController::class, 'categories']);
 Route::get('profil/all-categories', [ProfilApiController::class, 'getAllCategories']);
 Route::get('profil/category/{kategori}', [ProfilApiController::class, 'byCategory']);
 Route::get('profil/{profil}', [ProfilApiController::class, 'show']);
+
+// New Profile Page API routes (separate from existing profil system)
+Route::prefix('profile-page')->group(function () {
+    Route::get('sekilas-dinas', [ProfilePageController::class, 'getSekilasDinas']);
+    Route::get('visi-misi', [ProfilePageController::class, 'getVisiMisi']);
+    Route::get('kantor-dinas', [ProfilePageController::class, 'getKantorDinas']);
+    Route::get('struktur-organisasi', [ProfilePageController::class, 'getStrukturOrganisasi']);
+    Route::get('tugas-pokok-fungsi', [ProfilePageController::class, 'getTugasPokokFungsi']);
+    Route::get('standar-pelayanan', [ProfilePageController::class, 'getStandarPelayanan']);
+    Route::get('all', [ProfilePageController::class, 'getAllProfileData']);
+});
+
+// New Database-driven Profile Page API routes
+Route::prefix('new-profile-page')->group(function () {
+    Route::get('sekilas-dinas', [NewProfilePageController::class, 'getSekilasDinas']);
+    Route::get('visi-misi', [NewProfilePageController::class, 'getVisiMisi']);
+    Route::get('kantor-dinas', [NewProfilePageController::class, 'getKantorDinas']);
+    Route::get('struktur-organisasi', [NewProfilePageController::class, 'getStrukturOrganisasi']);
+    Route::get('tugas-pokok-fungsi', [NewProfilePageController::class, 'getTugasPokokFungsi']);
+    Route::get('standar-pelayanan', [NewProfilePageController::class, 'getStandarPelayanan']);
+    Route::get('all', [NewProfilePageController::class, 'getAllProfileData']);
+});
 
 // Public API routes for publikasi (unified - replaces separate laporan-pengaduan routes)
 Route::get('publikasi', [PublikasiApiController::class, 'index']);

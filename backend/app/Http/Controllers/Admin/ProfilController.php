@@ -110,12 +110,12 @@ class ProfilController extends Controller
     private function categories()
     {
         return [
-            'Tentang',
-            'Visi Misi',
-            'Struktur Organisasi',
-            'Tugas dan Fungsi',
-            'Sejarah',
-            'Lainnya'
+            'sekilas_dinas' => 'Sekilas Dinas',
+            'visi_misi' => 'Visi & Misi',
+            'kantor_dinas' => 'Kantor Dinas',
+            'struktur_organisasi' => 'Struktur Organisasi',
+            'tugas_pokok_fungsi' => 'Tugas Pokok & Fungsi',
+            'standar_pelayanan' => 'Standar Pelayanan'
         ];
     }
 } 

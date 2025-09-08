@@ -90,7 +90,31 @@
 
 <script>
 export default {
-  name: 'StandarPelayanan'
+  name: 'StandarPelayanan',
+  data() {
+    return {
+      pelayananData: null,
+      loading: false
+    }
+  },
+  async mounted() {
+    await this.fetchPelayananData()
+  },
+  methods: {
+    async fetchPelayananData() {
+      try {
+        this.loading = true
+        const response = await fetch('http://localhost:8000/api/profile-page/standar-pelayanan')
+        const data = await response.json()
+        this.pelayananData = data
+      } catch (error) {
+        console.error('Error fetching standar pelayanan data:', error)
+        this.pelayananData = null
+      } finally {
+        this.loading = false
+      }
+    }
+  }
 }
 </script>
 

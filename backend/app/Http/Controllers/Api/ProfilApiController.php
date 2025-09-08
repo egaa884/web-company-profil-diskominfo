@@ -110,7 +110,7 @@ class ProfilApiController extends Controller
 
     public function byCategory($kategori)
     {
-        $profil = Profil::where('kategori', $kategori)->first();
+        $profil = Profil::whereRaw('LOWER(kategori) = ?', [strtolower($kategori)])->first();
         return response()->json($profil);
     }
 

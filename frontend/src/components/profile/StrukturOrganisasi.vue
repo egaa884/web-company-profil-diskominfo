@@ -122,8 +122,9 @@ export default {
     async fetchProfilData() {
       try {
         this.loading = true
-        const response = await profilService.getProfilByCategory('struktur-organisasi')
-        this.profilData = response.data
+        const response = await fetch('http://localhost:8000/api/profile-page/struktur-organisasi')
+        const data = await response.json()
+        this.profilData = data
       } catch (error) {
         console.error('Error fetching struktur organisasi data:', error)
         this.profilData = null
