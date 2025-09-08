@@ -19,6 +19,16 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="nama_pembuat">Nama Pembuat</label>
+                    <input type="text" name="nama_pembuat" class="form-control" value="{{ old('nama_pembuat', $berita->nama_pembuat) }}" placeholder="Masukkan nama pembuat berita">
+                </div>
+
+                <div class="form-group">
+                    <label for="deskripsi_singkat">Deskripsi Singkat</label>
+                    <textarea name="deskripsi_singkat" class="form-control" rows="3" placeholder="Masukkan deskripsi singkat berita (opsional)">{{ old('deskripsi_singkat', $berita->deskripsi_singkat) }}</textarea>
+                </div>
+
+                <div class="form-group">
                     <label for="konten">Konten</label>
                     <textarea name="konten" class="form-control">{{ old('konten', $berita->konten) }}</textarea>
                 </div>
@@ -59,6 +69,28 @@
                 </div>
 
                 <div class="form-group">
+<<<<<<< HEAD
+                    <label for="lampiran_pdf">Lampiran PDF</label>
+                    <input type="file" name="lampiran_pdf" class="form-control" accept="application/pdf" onchange="validatePdf(this)">
+                    <small class="text-muted">Format: PDF. Maksimal 10MB</small>
+                    @if ($berita->lampiran_pdf)
+                        <div class="mt-2">
+                            <p class="text-muted">PDF saat ini:</p>
+                            <div class="alert alert-info">
+                                <i class="fas fa-file-pdf text-danger"></i>
+                                <a href="{{ asset('storage/' . $berita->lampiran_pdf) }}" target="_blank" class="ms-2">
+                                    {{ basename($berita->lampiran_pdf) }}
+                                </a>
+                            </div>
+                        </div>
+                    @endif
+                    <div id="pdfPreview" class="mt-2" style="display: none;">
+                        <p class="text-muted">Preview PDF baru:</p>
+                        <div class="alert alert-info">
+                            <i class="fas fa-file-pdf text-danger"></i>
+                            <span id="pdfFileName" class="ms-2"></span>
+                        </div>
+=======
                     <label for="images">Galeri Gambar (Multiple)</label>
                     <input type="file" name="images[]" class="form-control" accept="image/jpeg,image/jpg,image/png" multiple onchange="validateMultipleImages(this)">
                     <small class="text-muted">Format: JPG, JPEG, PNG. Maksimal 2MB per gambar. Pilih multiple gambar dengan menahan Ctrl</small>
@@ -98,6 +130,7 @@
                     @endif
                     <div id="pdfInfo" class="mt-2" style="display: none;">
                         <span id="pdfName" class="text-success"></span>
+>>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
                     </div>
                     <div id="pdfError" class="text-danger mt-1" style="display: none;"></div>
                 </div>
@@ -149,6 +182,15 @@ function validateImage(input) {
 function validatePdf(input) {
     const file = input.files[0];
     const errorDiv = document.getElementById('pdfError');
+<<<<<<< HEAD
+    const previewDiv = document.getElementById('pdfPreview');
+    const fileNameSpan = document.getElementById('pdfFileName');
+    
+    // Reset error and preview
+    errorDiv.style.display = 'none';
+    previewDiv.style.display = 'none';
+    
+=======
     const infoDiv = document.getElementById('pdfInfo');
     const pdfName = document.getElementById('pdfName');
 
@@ -156,6 +198,7 @@ function validatePdf(input) {
     errorDiv.style.display = 'none';
     infoDiv.style.display = 'none';
 
+>>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
     if (file) {
         // Check file size (10MB = 10 * 1024 * 1024 bytes)
         if (file.size > 10 * 1024 * 1024) {
@@ -164,14 +207,27 @@ function validatePdf(input) {
             input.value = '';
             return;
         }
+<<<<<<< HEAD
+        
+        // Check file type
+        const allowedTypes = ['application/pdf'];
+        if (!allowedTypes.includes(file.type)) {
+=======
 
         // Check file type
         if (file.type !== 'application/pdf') {
+>>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
             errorDiv.textContent = 'Format file tidak didukung. Gunakan file PDF.';
             errorDiv.style.display = 'block';
             input.value = '';
             return;
         }
+<<<<<<< HEAD
+        
+        // Show preview
+        fileNameSpan.textContent = file.name;
+        previewDiv.style.display = 'block';
+=======
 
         // Show file info
         pdfName.textContent = 'File dipilih: ' + file.name;
@@ -280,6 +336,7 @@ function removeImage(imageId) {
         form.appendChild(csrfInput);
         document.body.appendChild(form);
         form.submit();
+>>>>>>> ea161908d4f286972222c8073d65dd9c6f5840d6
     }
 }
 </script>

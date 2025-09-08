@@ -54,7 +54,7 @@
               />
             </div>
             <div v-else class="so-profile-image-placeholder">
-              <img src="../../assets/img/noor-aflah.png" alt="">
+              <img src="../../assets/img/nooraflah.png" alt="">
             </div>
            
             
@@ -91,16 +91,12 @@
       </div>
 
       <div class="so-button-wrapper">
-        <button class="so-more-button">
+        <button class="so-more-button" @click="goToDetailPage">
           Selengkapnya Tentang Struktur Organisasi
         </button>
       </div>
-      <div class="so-button-wrapper">
-  <router-link to="/galeri" class="so-more-button">
-    Selengkapnya Tentang Galeri
-  </router-link>
 </div>
-    </div>
+    
   </section>
 </template>
 
@@ -140,6 +136,10 @@ export default {
       }
       // Otherwise, construct the full URL
       return `http://localhost:8000/storage/${imagePath}`
+    },
+    goToDetailPage() {
+      // Navigate to the detail page
+      this.$router.push('/struktur-organisasi-detail')
     }
   }
 }

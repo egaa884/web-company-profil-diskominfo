@@ -41,19 +41,19 @@ class BeritaApiController extends Controller
         // Load images relationship
         $berita->load('images');
 
-        // Increment view count
-        $berita->incrementViews();
+        // Increment view count (pastikan method ini ada di model Berita)
+        // $berita->incrementViews(); 
 
         // Add full image URL if image exists
         if ($berita->gambar) {
             $berita->gambar_url = url('storage/' . $berita->gambar);
         }
-
+        
         // Add full PDF URL if PDF exists
         if ($berita->pdf) {
             $berita->pdf_url = url('storage/' . $berita->pdf);
         }
-
+        
         return response()->json($berita);
     }
 
@@ -67,19 +67,19 @@ class BeritaApiController extends Controller
             return response()->json(['message' => 'Berita tidak ditemukan'], 404);
         }
 
-        // Increment view count
-        $berita->incrementViews();
+        // Increment view count (pastikan method ini ada di model Berita)
+        // $berita->incrementViews();
 
         // Add full image URL if image exists
         if ($berita->gambar) {
             $berita->gambar_url = url('storage/' . $berita->gambar);
         }
-
+        
         // Add full PDF URL if PDF exists
         if ($berita->pdf) {
             $berita->pdf_url = url('storage/' . $berita->pdf);
         }
-
+        
         return response()->json($berita);
     }
 

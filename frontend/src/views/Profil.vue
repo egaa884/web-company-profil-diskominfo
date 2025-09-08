@@ -1,25 +1,29 @@
 <template>
   <div class="profile-page min-h-screen bg-gray-50">
     <!-- Hero Section -->
-    <HeroSection />
-    
+     <HeroSection 
+      firstLine="STRUKTUR ORGANISASI"
+      secondLine="DISKOMINFO KOTA MADIUN"
+      :backgroundImage="LogoKominfo"
+    />
+
     <!-- Main Content -->
     <div class="container mx-auto px-4 py-8">
       <!-- Sekilas Dinas Section -->
       <SekilasDinas />
-      
+
       <!-- Kantor Dinas Section -->
       <KantorDinas />
-      
+
       <!-- Visi Misi Section -->
       <VisiMisi />
-      
+
       <!-- Struktur Organisasi Section -->
       <StrukturOrganisasi />
-      
+
       <!-- Tugas Pokok dan Fungsi Section -->
       <TugasPokokFungsi />
-      
+
       <!-- Standar Pelayanan Section -->
       <StandarPelayanan />
     </div>
@@ -53,4 +57,4 @@ export default {
 .profile-page {
   font-family: 'Inter', sans-serif;
 }
-</style> 
+</style>

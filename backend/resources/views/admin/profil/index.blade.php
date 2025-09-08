@@ -19,7 +19,6 @@
                         <tr>
                             <th>No</th>
                             <th>Kategori</th>
-                            <th>Judul</th>
                             <th>Konten</th>
                             <th>Gambar</th>
                             <th>PDF</th>
@@ -28,28 +27,9 @@
                     </thead>
                     <tbody>
                         @forelse($profils as $index => $profil)
-                             <tr>
-                                 <td>{{ $index + 1 }}</td>
-                                 <td>
-                                     @php
-                                         $categoryNames = [
-                                             'sekilas_dinas' => 'Sekilas Dinas',
-                                             'visi_misi' => 'Visi & Misi',
-                                             'kantor_dinas' => 'Kantor Dinas',
-                                             'struktur_organisasi' => 'Struktur Organisasi',
-                                             'tugas_pokok_fungsi' => 'Tugas Pokok & Fungsi',
-                                             'standar_pelayanan' => 'Standar Pelayanan'
-                                         ];
-                                     @endphp
-                                     {{ $categoryNames[$profil->kategori] ?? $profil->kategori }}
-                                 </td>
-                                <td>
-                                    @if($profil->judul)
-                                        <strong>{{ $profil->judul }}</strong>
-                                    @else
-                                        <span class="text-muted">Tidak ada judul</span>
-                                    @endif
-                                </td>
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ $profil->kategori }}</td>
                                 <td>
                                     @if($profil->konten)
                                         {{ Str::limit($profil->konten, 100) }}
@@ -82,7 +62,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center">Tidak ada data profil</td>
+                                <td colspan="6" class="text-center">Tidak ada data profil</td>
                             </tr>
                         @endforelse
                     </tbody>

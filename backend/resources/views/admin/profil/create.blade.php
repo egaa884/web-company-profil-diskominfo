@@ -28,11 +28,6 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="judul" class="form-label">Judul</label>
-                    <input type="text" name="judul" id="judul" class="form-control" value="{{ old('judul') }}" placeholder="Masukkan judul untuk halaman ini">
-                    <small class="text-muted">Judul yang akan ditampilkan di halaman frontend</small>
-                </div>
-                <div class="mb-3">
                     <label for="konten" class="form-label">Konten</label>
                     <textarea name="konten" id="konten" class="form-control" rows="7">{{ old('konten') }}</textarea>
                 </div>

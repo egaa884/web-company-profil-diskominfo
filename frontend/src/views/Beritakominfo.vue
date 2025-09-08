@@ -1,18 +1,17 @@
 <template>
   <div class="news-page min-h-screen bg-gray-50">
-    <!-- Main Content -->
     <div class="container mx-auto px-4 py-8">
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        <!-- Left Column - Main Content -->
         <div class="lg:col-span-3">
           <HotNews />
           <NewsGrid :selectedCategory="selectedCategory" />
         </div>
 
-        <!-- Right Column - Sidebar -->
         <div class="lg:col-span-1">
-          <LatestNews />
-          <CategoryList @category-selected="handleCategorySelected" />
+          <div class="sticky-sidebar">
+            <LatestNews />
+            <CategoryList @category-selected="handleCategorySelected" />
+          </div>
         </div>
       </div>
     </div>
@@ -23,15 +22,14 @@
 import HotNews from '@/components/news/HotNews.vue'
 import NewsGrid from '@/components/news/NewsGrid.vue'
 import LatestNews from '@/components/news/LatestNews.vue'
-import CategoryList from '@/components/news/CategoryList.vue'
+
 
 export default {
   name: 'Beritakominfo',
   components: {
     HotNews,
     NewsGrid,
-    LatestNews,
-    CategoryList
+    LatestNews
   },
   data() {
     return {
@@ -51,4 +49,19 @@ export default {
   font-family: 'Inter', sans-serif;
   top: 10px;
 }
-</style> 
+
+/* CSS baru untuk sticky sidebar */
+.sticky-sidebar {
+  position: sticky;
+  top: 100px; /* Jarak dari atas saat sticky, sesuaikan dengan tinggi header Anda */
+  align-self: flex-start; /* Memastikan sidebar tidak meregang */
+  max-height: calc(100vh - 120px); /* Menentukan tinggi agar bisa digulir */
+  overflow-y: auto; /* Mengaktifkan scrolling vertikal */
+}
+
+/* Perbaikan untuk LatestNews */
+/* Jika LatestNews memiliki margin-top default, ini akan menimpanya agar menempel ke atas */
+.latest-news {
+  margin-top: 0 !important;
+}
+</style>

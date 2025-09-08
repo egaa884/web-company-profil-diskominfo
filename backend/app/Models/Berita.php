@@ -9,9 +9,8 @@ class Berita extends Model
     use HasFactory;
 
     // Nama tabel jika tidak mengikuti konvensi
-    protected $table = 'beritas'; 
+    protected $table = 'beritas';
 
-    // Kolom yang dapat diisi massal
     protected $fillable = ['judul', 'konten', 'status', 'gambar', 'pdf', 'views', 'slug', 'admin_id', 'category'];
 
     // Tanggal yang di-cast ke objek Carbon

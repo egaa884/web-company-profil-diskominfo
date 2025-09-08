@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('beritas', function (Blueprint $table) {
-            if (!Schema::hasColumn('beritas', 'views')) {
-                $table->unsignedBigInteger('views')->default(0)->after('pdf');
-            }
+        Schema::table('profils', function (Blueprint $table) {
+            $table->string('title')->nullable()->after('kategori');
+            $table->date('tanggal')->nullable()->after('title');
         });
     }
 
@@ -23,8 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('beritas', function (Blueprint $table) {
-            $table->dropColumn('views');
+        Schema::table('profils', function (Blueprint $table) {
+            $table->dropColumn(['title', 'tanggal']);
         });
     }
 };

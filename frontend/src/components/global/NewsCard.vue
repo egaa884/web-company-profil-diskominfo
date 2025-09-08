@@ -21,7 +21,7 @@
         </span>
       </div>
       <h4 class="font-semibold text-gray-800 mb-2 line-clamp-2">{{ title }}</h4>
-      <p class="text-sm text-gray-500 mb-2">{{ date }}</p>
+      <p class="text-sm text-gray-500 mb-2">{{ formatDate(date) }}</p>
       <p class="text-sm text-gray-600 line-clamp-3">{{ truncatedDescription }}</p>
     </div>
   </div>
@@ -52,34 +52,36 @@ export default {
       default: null
     },
     slug: {
-      type: String,
+      type: String, // Tambahkan prop 'slug'
       default: null
     }
   },
   computed: {
     truncatedDescription() {
-      if (!this.description) return ''
+      if (!this.description) return '';
       return this.description.length > 150 
         ? this.description.substring(0, 150) + '...' 
-        : this.description
+        : this.description;
     }
   },
   methods: {
     getImageUrl(imagePath) {
-      if (!imagePath) return null
-      // If it's already a full URL, return as is
+      if (!imagePath) return null;
       if (imagePath.startsWith('http')) {
-        return imagePath
+        return imagePath;
       }
-      // Remove any leading slashes to avoid double slashes
-      const cleanPath = imagePath.replace(/^\/+/, '')
-      // Otherwise, construct the full URL
-      return `http://localhost:8000/storage/${cleanPath}`
+      const cleanPath = imagePath.replace(/^\/+/, '');
+      return `http://localhost:8000/storage/${cleanPath}`;
+    },
+    formatDate(dateString) {
+      if (!dateString) return 'Tanggal tidak tersedia';
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      const date = new Date(dateString);
+      return date.toLocaleDateString('id-ID', options);
     },
     handleClick() {
       if (this.slug) {
-        // Navigate to news detail page
-        this.$router.push(`/berita/${this.slug}`)
+        this.$router.push(`/berita/${this.slug}`);
       }
     }
   }
@@ -100,4 +102,4 @@ export default {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-</style> 
+</style>

@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('beritas', function (Blueprint $table) {
-            if (!Schema::hasColumn('beritas', 'views')) {
-                $table->unsignedBigInteger('views')->default(0)->after('pdf');
-            }
+            $table->string('lampiran_pdf')->nullable()->after('gambar');
+            $table->string('nama_pembuat')->nullable()->after('admin_id');
+            $table->text('deskripsi_singkat')->nullable()->after('konten');
         });
     }
 
@@ -24,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('beritas', function (Blueprint $table) {
-            $table->dropColumn('views');
+            $table->dropColumn(['lampiran_pdf', 'nama_pembuat', 'deskripsi_singkat']);
         });
     }
 };

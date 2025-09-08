@@ -38,12 +38,14 @@ class ProfilController extends Controller
     {
         $request->validate([
             'kategori' => 'required|string',
+            'title' => 'nullable|string',
+            'tanggal' => 'nullable|date',
             'konten' => 'nullable|string',
             'pdf' => 'nullable|file|mimes:pdf|max:2048',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        $data = $request->only(['kategori', 'konten']);
+        $data = $request->only(['kategori', 'title', 'tanggal', 'konten']);
 
         if ($request->hasFile('pdf')) {
             $data['pdf'] = $request->file('pdf')->store('profil', 'public');
@@ -68,12 +70,14 @@ class ProfilController extends Controller
     {
         $request->validate([
             'kategori' => 'required|string',
+            'title' => 'nullable|string',
+            'tanggal' => 'nullable|date',
             'konten' => 'nullable|string',
             'pdf' => 'nullable|file|mimes:pdf|max:2048',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        $data = $request->only(['kategori', 'konten']);
+        $data = $request->only(['kategori', 'title', 'tanggal', 'konten']);
 
         if ($request->hasFile('pdf')) {
             if ($profil->pdf) {
@@ -110,12 +114,12 @@ class ProfilController extends Controller
     private function categories()
     {
         return [
-            'sekilas_dinas' => 'Sekilas Dinas',
-            'visi_misi' => 'Visi & Misi',
-            'kantor_dinas' => 'Kantor Dinas',
-            'struktur_organisasi' => 'Struktur Organisasi',
-            'tugas_pokok_fungsi' => 'Tugas Pokok & Fungsi',
-            'standar_pelayanan' => 'Standar Pelayanan'
+            'Tentang',
+            'Visi Misi',
+            'Struktur Organisasi',
+            'Tugas dan Fungsi',
+            'Sejarah',
+            'Lainnya'
         ];
     }
 } 

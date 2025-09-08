@@ -6,7 +6,6 @@ import Beritakominfo from "@/views/Beritakominfo.vue";
 import Profil from "@/views/Profil.vue";
 import KabarWarga from "@/views/KabarWarga.vue";
 import SiaranPers from "@/views/SiaranPers.vue";
-import InfoGrafis from "@/views/InfoGrafis.vue";
 import LaporanPengaduan from "@/views/LaporanPengaduan.vue";
 import LaporanPenerima from "@/views/LaporanPenerima.vue";
 import LaporanDetail from "@/views/LaporanDetail.vue";
@@ -45,11 +44,6 @@ const routes = [
     path: "/siaranpers",
     name: "siaranpers",
     component: SiaranPers,
-  },
-  {
-    path: "/infografis",
-    name: "infografis",
-    component: InfoGrafis,
   },
   {
     path: "/profil",
@@ -110,6 +104,16 @@ const routes = [
     path: '/galeri',
     name: 'galeri',
     component: () => import('../views/GalleryPage.vue'),
+  },
+  {
+    path: '/struktur-organisasi-detail',
+    name: 'struktur.organisasi.detail',
+    component: () => import('../components/profile/StrukturOrganisasiDetail.vue'),
+  },
+  {
+    path: '/standar-pelayanan-detail',
+    name: 'standar.pelayanan.detail',
+    component: () => import('../components/profile/StandarPelayananDetail.vue'),
   },
 ];
 

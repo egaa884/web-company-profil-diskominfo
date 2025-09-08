@@ -1,9 +1,8 @@
 <template>
   <div class="latest-news">
-    <h3 class="text-xl font-bold text-gray-800 mb-4">Berita Terbaru</h3>
-    
-    <!-- Loading state -->
-    <div v-if="loading" class="space-y-4">
+    <h3 class="text-xl font-bold text-gray-800 mb-4 sticky-title">Berita Terbaru</h3>
+
+    <div v-if="loading" class="latest-news-scrollable space-y-4">
       <div v-for="i in 3" :key="i" class="bg-white rounded-lg shadow-md overflow-hidden animate-pulse">
         <div class="w-full h-24 bg-gray-300"></div>
         <div class="p-3">
@@ -13,8 +12,7 @@
       </div>
     </div>
     
-    <!-- Latest news content -->
-    <div v-else-if="latestNews.length > 0" class="space-y-4">
+    <div v-else-if="latestNews.length > 0" class="latest-news-scrollable space-y-4">
       <div 
         v-for="(news, index) in latestNews" 
         :key="news.id || index"
@@ -44,8 +42,7 @@
       </div>
     </div>
     
-    <!-- Empty state -->
-    <div v-else class="text-center py-4">
+    <div v-else class="latest-news-scrollable text-center py-4">
       <p class="text-gray-500 text-sm">Tidak ada berita terbaru.</p>
     </div>
   </div>
@@ -86,18 +83,14 @@ export default {
     },
     getImageUrl(imagePath) {
       if (!imagePath) return null
-      // If it's already a full URL, return as is
       if (imagePath.startsWith('http')) {
         return imagePath
       }
-      // Remove any leading slashes to avoid double slashes
       const cleanPath = imagePath.replace(/^\/+/, '')
-      // Otherwise, construct the full URL
       return `http://localhost:8000/storage/${cleanPath}`
     },
     
     getImageUrlFromBerita(berita) {
-      // Use gambar_url if available (from backend), otherwise construct URL
       if (berita.gambar_url) {
         return berita.gambar_url
       }
@@ -129,7 +122,23 @@ export default {
 
 <style scoped>
 .latest-news {
-  margin-top: v-bind('showMargin ? "17%" : "17%"');
+  /* Hapus margin-top di sini */
+  margin-top: 0;
+}
+
+/* Container untuk konten yang bisa digulir */
+.latest-news-scrollable {
+  max-height: calc(100vh - 200px); /* Sesuaikan tinggi, di sini saya kurangi 200px untuk header dan judul */
+  overflow-y: auto;
+}
+
+.sticky-title {
+  position: sticky;
+  top: 0;
+  background: white; /* Beri warna latar belakang agar tidak transparan */
+  z-index: 10; /* Pastikan judul berada di atas konten yang digulir */
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 .line-clamp-2 {
@@ -145,4 +154,4 @@ export default {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-</style> 
+</style>
