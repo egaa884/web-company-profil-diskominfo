@@ -11,8 +11,12 @@
       <!-- Loading state -->
       <div v-if="loading" class="sekilas-content-grid">
         <div class="sekilas-image-column">
-          <div class="sekilas-image-placeholder animate-pulse">
-            <div class="w-full h-full bg-gray-300 rounded-lg"></div>
+          <div class="sekilas-image-container">
+            <img
+              src="@/assets/img/gedung.jpeg"
+              alt="Gedung Dinas Komunikasi dan Informatika Kota Madiun"
+              class="sekilas-image animate-pulse"
+            />
           </div>
         </div>
         <div class="sekilas-text-column">
@@ -27,15 +31,12 @@
       <!-- Content -->
       <div v-else class="sekilas-content-grid">
         <div class="sekilas-image-column">
-          <div v-if="profilData?.gambar" class="sekilas-image-container">
-            <img 
-              :src="getImageUrl(profilData.gambar)" 
-              :alt="'Foto Madiun'"
+          <div class="sekilas-image-container">
+            <img
+              src="@/assets/img/gedung.jpeg"
+              alt="Gedung Dinas Komunikasi dan Informatika Kota Madiun"
               class="sekilas-image"
             />
-          </div>
-          <div v-else class="sekilas-image-placeholder">
-            <span class="sekilas-image-text">Foto Madiun</span>
           </div>
         </div>
 

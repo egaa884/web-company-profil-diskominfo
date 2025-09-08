@@ -5,34 +5,34 @@
         <div class="lg:col-span-3">
           <div class="kabar-warga-section">
             <h2>Kabar Warga</h2>
-            
+
             <div v-if="loading" class="text-center py-8 text-gray-500">
               <p>Memuat data Kabar Warga...</p>
             </div>
-            
+
             <div v-else-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-center">
               <p class="font-bold">Error!</p>
               <p>{{ error }}</p>
               <button @click="fetchKabarWarga" class="mt-2 text-blue-600 hover:text-blue-800">Coba Lagi</button>
             </div>
-            
+
             <div v-else-if="newsItems.length > 0" class="kabar-warga-grid">
-              <NewsCard 
+              <NewsCard
                 v-for="item in displayedNews"
                 :key="item.id"
                 :title="item.title"
                 :date="item.created_at"
                 :category="item.category"
                 :description="item.konten"
-                :image="item.gambar"
-                :slug="item.slug" 
+                :image="item.gambar_url"
+                :slug="item.slug"
               />
             </div>
-            
+
             <div v-else class="text-center p-8 text-gray-500">
               <p>Tidak ada berita yang ditemukan.</p>
             </div>
-            
+
             <div class="pagination" v-if="totalPages > 1">
               <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1">‹</button>
               <button
@@ -47,7 +47,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="lg:col-span-1">
           <div class="sticky-sidebar">
             <LatestNews />
@@ -60,13 +60,12 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import axios from 'axios';
 import NewsCard from '@/components/global/NewsCard.vue';
 import LatestNews from '@/components/news/LatestNews.vue';
+import { beritaService } from '@/service/api.js';
 
 // Reactive data
 const newsItems = ref([]);
-const categories = ref([]); // Kept for consistency, though not used in this template
 const loading = ref(true);
 const error = ref(null);
 const currentPage = ref(1);
@@ -78,8 +77,8 @@ const fetchKabarWarga = async () => {
     loading.value = true;
     error.value = null;
 
-    const response = await axios.get('http://localhost:8000/api/berita/category/Kabar%20Warga');
-    
+    const response = await beritaService.getBeritaByCategory('Kabar Warga');
+
     if (response.data && response.data.data) {
       newsItems.value = response.data.data;
     } else {
@@ -133,7 +132,7 @@ h2, h3 { border-bottom: 2px solid #ccc; padding-bottom: 10px; margin-bottom: 20p
   position: sticky;
   top: 100px; /* Sesuaikan dengan tinggi header Anda */
   align-self: flex-start;
-  height: calc(100vh - 120px); 
-  overflow-y: auto; 
+  height: calc(100vh - 120px);
+  overflow-y: auto;
 }
 </style>

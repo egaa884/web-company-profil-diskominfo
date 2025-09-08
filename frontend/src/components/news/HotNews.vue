@@ -33,9 +33,9 @@
           <p class="text-sm text-gray-500">{{ formatDate(hotNews.created_at) }}</p>
         </div>
         <div class="w-64 h-48 bg-gray-400 rounded-lg flex-shrink-0 overflow-hidden">
-          <img 
-            v-if="hotNews.gambar" 
-            :src="getImageUrl(hotNews.gambar)" 
+          <img
+            v-if="hotNews.gambar_url"
+            :src="hotNews.gambar_url"
             :alt="hotNews.judul"
             class="w-full h-full object-cover"
           />

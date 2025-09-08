@@ -22,15 +22,14 @@
 import HotNews from '@/components/news/HotNews.vue'
 import NewsGrid from '@/components/news/NewsGrid.vue'
 import LatestNews from '@/components/news/LatestNews.vue'
-import CategoryList from '@/components/news/CategoryList.vue'
+
 
 export default {
   name: 'Beritakominfo',
   components: {
     HotNews,
     NewsGrid,
-    LatestNews,
-    CategoryList
+    LatestNews
   },
   data() {
     return {
