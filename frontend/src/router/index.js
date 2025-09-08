@@ -100,6 +100,16 @@ const routes = [
     name: 'galeri',
     component: () => import('../views/GalleryPage.vue'),
   },
+  {
+    path: '/struktur-organisasi-detail',
+    name: 'struktur.organisasi.detail',
+    component: () => import('../components/profile/StrukturOrganisasiDetail.vue'),
+  },
+  {
+    path: '/standar-pelayanan-detail',
+    name: 'standar.pelayanan.detail',
+    component: () => import('../components/profile/StandarPelayananDetail.vue'),
+  },
 ];
 
 const router = createRouter({
