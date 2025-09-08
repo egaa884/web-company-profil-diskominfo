@@ -29,6 +29,14 @@
                     </select>
                 </div>
                 <div class="mb-3">
+                    <label for="title" class="form-label">Judul</label>
+                    <input type="text" name="title" id="title" class="form-control" value="{{ old('title', $profil->title) }}">
+                </div>
+                <div class="mb-3">
+                    <label for="tanggal" class="form-label">Tanggal</label>
+                    <input type="date" name="tanggal" id="tanggal" class="form-control" value="{{ old('tanggal', $profil->tanggal) }}">
+                </div>
+                <div class="mb-3">
                     <label for="konten" class="form-label">Konten</label>
                     <textarea name="konten" id="konten" class="form-control" rows="7">{{ old('konten', $profil->konten) }}</textarea>
                 </div>

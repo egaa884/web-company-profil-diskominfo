@@ -19,6 +19,8 @@
                         <tr>
                             <th>No</th>
                             <th>Kategori</th>
+                            <th>Judul</th>
+                            <th>Tanggal</th>
                             <th>Konten</th>
                             <th>Gambar</th>
                             <th>PDF</th>
@@ -30,6 +32,8 @@
                             <tr>
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $profil->kategori }}</td>
+                                <td>{{ $profil->title ?: '-' }}</td>
+                                <td>{{ $profil->tanggal ? \Carbon\Carbon::parse($profil->tanggal)->format('d/m/Y') : '-' }}</td>
                                 <td>
                                     @if($profil->konten)
                                         {{ Str::limit($profil->konten, 100) }}
@@ -62,7 +66,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center">Tidak ada data profil</td>
+                                <td colspan="8" class="text-center">Tidak ada data profil</td>
                             </tr>
                         @endforelse
                     </tbody>
