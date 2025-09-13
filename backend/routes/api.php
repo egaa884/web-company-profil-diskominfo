@@ -24,11 +24,13 @@ Route::post('/chat', [ChatController::class, 'chat']);
 
 use App\Http\Controllers\Api\ProfilApiController;
 use App\Http\Controllers\Api\BeritaApiController;
+use App\Http\Controllers\Api\CommentApiController;
 use App\Http\Controllers\Api\FaqCategoryController;
 use App\Http\Controllers\Api\FaqController;
 use App\Http\Controllers\Api\PublikasiApiController;
 use App\Http\Controllers\Api\ProfilePageController;
 use App\Http\Controllers\Api\NewProfilePageController;
+use App\Http\Controllers\Api\SearchController;
 
 // Public API routes for berita
 Route::get('berita', [BeritaApiController::class, 'index']);
@@ -38,6 +40,11 @@ Route::get('berita/categories', [BeritaApiController::class, 'categories']);
 Route::get('berita/category/{category}', [BeritaApiController::class, 'byCategory']);
 Route::get('berita/slug/{slug}', [BeritaApiController::class, 'showBySlug']);
 Route::get('berita/{berita}', [BeritaApiController::class, 'show']);
+Route::post('berita/{berita}/increment-view', [BeritaApiController::class, 'incrementView']);
+
+// Public API routes for comments
+Route::get('berita/{beritaId}/comments', [CommentApiController::class, 'index']);
+Route::post('berita/{beritaId}/comments', [CommentApiController::class, 'store']);
 
 // Public API routes for profil
 Route::get('profil', [ProfilApiController::class, 'index']);
@@ -45,6 +52,13 @@ Route::get('profil/categories', [ProfilApiController::class, 'categories']);
 Route::get('profil/all-categories', [ProfilApiController::class, 'getAllCategories']);
 Route::get('profil/category/{kategori}', [ProfilApiController::class, 'byCategory']);
 Route::get('profil/{profil}', [ProfilApiController::class, 'show']);
+
+// Legacy profile-page routes for frontend compatibility
+Route::get('profile-page/sekilas-dinas', [ProfilApiController::class, 'getByCategorySekilasDinas']);
+Route::get('profile-page/visi-misi', [ProfilApiController::class, 'getByCategoryVisiMisi']);
+Route::get('profile-page/kantor-dinas', [ProfilApiController::class, 'getByCategoryKantorDinas']);
+Route::get('profile-page/struktur-organisasi', [ProfilApiController::class, 'getByCategoryStrukturOrganisasi']);
+Route::get('profile-page/tugas-pokok-fungsi', [ProfilApiController::class, 'getByCategoryTugasPokokFungsi']);
 
 // New Profile Page API routes (separate from existing profil system)
 Route::prefix('profile-page')->group(function () {
@@ -89,12 +103,20 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('profil', ProfilApiController::class)->except(['index', 'show']);
     Route::post('profil/{profil}/upload-pdf', [ProfilApiController::class, 'uploadPdf']);
     Route::post('profil/{profil}/upload-gambar', [ProfilApiController::class, 'uploadGambar']);
-    
+
     // Protected API routes for publikasi (admin only)
     Route::apiResource('publikasi', PublikasiApiController::class)->except(['index', 'show', 'categories', 'statistics', 'months', 'years']);
+
+    // Protected API routes for comments (admin only)
+    Route::get('admin/comments', [CommentApiController::class, 'adminIndex']);
+    Route::patch('admin/comments/{comment}/status', [CommentApiController::class, 'updateStatus']);
+    Route::delete('admin/comments/{comment}', [CommentApiController::class, 'destroy']);
 });
 
 Route::get('faq-categories', [FaqCategoryController::class, 'index']);
 Route::apiResource('faq-categories', FaqCategoryController::class)->except(['index']);
 Route::get('faqs', [FaqController::class, 'index']);
 Route::apiResource('faqs', FaqController::class)->except(['index']);
+
+// Global search endpoint
+Route::get('search', [SearchController::class, 'globalSearch']);

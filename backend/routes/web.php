@@ -3,6 +3,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\BeritaController;
+use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\InfografisController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\ProfilController;
@@ -117,11 +118,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/berita', [BeritaController::class, 'store'])->name('berita.store');
         Route::get('/berita/{berita}/edit', [BeritaController::class, 'edit'])->name('berita.edit');
         Route::put('/berita/{berita}', [BeritaController::class, 'update'])->name('berita.update');
+        Route::patch('/berita/{berita}/toggle-hot', [BeritaController::class, 'toggleHot'])->name('berita.toggle-hot');
         Route::delete('/berita/{berita}', [BeritaController::class, 'destroy'])->name('berita.destroy');
         Route::get('/berita/{berita}', [BeritaController::class, 'show'])->name('berita.show');
 
         // Route untuk menghapus gambar individual dari galeri berita
         Route::delete('/berita/image/{imageId}', [BeritaController::class, 'deleteImage'])->name('berita.image.delete');
+
+        // Route untuk komentar
+        Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');
+        Route::patch('/comments/{comment}/approve', [CommentController::class, 'approve'])->name('comments.approve');
+        Route::patch('/comments/{comment}/reject', [CommentController::class, 'reject'])->name('comments.reject');
+        Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
         // Route untuk infografis (CRUD lengkap)
         Route::get('/infografis', [InfografisController::class, 'index'])->name('infografis.index');
