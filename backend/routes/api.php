@@ -31,6 +31,7 @@ use App\Http\Controllers\Api\PublikasiApiController;
 use App\Http\Controllers\Api\ProfilePageController;
 use App\Http\Controllers\Api\NewProfilePageController;
 use App\Http\Controllers\Api\SearchController;
+use App\Http\Controllers\Api\StatisticsApiController;
 
 // Public API routes for berita
 Route::get('berita', [BeritaApiController::class, 'index']);
@@ -111,6 +112,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('admin/comments', [CommentApiController::class, 'adminIndex']);
     Route::patch('admin/comments/{comment}/status', [CommentApiController::class, 'updateStatus']);
     Route::delete('admin/comments/{comment}', [CommentApiController::class, 'destroy']);
+
+    // Admin Statistics API
+    Route::get('admin/statistics', [StatisticsApiController::class, 'index']);
 });
 
 Route::get('faq-categories', [FaqCategoryController::class, 'index']);
