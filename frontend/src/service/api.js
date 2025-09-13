@@ -506,6 +506,19 @@ export const commentService = {
   }
 };
 
+// Search service
+export const searchService = {
+  async globalSearch(params = {}) {
+    try {
+      const response = await apiClient.get('/search', { params });
+      return response;
+    } catch (error) {
+      console.error('Error performing global search:', error);
+      throw error;
+    }
+  }
+};
+
 // Chat service for AI chatbot
 export const chatService = {
   async sendMessage(payload) {

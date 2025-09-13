@@ -41,6 +41,7 @@
             type="text"
             placeholder="Cari..."
             class="search-input"
+            @input="handleSearchInput"
             @focus="showSearchDropdownFunc"
             @blur="hideSearchDropdown"
             v-model="searchStore.query"
@@ -53,20 +54,74 @@
           </button>
         </form>
 
-        <div v-if="showSearchDropdown && searchStore.hasResults" class="search-dropdown">
-          <div class="search-results">
-            <div v-for="result in searchStore.allResults.slice(0, 8)" :key="`${result.type}-${result.id}`"
-              class="search-result-item"
-              @click="selectSearchResult(result)">
-              <div class="result-type">{{ getTypeLabel(result.type) }}</div>
-              <div class="result-title">{{ result.judul || result.question || result.title }}</div>
-              <div class="result-content" v-if="result.isi || result.answer">
-                {{ truncateText(result.isi || result.answer, 100) }}
+        <div v-if="showSearchDropdown" class="search-dropdown">
+          <div v-if="searchStore.isLoading" class="search-loading">
+            <div class="loading-spinner"></div>
+            <span>Mencari...</span>
+          </div>
+          <div v-else-if="hasAnyResults" class="search-results">
+            <!-- Berita Results -->
+            <div v-if="searchStore.results.berita && searchStore.results.berita.length > 0" class="search-section">
+              <div v-for="result in searchStore.results.berita.slice(0, 5)" :key="`berita-${result.id}`"
+                class="search-result-item"
+                @click="selectSearchResult(result, $event)">
+                <div class="result-content">
+                  <div class="result-title">{{ result.judul }}</div>
+                  <div class="result-badge badge-berita">Berita</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Profil Results -->
+            <div v-if="searchStore.results.profil && searchStore.results.profil.length > 0" class="search-section">
+              <div v-for="result in searchStore.results.profil.slice(0, 5)" :key="`profil-${result.id}`"
+                class="search-result-item"
+                @click="selectSearchResult(result, $event)">
+                <div class="result-content">
+                  <div class="result-title">{{ result.judul }}</div>
+                  <div class="result-badge badge-profil">Profil</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ Results -->
+            <div v-if="searchStore.results.faq && searchStore.results.faq.length > 0" class="search-section">
+              <div v-for="result in searchStore.results.faq.slice(0, 5)" :key="`faq-${result.id}`"
+                class="search-result-item"
+                @click="selectSearchResult(result, $event)">
+                <div class="result-content">
+                  <div class="result-title">{{ result.judul }}</div>
+                  <div class="result-badge badge-faq">FAQ</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Publikasi Results -->
+            <div v-if="searchStore.results.publikasi && searchStore.results.publikasi.length > 0" class="search-section">
+              <div v-for="result in searchStore.results.publikasi.slice(0, 5)" :key="`publikasi-${result.id}`"
+                class="search-result-item"
+                @click="selectSearchResult(result, $event)">
+                <div class="result-content">
+                  <div class="result-title">{{ result.judul }}</div>
+                  <div class="result-badge badge-publikasi">Publikasi</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Menu Results -->
+            <div v-if="searchStore.results.menu && searchStore.results.menu.length > 0" class="search-section">
+              <div v-for="result in searchStore.results.menu.slice(0, 5)" :key="`menu-${result.id}`"
+                class="search-result-item"
+                @click="selectSearchResult(result, $event)">
+                <div class="result-content">
+                  <div class="result-title">{{ result.judul }}</div>
+                  <div class="result-badge badge-menu">Menu</div>
+                </div>
               </div>
             </div>
           </div>
-          <div v-if="searchStore.totalResults > 8" class="search-more">
-            <span>{{ searchStore.totalResults - 8 }} hasil lainnya...</span>
+          <div v-else-if="searchStore.query && searchStore.query.length >= 1" class="search-no-results">
+            <span>Tidak ditemukan hasil untuk "{{ searchStore.query }}"</span>
           </div>
         </div>
       </div>
@@ -103,8 +158,9 @@
         <form @submit.prevent="handleSearchSubmit" class="search-form">
           <input
             type="text"
-            placeholder="Cari..."
+            placeholder="Cari berita..."
             class="search-input"
+            @input="handleSearchInput"
             @focus="showSearchDropdownFunc"
             @blur="hideSearchDropdown"
             v-model="searchStore.query"
@@ -116,13 +172,85 @@
             </svg>
           </button>
         </form>
+
+        <!-- Mobile Auto-suggest Dropdown -->
+        <div v-if="showSearchDropdown" class="mobile-search-dropdown">
+          <div v-if="searchStore.isLoading" class="search-loading">
+            <div class="loading-spinner"></div>
+            <span>Mencari...</span>
+          </div>
+          <div v-else-if="hasAnyResults" class="search-results">
+            <!-- Berita Results -->
+            <div v-if="searchStore.results.berita && searchStore.results.berita.length > 0" class="search-section">
+              <div v-for="result in searchStore.results.berita.slice(0, 5)" :key="`mobile-berita-${result.id}`"
+                class="search-result-item"
+                @click="selectSearchResult(result, $event)">
+                <div class="result-content">
+                  <div class="result-title">{{ result.judul }}</div>
+                  <div class="result-badge badge-berita">Berita</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Profil Results -->
+            <div v-if="searchStore.results.profil && searchStore.results.profil.length > 0" class="search-section">
+              <div v-for="result in searchStore.results.profil.slice(0, 5)" :key="`mobile-profil-${result.id}`"
+                class="search-result-item"
+                @click="selectSearchResult(result, $event)">
+                <div class="result-content">
+                  <div class="result-title">{{ result.judul }}</div>
+                  <div class="result-badge badge-profil">Profil</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ Results -->
+            <div v-if="searchStore.results.faq && searchStore.results.faq.length > 0" class="search-section">
+              <div v-for="result in searchStore.results.faq.slice(0, 5)" :key="`mobile-faq-${result.id}`"
+                class="search-result-item"
+                @click="selectSearchResult(result, $event)">
+                <div class="result-content">
+                  <div class="result-title">{{ result.judul }}</div>
+                  <div class="result-badge badge-faq">FAQ</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Publikasi Results -->
+            <div v-if="searchStore.results.publikasi && searchStore.results.publikasi.length > 0" class="search-section">
+              <div v-for="result in searchStore.results.publikasi.slice(0, 5)" :key="`mobile-publikasi-${result.id}`"
+                class="search-result-item"
+                @click="selectSearchResult(result, $event)">
+                <div class="result-content">
+                  <div class="result-title">{{ result.judul }}</div>
+                  <div class="result-badge badge-publikasi">Publikasi</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Menu Results -->
+            <div v-if="searchStore.results.menu && searchStore.results.menu.length > 0" class="search-section">
+              <div v-for="result in searchStore.results.menu.slice(0, 5)" :key="`mobile-menu-${result.id}`"
+                class="search-result-item"
+                @click="selectSearchResult(result, $event)">
+                <div class="result-content">
+                  <div class="result-title">{{ result.judul }}</div>
+                  <div class="result-badge badge-menu">Menu</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div v-else-if="searchStore.query && searchStore.query.length >= 1" class="search-no-results">
+            <span>Tidak ditemukan hasil untuk "{{ searchStore.query }}"</span>
+          </div>
+        </div>
       </li>
     </ul>
   </nav>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useSearchStore } from '../../stores/searchStore'
 
@@ -145,28 +273,23 @@ const isInternalLink = (link) => {
   return link && (link.startsWith('/') || link.startsWith('#'))
 }
 
-// Search functionality
-// Menggunakan watch untuk memantau perubahan pada searchStore.query
-watch(() => searchStore.query, async (newQuery) => {
-  if (newQuery && newQuery.length > 2) {
-    await searchStore.search(newQuery.trim())
-    showSearchDropdown.value = true
-  } else {
-    searchStore.clearResults()
-    showSearchDropdown.value = false
-  }
-})
+// Auto-suggest functionality is now handled by handleSearchInput
 
 const handleSearchSubmit = async (event) => {
   event.preventDefault()
-  const query = searchInput.value?.value?.trim()
+  const query = searchStore.query?.trim()
   if (query) {
-    await searchStore.search(query)
-    showSearchDropdown.value = true
+    await searchStore.search(query) // Use full search on submit
+    showSearchDropdown.value = false // Close dropdown after search
+    // Navigate to search results page or handle as needed
   }
 }
 
-const selectSearchResult = (result) => {
+const selectSearchResult = (result, event) => {
+  if (event) {
+    event.preventDefault()
+    event.stopPropagation()
+  }
   showSearchDropdown.value = false
   if (result.url) {
     router.push(result.url)
@@ -179,8 +302,19 @@ const hideSearchDropdown = () => {
   }, 200)
 }
 
+const handleSearchInput = async (event) => {
+  const query = event.target.value
+  if (query && query.length >= 1) {
+    showSearchDropdown.value = true
+    await searchStore.autoSuggest(query.trim())
+  } else {
+    searchStore.clearResultsOnly()
+    showSearchDropdown.value = false
+  }
+}
+
 const showSearchDropdownFunc = () => {
-  if (searchStore.query && searchStore.hasResults) {
+  if (searchStore.query && searchStore.query.length >= 1) {
     showSearchDropdown.value = true
   }
 }
@@ -200,6 +334,16 @@ const truncateText = (text, maxLength) => {
   if (text.length <= maxLength) return text
   return text.substring(0, maxLength) + '...'
 }
+
+// Computed property to check if there are any results
+const hasAnyResults = computed(() => {
+  const results = searchStore.results
+  return (results.berita?.length > 0) ||
+         (results.profil?.length > 0) ||
+         (results.faq?.length > 0) ||
+         (results.publikasi?.length > 0) ||
+         (results.menu?.length > 0)
+})
 
 const navItems = ref([
   { name: 'Beranda', link: '/home', type: 'link' },
@@ -599,6 +743,119 @@ onUnmounted(() => {
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   color: #666;
   font-size: 12px;
+}
+
+.search-loading {
+  padding: 20px 15px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #666;
+  font-size: 14px;
+}
+
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.search-no-results {
+  padding: 20px 15px;
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+}
+
+.search-section {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+}
+
+.search-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.result-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.result-title {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.3;
+  margin-right: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.result-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.badge-berita {
+  background: #007bff;
+  color: white;
+}
+
+.badge-profil {
+  background: #28a745;
+  color: white;
+}
+
+.badge-faq {
+  background: #ffc107;
+  color: #333;
+}
+
+.badge-publikasi {
+  background: #dc3545;
+  color: white;
+}
+
+.badge-menu {
+  background: #6c757d;
+  color: white;
+}
+
+.mobile-search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 5px;
 }
 
 .nav-links.mobile-menu,

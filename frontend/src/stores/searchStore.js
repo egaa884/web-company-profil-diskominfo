@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import axios from 'axios'
+import { searchService } from '../service/api'
 
 export const useSearchStore = defineStore('search', () => {
   // State
@@ -27,7 +27,7 @@ export const useSearchStore = defineStore('search', () => {
   })
 
   // Actions
-  const search = async (searchQuery, limit = 10) => {
+  const search = async (searchQuery, limit = 5) => {
     if (!searchQuery || searchQuery.trim() === '') {
       clearResults()
       return
@@ -37,11 +37,9 @@ export const useSearchStore = defineStore('search', () => {
     isLoading.value = true
 
     try {
-      const response = await axios.get('/api/search', {
-        params: {
-          q: query.value,
-          limit: limit
-        }
+      const response = await searchService.globalSearch({
+        q: query.value,
+        limit: limit
       })
 
       results.value = response.data.results
@@ -58,6 +56,34 @@ export const useSearchStore = defineStore('search', () => {
     }
   }
 
+  // Auto-suggest search for berita titles only
+  const autoSuggest = async (searchQuery, limit = 5) => {
+    if (!searchQuery || searchQuery.trim() === '') {
+      clearResults()
+      return
+    }
+
+    query.value = searchQuery.trim()
+    isLoading.value = true
+
+    try {
+      const response = await searchService.globalSearch({
+        q: query.value,
+        limit: limit,
+        type: 'berita'
+      })
+
+      results.value = response.data.results
+      totalResults.value = response.data.total
+
+    } catch (error) {
+      console.error('Auto-suggest error:', error)
+      clearResults()
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const clearResults = () => {
     results.value = {
       berita: [],
@@ -67,6 +93,16 @@ export const useSearchStore = defineStore('search', () => {
     }
     totalResults.value = 0
     query.value = ''
+  }
+
+  const clearResultsOnly = () => {
+    results.value = {
+      berita: [],
+      profil: [],
+      faq: [],
+      publikasi: []
+    }
+    totalResults.value = 0
   }
 
   const addToHistory = (searchTerm) => {
@@ -114,7 +150,9 @@ export const useSearchStore = defineStore('search', () => {
 
     // Actions
     search,
+    autoSuggest,
     clearResults,
+    clearResultsOnly,
     addToHistory,
     loadHistory,
     clearHistory
