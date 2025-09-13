@@ -18,14 +18,14 @@
           v-for="(news, index) in newsItems"
           :key="news.id"
           class="news-card"
-          :class="{ 'is-visible': news.isVisible }"
+          :class="{ 'is-visible': news.isVisible, 'animate-in': news.isAnimated }"
           :style="{ 'transition-delay': news.delay }"
           @click="handleNewsClick(news)">
-          <img 
-            v-if="news.gambar" 
-            :src="getImageUrl(news.gambar)" 
-            :alt="news.judul" 
-            class="news-image" 
+          <img
+            v-if="news.gambar || news.gambar_url"
+            :src="getImageUrl(news)"
+            :alt="news.judul"
+            class="news-image"
           />
           <div v-else class="news-image-placeholder">
             <span class="text-gray-500 text-sm">Tidak ada gambar</span>
@@ -70,8 +70,9 @@ const fetchNews = async () => {
       created_at: news.created_at,
       category: news.category,
       slug: news.slug,
-      isVisible: false,
-      delay: `${index * 0.30}s`,
+      isVisible: true, // Mulai terlihat untuk memastikan konten muncul
+      isAnimated: false, // Track apakah sudah dianimasi
+      delay: `${index * 0.15}s`, // Delay yang lebih dinamis untuk efek bertahap
     }));
 
   } catch (error) {
@@ -91,13 +92,19 @@ const formatDate = (dateString) => {
   });
 };
 
-const getImageUrl = (imagePath) => {
-  if (!imagePath) return null;
-  if (imagePath.startsWith('http')) {
-    return imagePath;
+const getImageUrl = (newsItem) => {
+  // Prefer gambar_url if available (full URL from API)
+  if (newsItem.gambar_url) {
+    return newsItem.gambar_url;
+  }
+
+  // Fallback to constructing URL from gambar path
+  if (!newsItem.gambar) return null;
+  if (newsItem.gambar.startsWith('http')) {
+    return newsItem.gambar;
   }
   // Remove any leading slashes to avoid double slashes
-  const cleanPath = imagePath.replace(/^\/+/, '');
+  const cleanPath = newsItem.gambar.replace(/^\/+/, '');
   return `http://localhost:8000/storage/${cleanPath}`;
 };
 
@@ -118,17 +125,23 @@ const setupIntersectionObservers = () => {
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              if (newsItems.value[index]) {
-                newsItems.value[index].isVisible = true;
+              // Kartu masuk ke dalam viewport - animasi setiap kali
+              if (newsItems.value[index] && !newsItems.value[index].isAnimated) {
+                newsItems.value[index].isAnimated = true;
               }
             } else {
+              // Kartu keluar dari viewport - reset animasi untuk pengulangan
               if (newsItems.value[index]) {
-                newsItems.value[index].isVisible = false;
+                newsItems.value[index].isAnimated = false;
               }
             }
           });
         },
-        { root: null, rootMargin: '0px', threshold: 0.1 }
+        {
+          root: null, // relatif terhadap viewport
+          rootMargin: '50px', // Mulai animasi 50px sebelum masuk viewport
+          threshold: [0, 0.1], // Threshold array untuk kontrol yang lebih baik
+        }
       );
       observer.observe(card);
       observers.push(observer);
@@ -193,16 +206,33 @@ onBeforeUnmount(() => {
   background-color: #fff;
   border-radius: 8px;
   overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Easing dengan bounce effect */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
   cursor: pointer;
   height: 100%;
+
+  /* Kondisi awal - terlihat tapi dengan posisi animasi */
+  opacity: 1;
+  transform: translateY(80px) scale(0.9); /* Mulai dari bawah dengan efek scale yang lebih dramatis */
+}
+
+.news-card.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1); /* Posisi normal */
+}
+
+.news-card.animate-in {
+  opacity: 1;
+  transform: translateY(0) scale(1.02); /* Efek bounce dengan scale sedikit lebih besar */
+}
+
+.news-card.is-visible:hover {
+  transform: translateY(-5px) scale(1.02); /* Hover effect dengan scale */
 }
 
 .news-card:hover {
-  transform: translateY(-5px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 

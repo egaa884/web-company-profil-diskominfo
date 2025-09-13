@@ -70,12 +70,7 @@
             </p>
           </div>
 
-          <!-- Selengkapnya Button -->
-          <div class="sekilas-button-container">
-            <router-link to="/profile/tentang" class="sekilas-button">
-              Selengkapnya
-            </router-link>
-          </div>
+      
         </div>
       </div>
     </div>

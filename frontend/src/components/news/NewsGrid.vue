@@ -21,6 +21,7 @@
         :image="news.gambar_url"
         :category="news.category"
         :slug="news.slug"
+        :views="news.views"
       />
     </div>
     

@@ -16,8 +16,11 @@
             :key="'left-' + index"
             class="card"
           >
-            <div
-              class="flex flex-col items-start p-4 rounded-md bg-gradient-to-r from-[#2E7A52] to-[#0292D7] text-white w-[250px] h-[120px] justify-between"
+            <a
+              :href="card.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block flex flex-col items-start p-4 rounded-md bg-gradient-to-r from-[#2E7A52] to-[#0292D7] text-white w-[250px] h-[120px] justify-between no-underline"
             >
               <div class="flex items-center gap-2">
                 <img
@@ -28,15 +31,10 @@
                 <p class="text-lg font-semibold">{{ card.text }}</p>
               </div>
               <div class="w-full h-px bg-white/50 my-2"></div>
-              <a
-                :href="card.url"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-sm cursor-pointer flex items-center text-white no-underline hover:underline"
-              >
-                Selengkapnya <span class="ml-1">&gt;</span>
-              </a>
-            </div>
+              <div class="text-sm flex items-center text-white">
+                Selengkapnya <span class="ml-1">></span>
+              </div>
+            </a>
           </div>
         </div>
       </div>
@@ -49,8 +47,11 @@
             :key="'right-' + index"
             class="card"
           >
-            <div
-              class="flex flex-col items-start p-4 rounded-md bg-gradient-to-r from-[#2E7A52] to-[#0292D7] text-white w-[250px] h-[120px] justify-between"
+            <a
+              :href="card.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block flex flex-col items-start p-4 rounded-md bg-gradient-to-r from-[#2E7A52] to-[#0292D7] text-white w-[250px] h-[120px] justify-between no-underline"
             >
               <div class="flex items-center gap-2">
                 <img
@@ -61,15 +62,10 @@
                 <p class="text-lg font-semibold">{{ card.text }}</p>
               </div>
               <div class="w-full h-px bg-white/50 my-2"></div>
-              <a
-                :href="card.url"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-sm cursor-pointer flex items-center text-white no-underline hover:underline"
-              >
-                Selengkapnya <span class="ml-1">&gt;</span>
-              </a>
-            </div>
+              <div class="text-sm flex items-center text-white">
+                Selengkapnya <span class="ml-1">></span>
+              </div>
+            </a>
           </div>
         </div>
       </div>

@@ -81,7 +81,35 @@
 import { profilService } from '@/service/api'
 
 export default {
-  name: 'StandarPelayanan'
+  name: 'StandarPelayanan',
+  data() {
+    return {
+      standarPelayananList: []
+    }
+  },
+  async mounted() {
+    await this.fetchStandarPelayanan()
+  },
+  methods: {
+    async fetchStandarPelayanan() {
+      try {
+        const response = await profilService.getProfilByCategory('Standar Pelayanan')
+        this.standarPelayananList = response.data || []
+      } catch (error) {
+        console.error('Error fetching standar pelayanan:', error)
+        this.standarPelayananList = []
+      }
+    },
+    formatDate(dateString) {
+      if (!dateString) return '-'
+      const date = new Date(dateString)
+      return date.toLocaleDateString('id-ID', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
+    }
+  }
 }
 </script>
 

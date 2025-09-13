@@ -1,25 +1,25 @@
 <template>
   <nav :class="['floating-navbar', { 
-            'at-top': isAtTop,
-            'scrolled-oval': isScrolledOval,
-            'is-visible-onload': isVisible // Tetap pertahankan untuk animasi awal
-          }]" ref="navbarRef">
+    'at-top': isAtTop,
+    'scrolled-oval': isScrolledOval,
+    'is-visible-onload': isVisible // Tetap pertahankan untuk animasi awal
+  }]" ref="navbarRef">
     <div class="nav-content">
       <img src="/img/logo-navbar.png" alt="Logo" class="logo" />
 
       <ul class="nav-links desktop-menu">
         <li v-for="item in navItems" :key="item.name"
-            @mouseenter="item.type === 'dropdown' && showDropdown(item.name)"
-            @mouseleave="item.type === 'dropdown' && hideDropdown()">
+          @mouseenter="item.type === 'dropdown' && showDropdown(item.name)"
+          @mouseleave="item.type === 'dropdown' && hideDropdown()">
           <a :href="item.link || '#'" :class="{ 'has-dropdown-active': activeDropdown === item.name }">
             {{ item.name }}
             <span v-if="item.type === 'dropdown'" class="dropdown-arrow"></span>
           </a>
 
           <div v-if="item.type === 'dropdown' && activeDropdown === item.name" 
-               class="dropdown-menu"
-               @mouseenter="showDropdown(item.name)" 
-               @mouseleave="hideDropdown()">
+            class="dropdown-menu"
+            @mouseenter="showDropdown(item.name)" 
+            @mouseleave="hideDropdown()">
             <div class="dropdown-grid">
               <div v-for="subItem in item.items" :key="subItem.name" class="dropdown-item">
                 <router-link v-if="isInternalLink(subItem.link)" :to="subItem.link" @click="hideDropdown()">
@@ -35,7 +35,40 @@
       </ul>
 
       <div class="search-wrapper desktop-search">
-        <input type="text" placeholder="Cari..." class="search-input" />
+        <form @submit.prevent="handleSearchSubmit" class="search-form">
+          <input
+            ref="searchInput"
+            type="text"
+            placeholder="Cari..."
+            class="search-input"
+            @focus="showSearchDropdownFunc"
+            @blur="hideSearchDropdown"
+            v-model="searchStore.query"
+          />
+          <button type="submit" class="search-button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+          </button>
+        </form>
+
+        <div v-if="showSearchDropdown && searchStore.hasResults" class="search-dropdown">
+          <div class="search-results">
+            <div v-for="result in searchStore.allResults.slice(0, 8)" :key="`${result.type}-${result.id}`"
+              class="search-result-item"
+              @click="selectSearchResult(result)">
+              <div class="result-type">{{ getTypeLabel(result.type) }}</div>
+              <div class="result-title">{{ result.judul || result.question || result.title }}</div>
+              <div class="result-content" v-if="result.isi || result.answer">
+                {{ truncateText(result.isi || result.answer, 100) }}
+              </div>
+            </div>
+          </div>
+          <div v-if="searchStore.totalResults > 8" class="search-more">
+            <span>{{ searchStore.totalResults - 8 }} hasil lainnya...</span>
+          </div>
+        </div>
       </div>
 
       <button class="menu-toggle" @click="isMenuOpen = !isMenuOpen">
@@ -50,7 +83,7 @@
         <a v-if="item.type === 'link'" :href="item.link" @click="isMenuOpen = false">{{ item.name }}</a>
         <div v-else class="mobile-dropdown-parent">
           <a href="#" @click.prevent="activeDropdown = activeDropdown === item.name ? null : item.name"
-              :class="{ 'mobile-dropdown-active': activeDropdown === item.name }">
+            :class="{ 'mobile-dropdown-active': activeDropdown === item.name }">
             {{ item.name }}
             <span class="dropdown-arrow" :class="{ 'open': activeDropdown === item.name }"></span>
           </a>
@@ -67,7 +100,22 @@
         </div>
       </li>
       <li class="search-wrapper mobile-search">
-        <input type="text" placeholder="Cari..." class="search-input" />
+        <form @submit.prevent="handleSearchSubmit" class="search-form">
+          <input
+            type="text"
+            placeholder="Cari..."
+            class="search-input"
+            @focus="showSearchDropdownFunc"
+            @blur="hideSearchDropdown"
+            v-model="searchStore.query"
+          />
+          <button type="submit" class="search-button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+          </button>
+        </form>
       </li>
     </ul>
   </nav>
@@ -76,13 +124,17 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useSearchStore } from '../../stores/searchStore'
 
 const router = useRouter()
+const searchStore = useSearchStore()
 const isVisible = ref(false)
 const isAtTop = ref(true)
-const isScrolledOval = ref(false) 
+const isScrolledOval = ref(false)
 const isMenuOpen = ref(false)
 const navbarRef = ref(null)
+const searchInput = ref(null)
+const showSearchDropdown = ref(false)
 
 const activeDropdown = ref(null)
 
@@ -91,6 +143,62 @@ let dropdownHoverTimer = null
 
 const isInternalLink = (link) => {
   return link && (link.startsWith('/') || link.startsWith('#'))
+}
+
+// Search functionality
+// Menggunakan watch untuk memantau perubahan pada searchStore.query
+watch(() => searchStore.query, async (newQuery) => {
+  if (newQuery && newQuery.length > 2) {
+    await searchStore.search(newQuery.trim())
+    showSearchDropdown.value = true
+  } else {
+    searchStore.clearResults()
+    showSearchDropdown.value = false
+  }
+})
+
+const handleSearchSubmit = async (event) => {
+  event.preventDefault()
+  const query = searchInput.value?.value?.trim()
+  if (query) {
+    await searchStore.search(query)
+    showSearchDropdown.value = true
+  }
+}
+
+const selectSearchResult = (result) => {
+  showSearchDropdown.value = false
+  if (result.url) {
+    router.push(result.url)
+  }
+}
+
+const hideSearchDropdown = () => {
+  setTimeout(() => {
+    showSearchDropdown.value = false
+  }, 200)
+}
+
+const showSearchDropdownFunc = () => {
+  if (searchStore.query && searchStore.hasResults) {
+    showSearchDropdown.value = true
+  }
+}
+
+const getTypeLabel = (type) => {
+  const labels = {
+    berita: 'Berita',
+    profil: 'Profil',
+    faq: 'FAQ',
+    publikasi: 'Publikasi'
+  }
+  return labels[type] || type
+}
+
+const truncateText = (text, maxLength) => {
+  if (!text) return ''
+  if (text.length <= maxLength) return text
+  return text.substring(0, maxLength) + '...'
 }
 
 const navItems = ref([
@@ -372,10 +480,17 @@ onUnmounted(() => {
 .search-wrapper.desktop-search {
   display: flex;
   align-items: center;
+  position: relative;
+}
+
+.search-form {
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 
 .search-input {
-  padding: 6px 14px;
+  padding: 6px 40px 6px 14px;
   border-radius: 20px;
   border: 1px solid #ccc;
   outline: none;
@@ -383,6 +498,7 @@ onUnmounted(() => {
   transition: all 0.2s ease;
   background: rgba(255, 255, 255, 0.2);
   color: #333;
+  width: 200px;
 }
 
 .search-input::placeholder {
@@ -392,6 +508,97 @@ onUnmounted(() => {
 .search-input:focus {
   border-color: #007bff;
   background: rgba(255, 255, 255, 0.4);
+  width: 250px;
+}
+
+.search-button {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-button:hover {
+  color: #007bff;
+  background: rgba(0, 123, 255, 0.1);
+}
+
+/* Search Dropdown */
+.search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  max-height: 400px;
+  overflow-y: auto;
+  margin-top: 5px;
+}
+
+.search-results {
+  padding: 10px 0;
+}
+
+.search-result-item {
+  padding: 12px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.search-result-item:hover {
+  background: rgba(0, 123, 255, 0.05);
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.result-type {
+  font-size: 11px;
+  color: #007bff;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.result-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.result-content {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.search-more {
+  padding: 10px 15px;
+  text-align: center;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  color: #666;
+  font-size: 12px;
 }
 
 .nav-links.mobile-menu,
@@ -579,21 +786,31 @@ onUnmounted(() => {
     margin: 20px 0;
     width: 100%;
   }
-
-  .search-input {
+  
+  .search-wrapper.mobile-search .search-form {
+    width: 100%;
+  }
+  
+  .search-wrapper.mobile-search .search-input {
     width: 100%;
     background: rgba(255, 255, 255, 0.1);
     color: #333;
     border: 1px solid rgba(0, 0, 0, 0.2);
+    padding-right: 40px;
   }
-
-  .search-input::placeholder {
+  
+  .search-wrapper.mobile-search .search-input::placeholder {
     color: #666;
   }
-
-  .search-input:focus {
+  
+  .search-wrapper.mobile-search .search-input:focus {
     background: rgba(255, 255, 255, 0.3);
     border-color: #007bff;
+  }
+  
+  .search-wrapper.mobile-search .search-button {
+    right: 8px;
+    color: #666;
   }
 
   .menu-toggle {

@@ -26,6 +26,7 @@
                 :description="item.konten"
                 :image="item.gambar_url"
                 :slug="item.slug"
+                :views="item.views"
               />
             </div>
 

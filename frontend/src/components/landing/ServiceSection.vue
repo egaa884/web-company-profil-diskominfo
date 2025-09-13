@@ -17,6 +17,7 @@
             </svg>
           </div>
           <p class="service-title">{{ service.title }}</p>
+          <a :href="service.link" target="_blank" class="service-button">Akses Layanan</a>
         </div>
       </div>
     </div>
@@ -35,6 +36,7 @@ const serviceItems = ref([
       clipRule: 'evenodd',
     },
     title: 'PPID',
+    link: 'https://ppid.madiunkota.go.id/',
     isVisible: false,
     delay: '0s',
   },
@@ -48,6 +50,7 @@ const serviceItems = ref([
       clipRule: 'evenodd',
     },
     title: 'Ajuan Masyarakat',
+    link: 'https://awaksigap.madiunkota.go.id/',
     isVisible: false,
     delay: '0.30s',
   },
@@ -61,6 +64,7 @@ const serviceItems = ref([
       clipRule: 'evenodd',
     },
     title: 'Data Statistik',
+    link: 'https://madiunkota.bps.go.id/id',
     isVisible: false,
     delay: '0.60s',
   },
@@ -196,6 +200,22 @@ onBeforeUnmount(() => {
   font-size: 18px;
   font-weight: 600;
   color: #444;
+}
+
+.service-button {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.2s ease;
+  font-weight: 500;
+}
+
+.service-button:hover {
+  background-color: #0056b3;
 }
 
 @media (max-width: 768px) {

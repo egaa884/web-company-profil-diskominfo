@@ -1,43 +1,40 @@
 <template>
   <div class="radio-player-container">
     <div class="player-controls">
-      <!-- Mengubah <img> menjadi link <a> -->
       <a href="https://onlineradiobox.com/id/suaramadiun/" target="_blank" class="radio-logo-link">
         <img src="../../assets/img/logo-suara-madiun.png" alt="Logo Radio" class="radio-logo" />
       </a>
-      <button @click="togglePlay" class="play-button" :class="{ 'is-playing': isPlaying }">
-        <svg v-if="!isPlaying" class="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+      <button @click="togglePlay" class="play-button" :class="{ 'is-playing': radioStore.isPlaying }">
+        <svg v-if="!radioStore.isPlaying" class="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
         <svg v-else class="icon" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" /></svg>
       </button>
       <div class="volume-control">
         <svg class="icon volume-icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9z" /></svg>
-        <input type="range" min="0" max="100" v-model="volume" class="volume-slider" />
+        <input type="range" min="0" max="100" v-model="radioStore.volume" @input="handleVolumeChange" class="volume-slider" />
       </div>
     </div>
-    <audio ref="audioPlayer" :src="radioStreamUrl"></audio>
+    <!-- Audio element is managed by FloatingRadioPlayer -->
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { watch } from 'vue';
+import { useRadioStore } from '../../stores/radioStore';
 
-const isPlaying = ref(false);
-const volume = ref(50);
-const radioStreamUrl = 'URL_LIVE_STREAM_RADIO_SUARA_MADIUN'; // Ganti dengan URL stream yang valid
-const audioPlayer = ref(null);
+const radioStore = useRadioStore();
 
 const togglePlay = () => {
-  if (isPlaying.value) {
-    audioPlayer.value.pause();
-  } else {
-    audioPlayer.value.play();
-  }
-  isPlaying.value = !isPlaying.value;
+  radioStore.togglePlay();
 };
 
-watch(volume, (newVolume) => {
-  if (audioPlayer.value) {
-    audioPlayer.value.volume = newVolume / 100;
+const handleVolumeChange = (event) => {
+  radioStore.setVolume(parseInt(event.target.value));
+};
+
+
+watch(() => radioStore.volume, (newVolume) => {
+  if (radioStore.audioPlayer) {
+    radioStore.audioPlayer.volume = newVolume / 100;
   }
 });
 </script>
@@ -68,7 +65,6 @@ watch(volume, (newVolume) => {
 .play-button {
   background: none;
   border: none;
-  /* Warna ikon diubah menjadi biru tua */
   color: #004899;
   cursor: pointer;
   width: 50px;
@@ -85,7 +81,6 @@ watch(volume, (newVolume) => {
   box-shadow: none;
 }
 .icon {
-  
   fill: #004899;
   width: 24px;
   height: 24px;

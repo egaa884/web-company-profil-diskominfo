@@ -41,6 +41,8 @@
                             <th>Judul</th>
                             <th>Status</th>
                             <th>Kategori</th>
+                            <th>Pengunjung</th>
+                            <th>Hot News</th>
                             <th>Ditambahkan Pada</th>
                             <th>Aksi</th>
                         </tr>
@@ -55,6 +57,21 @@
                                     </span>
                                 </td>
                                 <td>{{ $berita->category }}</td>
+                                <td>
+                                    <span class="badge bg-primary">
+                                        <i class="fas fa-eye"></i> {{ number_format($berita->views) }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <form action="{{ route('admin.berita.toggle-hot', $berita) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-sm {{ $berita->is_hot ? 'btn-danger' : 'btn-success' }}">
+                                            <i class="fas {{ $berita->is_hot ? 'fa-fire' : 'fa-plus' }}"></i>
+                                            {{ $berita->is_hot ? 'Hapus Hot' : 'Jadikan Hot' }}
+                                        </button>
+                                    </form>
+                                </td>
                                 <td>{{ $berita->created_at->format('d M Y') }}</td>
                                 <td>
                                     <a href="{{ route('admin.berita.show', $berita) }}" class="btn btn-sm btn-info">Lihat</a>
@@ -68,7 +85,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center">Tidak ada berita yang ditemukan.</td>
+                                <td colspan="7" class="text-center">Tidak ada berita yang ditemukan.</td>
                             </tr>
                         @endforelse
                     </tbody>

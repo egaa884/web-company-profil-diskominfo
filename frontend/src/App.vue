@@ -4,6 +4,7 @@
     <router-view />
     <Footer />
     <ScrollToTop />
+    <FloatingRadioPlayer />
 
     <!-- Tombol Aksesibilitas -->
     <button 
@@ -24,14 +25,16 @@
 <script>
 import Navbar from './components/partials/Navbar.vue'
 import Footer from './components/partials/Footer.vue'
-import ScrollToTop from './components/partials/ScrollToTop.vue' 
+import ScrollToTop from './components/partials/ScrollToTop.vue'
+import FloatingRadioPlayer from './components/partials/FloatingRadioPlayer.vue'
 import MenuAksebilitas from './components/partials/MenuAksebilitas.vue'
 
 export default {
   components: {
     Navbar,
     Footer,
-    ScrollToTop, 
+    ScrollToTop,
+    FloatingRadioPlayer,
     MenuAksebilitas
   },
   data() {

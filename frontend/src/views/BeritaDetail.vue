@@ -63,6 +63,13 @@
                   <span>•</span>
                   <span>{{ formatDate(berita.created_at) }}</span>
                 </div>
+                <div class="flex items-center">
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                  </svg>
+                  {{ berita.views || 0 }} views
+                </div>
               </div>
 
               <!-- Deskripsi singkat -->
@@ -144,6 +151,11 @@
               </div>
             </div>
           </div>
+    
+          <!-- Comments Section -->
+          <div class="mt-12">
+            <CommentsSection :berita-id="berita.id" />
+          </div>
         </div>
 
         <!-- Right Column - Sidebar -->
@@ -173,12 +185,14 @@
 import { beritaService } from '@/service/api.js'
 import LatestNews from '@/components/news/LatestNews.vue'
 import PdfViewer from '@/components/news/PdfViewer.vue'
+import CommentsSection from '@/components/news/CommentsSection.vue'
 
 export default {
   name: 'BeritaDetail',
   components: {
     LatestNews,
-    PdfViewer
+    PdfViewer,
+    CommentsSection
   },
   data() {
     return {
@@ -204,13 +218,15 @@ export default {
       try {
         this.loading = true
         this.error = null
-        
+
         const slug = this.$route.params.slug
         const response = await beritaService.getBeritaBySlug(slug)
-        
+
         if (response.data) {
           this.berita = response.data
           await this.fetchRelatedNews()
+          // Track view after successfully loading berita
+          await this.trackView()
         } else {
           this.berita = null
         }
@@ -305,6 +321,42 @@ export default {
       // Extract filename from path
       const parts = pdfPath.split('/')
       return parts[parts.length - 1] || 'document.pdf'
+    },
+
+    async trackView() {
+      if (!this.berita || !this.berita.id) return
+
+      const viewKey = `viewed_news_${this.berita.id}`
+
+      // Check if this news has already been viewed from this device
+      if (localStorage.getItem(viewKey)) {
+        return // Already viewed, don't increment
+      }
+
+      try {
+        // Generate a simple device ID (in a real app, you might use a more sophisticated approach)
+        const deviceId = this.generateDeviceId()
+
+        // Call the increment view API
+        await beritaService.incrementView(this.berita.id, { device_id: deviceId })
+
+        // Mark as viewed in localStorage
+        localStorage.setItem(viewKey, 'true')
+      } catch (error) {
+        console.error('Error tracking view:', error)
+        // Don't show error to user, just log it
+      }
+    },
+
+    generateDeviceId() {
+      // Generate a simple device identifier
+      // In production, you might want to use a more robust method
+      let deviceId = localStorage.getItem('device_id')
+      if (!deviceId) {
+        deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+        localStorage.setItem('device_id', deviceId)
+      }
+      return deviceId
     }
   }
 }

@@ -2,7 +2,7 @@
   <div class="profile-page min-h-screen bg-gray-50">
     <!-- Hero Section -->
      <HeroSection 
-      firstLine="STRUKTUR ORGANISASI"
+      firstLine="PROFIL"
       secondLine="DISKOMINFO KOTA MADIUN"
       :backgroundImage="LogoKominfo"
     />
@@ -31,8 +31,8 @@
 </template>
 
 <script>
-import HeroSection from '@/components/global/HeroSection.vue'
 import SekilasDinas from '@/components/profile/SekilasDinas.vue'
+import HeroSection from '@/components/global/HeroSection.vue'
 import KantorDinas from '@/components/profile/KantorDinas.vue'
 import VisiMisi from '@/components/profile/VisiMisi.vue'
 import StrukturOrganisasi from '@/components/profile/StrukturOrganisasi.vue'
