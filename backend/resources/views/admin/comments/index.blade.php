@@ -124,7 +124,46 @@
             </div>
 
             <div class="pagination">
-                {{ $comments->appends(request()->query())->links() }}
+                @if($comments->hasPages())
+                    <nav aria-label="Pagination">
+                        <ul class="pagination justify-content-center">
+                            {{-- Previous Page Link --}}
+                            @if ($comments->onFirstPage())
+                                <li class="page-item disabled">
+                                    <span class="page-link">Previous</span>
+                                </li>
+                            @else
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ $comments->previousPageUrl() }}" rel="prev">Previous</a>
+                                </li>
+                            @endif
+
+                            {{-- Pagination Elements --}}
+                            @foreach ($comments->getUrlRange(1, $comments->lastPage()) as $page => $url)
+                                @if ($page == $comments->currentPage())
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ $page }}</span>
+                                    </li>
+                                @else
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                    </li>
+                                @endif
+                            @endforeach
+
+                            {{-- Next Page Link --}}
+                            @if ($comments->hasMorePages())
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ $comments->nextPageUrl() }}" rel="next">Next</a>
+                                </li>
+                            @else
+                                <li class="page-item disabled">
+                                    <span class="page-link">Next</span>
+                                </li>
+                            @endif
+                        </ul>
+                    </nav>
+                @endif
             </div>
         </div>
     </div>
@@ -164,6 +203,102 @@
     .pagination {
         text-align: center;
         margin-top: 20px;
+    }
+
+    /* Bootstrap 5 Pagination Styling - Compact Horizontal Layout */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.125rem;
+        margin-top: 20px;
+        padding: 0;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    /* Ensure Previous and Next buttons are always horizontal */
+    .pagination .page-item:first-child,
+    .pagination .page-item:last-child {
+        flex-shrink: 0;
+    }
+
+    /* Hide arrow icons in Previous and Next buttons */
+    .pagination .page-item:first-child .page-link::before,
+    .pagination .page-item:last-child .page-link::after,
+    .pagination .page-item:first-child .page-link i,
+    .pagination .page-item:last-child .page-link i {
+        display: none !important;
+    }
+
+    .pagination .page-link {
+        color: #2d2f6e;
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+        padding: 0.2rem 0.4rem;
+        margin: 0;
+        border-radius: 0.2rem;
+        text-decoration: none;
+        transition: all 0.15s ease;
+        font-size: 0.8rem;
+        line-height: 1.1;
+        min-width: 1.8rem;
+        max-width: 2.5rem;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .pagination .page-link:hover {
+        color: #1a1d4a;
+        background-color: #f8f9fa;
+        border-color: #adb5bd;
+        transform: translateY(-1px);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #2d2f6e;
+        border-color: #2d2f6e;
+        color: white;
+        font-weight: 600;
+    }
+
+    .pagination .page-item.disabled .page-link {
+        color: #6c757d;
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+
+    .pagination .page-item:first-child .page-link {
+        border-top-left-radius: 0.2rem;
+        border-bottom-left-radius: 0.2rem;
+    }
+
+    .pagination .page-item:last-child .page-link {
+        border-top-right-radius: 0.2rem;
+        border-bottom-right-radius: 0.2rem;
+    }
+
+    /* Hide page numbers on very small screens to keep Previous/Next visible */
+    @media (max-width: 480px) {
+        .pagination .page-item:not(.page-item:first-child):not(.page-item:last-child):not(.active) {
+            display: none;
+        }
+
+        .pagination::before {
+            content: "...";
+            color: #6c757d;
+            margin: 0 0.25rem;
+            font-size: 0.8rem;
+        }
     }
 
     .badge {
