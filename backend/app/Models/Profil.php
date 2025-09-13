@@ -8,6 +8,6 @@ class Profil extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'kategori', 'konten', 'pdf', 'gambar'
+        'kategori', 'judul', 'title', 'konten', 'pdf', 'gambar', 'tanggal'
     ];
 } 

@@ -438,4 +438,24 @@ class BeritaController extends Controller
             return redirect()->back()->withErrors(['error' => 'Gagal menghapus gambar: ' . $e->getMessage()]);
         }
     }
+
+    // Toggle hot news status
+    public function toggleHot(Berita $berita)
+    {
+        try {
+            $berita->update(['is_hot' => !$berita->is_hot]);
+
+            $message = $berita->is_hot ? 'Berita berhasil ditandai sebagai Hot News.' : 'Berita berhasil dihapus dari Hot News.';
+
+            return redirect()->back()->with('success', $message);
+
+        } catch (\Exception $e) {
+            Log::error('Toggle hot news failed', [
+                'error' => $e->getMessage(),
+                'berita_id' => $berita->id
+            ]);
+
+            return redirect()->back()->withErrors(['error' => 'Gagal mengubah status Hot News: ' . $e->getMessage()]);
+        }
+    }
 }

@@ -123,6 +123,17 @@ export const beritaService = {
       console.error('Error fetching berita by slug:', error);
       throw error;
     }
+  },
+
+  // Increment view count for a berita (with device tracking)
+  async incrementView(beritaId, data) {
+    try {
+      const response = await apiClient.post(`/berita/${beritaId}/increment-view`, data);
+      return response;
+    } catch (error) {
+      console.error('Error incrementing view:', error);
+      throw error;
+    }
   }
 };
 
@@ -432,6 +443,64 @@ export const faqService = {
       return response;
     } catch (error) {
       console.error('Error fetching FAQs:', error);
+      throw error;
+    }
+  }
+};
+
+// Comment service
+export const commentService = {
+  // Get comments for a specific berita
+  async getComments(beritaId, params = {}) {
+    try {
+      const response = await apiClient.get(`/berita/${beritaId}/comments`, { params });
+      return response;
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+      throw error;
+    }
+  },
+
+  // Create a new comment
+  async createComment(beritaId, commentData) {
+    try {
+      const response = await apiClient.post(`/berita/${beritaId}/comments`, commentData);
+      return response;
+    } catch (error) {
+      console.error('Error creating comment:', error);
+      throw error;
+    }
+  },
+
+  // Get all comments for admin
+  async getAllComments(params = {}) {
+    try {
+      const response = await apiClient.get('/admin/comments', { params });
+      return response;
+    } catch (error) {
+      console.error('Error fetching all comments:', error);
+      throw error;
+    }
+  },
+
+  // Update comment status (approve/reject)
+  async updateCommentStatus(commentId, statusData) {
+    try {
+      const response = await apiClient.patch(`/admin/comments/${commentId}/status`, statusData);
+      return response;
+    } catch (error) {
+      console.error('Error updating comment status:', error);
+      throw error;
+    }
+  },
+
+  // Delete a comment
+  async deleteComment(commentId) {
+    try {
+      const response = await apiClient.delete(`/admin/comments/${commentId}`);
+      return response;
+    } catch (error) {
+      console.error('Error deleting comment:', error);
       throw error;
     }
   }

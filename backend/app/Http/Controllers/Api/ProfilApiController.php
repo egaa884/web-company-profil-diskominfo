@@ -130,4 +130,35 @@ class ProfilApiController extends Controller
         $profils = Profil::all()->groupBy('kategori');
         return response()->json($profils);
     }
-} 
+
+    // Legacy methods for frontend compatibility
+    public function getByCategorySekilasDinas()
+    {
+        $profiles = Profil::where('kategori', 'Sekilas Dinas')->first();
+        return response()->json($profiles);
+    }
+
+    public function getByCategoryVisiMisi()
+    {
+        $profiles = Profil::where('kategori', 'Visi Misi')->first();
+        return response()->json($profiles);
+    }
+
+    public function getByCategoryKantorDinas()
+    {
+        $profiles = Profil::where('kategori', 'Kantor Dinas')->first();
+        return response()->json($profiles);
+    }
+
+    public function getByCategoryStrukturOrganisasi()
+    {
+        $profiles = Profil::where('kategori', 'Struktur Organisasi')->first();
+        return response()->json($profiles);
+    }
+
+    public function getByCategoryTugasPokokFungsi()
+    {
+        $profiles = Profil::where('kategori', 'Tugas dan Fungsi')->first();
+        return response()->json($profiles);
+    }
+}

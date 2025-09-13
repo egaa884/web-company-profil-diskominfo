@@ -67,29 +67,40 @@ class BeritaApiController extends Controller
             return response()->json(['message' => 'Berita tidak ditemukan'], 404);
         }
 
-        // Increment view count (pastikan method ini ada di model Berita)
-        // $berita->incrementViews();
-
         // Add full image URL if image exists
         if ($berita->gambar) {
             $berita->gambar_url = url('storage/' . $berita->gambar);
         }
-        
+
         // Add full PDF URL if PDF exists
         if ($berita->pdf) {
             $berita->pdf_url = url('storage/' . $berita->pdf);
         }
-        
+
         return response()->json($berita);
     }
 
     public function latest()
     {
-        // Get latest 3 berita for the frontend news section
+        // Get latest 3 berita for the frontend news section, prioritizing those with images
         $beritas = Berita::with('images')->where('status', 'published')
+            ->whereNotNull('gambar')
             ->orderBy('created_at', 'desc')
             ->limit(3)
             ->get();
+
+        // If we don't have 3 items with images, get additional items without images
+        if ($beritas->count() < 3) {
+            $additionalCount = 3 - $beritas->count();
+            $additionalBeritas = Berita::with('images')->where('status', 'published')
+                ->whereNull('gambar')
+                ->whereNotIn('id', $beritas->pluck('id'))
+                ->orderBy('created_at', 'desc')
+                ->limit($additionalCount)
+                ->get();
+
+            $beritas = $beritas->merge($additionalBeritas);
+        }
 
         // Add full image URL and PDF URL for each berita
         $beritas->each(function ($berita) {
@@ -106,11 +117,19 @@ class BeritaApiController extends Controller
 
     public function hotNews()
     {
-        // Get hot/featured news (you can modify this logic as needed)
+        // Get hot/featured news based on is_hot flag, ordered by creation date
         $beritas = Berita::with('images')->where('status', 'published')
+            ->where('is_hot', true)
             ->orderBy('created_at', 'desc')
-            ->limit(5)
             ->get();
+
+        // If no hot news is set, fall back to latest news (for backward compatibility)
+        if ($beritas->isEmpty()) {
+            $beritas = Berita::with('images')->where('status', 'published')
+                ->orderBy('created_at', 'desc')
+                ->limit(5)
+                ->get();
+        }
 
         // Add full image URL and PDF URL for each berita
         $beritas->each(function ($berita) {
@@ -154,5 +173,32 @@ class BeritaApiController extends Controller
             ->filter()
             ->values();
         return response()->json($categories);
+    }
+
+    public function incrementView(Request $request, Berita $berita)
+    {
+        // Validate request
+        $request->validate([
+            'device_id' => 'required|string',
+        ]);
+
+        $deviceId = $request->device_id;
+
+        // Check if this device has already viewed this berita
+        // For simplicity, we'll use a cache or database approach
+        // In a real app, you might want to create a separate table for view tracking
+        $cacheKey = "berita_view_{$berita->id}_{$deviceId}";
+
+        if (!cache()->has($cacheKey)) {
+            // First view from this device, increment the count
+            $berita->incrementViews();
+
+            // Cache for 24 hours to prevent multiple views from same device
+            cache()->put($cacheKey, true, 1440); // 1440 minutes = 24 hours
+
+            return response()->json(['success' => true, 'message' => 'View counted']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'View already counted for this device']);
     }
 }
