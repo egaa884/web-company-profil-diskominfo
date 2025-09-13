@@ -11,7 +11,7 @@ class Berita extends Model
     // Nama tabel jika tidak mengikuti konvensi
     protected $table = 'beritas';
 
-    protected $fillable = ['judul', 'konten', 'status', 'gambar', 'pdf', 'views', 'slug', 'admin_id', 'category'];
+    protected $fillable = ['judul', 'konten', 'status', 'gambar', 'pdf', 'views', 'slug', 'admin_id', 'category', 'is_hot'];
 
     // Tanggal yang di-cast ke objek Carbon
     protected $dates = ['published_at'];
@@ -20,6 +20,18 @@ class Berita extends Model
     public function images()
     {
         return $this->hasMany(BeritaImage::class)->orderBy('sort_order');
+    }
+
+    // Relationship with Comment
+    public function comments()
+    {
+        return $this->hasMany(Comment::class)->orderBy('created_at', 'desc');
+    }
+
+    // Get approved comments
+    public function approvedComments()
+    {
+        return $this->comments()->approved();
     }
 
     // Method untuk increment view count
