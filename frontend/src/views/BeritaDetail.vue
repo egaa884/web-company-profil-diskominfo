@@ -96,11 +96,45 @@
               </div>
               
               <!-- Lampiran PDF -->
-              <div v-if="berita.pdf_url" class="mt-8 pt-6 border-t border-gray-200">
-                <PdfViewer 
-                  :pdf-url="berita.pdf_url" 
-                  :file-name="getPdfFileName(berita.lampiran_pdf)"
-                />
+              <div v-if="berita.pdf_url" class="mt-8">
+                <div class="pdf-attachment-card bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                      <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center shadow-lg">
+                          <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="flex-1">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-1">Dokumen Lampiran</h3>
+                        <p class="text-sm text-gray-600 mb-2">{{ getPdfFileName(berita.lampiran_pdf) }}</p>
+                        <p class="text-xs text-gray-500">Format PDF • Dokumen resmi terkait berita ini</p>
+                      </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                      <button
+                        @click="downloadPdf"
+                        class="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-700 bg-blue-100 border border-blue-200 rounded-lg hover:bg-blue-200 hover:border-blue-300 transition-all duration-200 shadow-sm"
+                      >
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Download
+                      </button>
+                      <button
+                        @click="openPdfInNewTab"
+                        class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm"
+                      >
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                        Lihat
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
               
               <!-- Tags -->
@@ -152,6 +186,45 @@
             </div>
           </div>
     
+          <!-- Navigation Section -->
+          <div class="mt-12 bg-gray-50 rounded-lg p-6">
+            <div class="flex justify-between items-center">
+              <div v-if="adjacentNews.previous" class="flex-1">
+                <button
+                  @click="navigateToNews(adjacentNews.previous.slug)"
+                  class="flex items-center text-blue-600 hover:text-blue-800 transition-colors group"
+                >
+                  <svg class="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7m0 0l7-7m-7 7h18"></path>
+                  </svg>
+                  <div class="text-left">
+                    <p class="text-sm text-gray-500">Berita Sebelumnya</p>
+                    <p class="text-sm font-medium line-clamp-2">{{ adjacentNews.previous.judul }}</p>
+                  </div>
+                </button>
+              </div>
+
+              <div v-if="!adjacentNews.previous && !adjacentNews.next" class="flex-1 text-center">
+                <p class="text-gray-500 text-sm">Tidak ada berita lainnya</p>
+              </div>
+
+              <div v-if="adjacentNews.next" class="flex-1 text-right">
+                <button
+                  @click="navigateToNews(adjacentNews.next.slug)"
+                  class="flex items-center justify-end text-blue-600 hover:text-blue-800 transition-colors group"
+                >
+                  <div class="text-right">
+                    <p class="text-sm text-gray-500">Berita Selanjutnya</p>
+                    <p class="text-sm font-medium line-clamp-2">{{ adjacentNews.next.judul }}</p>
+                  </div>
+                  <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
           <!-- Comments Section -->
           <div class="mt-12">
             <CommentsSection :berita-id="berita.id" />
@@ -198,6 +271,10 @@ export default {
     return {
       berita: null,
       relatedNews: [],
+      adjacentNews: {
+        previous: null,
+        next: null
+      },
       loading: true,
       error: null
     }
@@ -225,6 +302,7 @@ export default {
         if (response.data) {
           this.berita = response.data
           await this.fetchRelatedNews()
+          await this.fetchAdjacentNews()
           // Track view after successfully loading berita
           await this.trackView()
         } else {
@@ -242,14 +320,25 @@ export default {
     async fetchRelatedNews() {
       try {
         // Fetch related news based on category or other criteria
-        const response = await beritaService.getAllBerita({ 
+        const response = await beritaService.getAllBerita({
           limit: 6,
-          exclude: this.berita.id 
+          exclude: this.berita.id
         })
         this.relatedNews = response.data?.data || []
       } catch (error) {
         console.error('Error fetching related news:', error)
         this.relatedNews = []
+      }
+    },
+
+    async fetchAdjacentNews() {
+      try {
+        const slug = this.$route.params.slug
+        const response = await beritaService.getAdjacentNews(slug)
+        this.adjacentNews = response.data || { previous: null, next: null }
+      } catch (error) {
+        console.error('Error fetching adjacent news:', error)
+        this.adjacentNews = { previous: null, next: null }
       }
     },
     
@@ -321,6 +410,24 @@ export default {
       // Extract filename from path
       const parts = pdfPath.split('/')
       return parts[parts.length - 1] || 'document.pdf'
+    },
+
+    downloadPdf() {
+      if (this.berita.pdf_url) {
+        const link = document.createElement('a')
+        link.href = this.berita.pdf_url
+        link.download = this.getPdfFileName(this.berita.lampiran_pdf)
+        link.target = '_blank'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+      }
+    },
+
+    openPdfInNewTab() {
+      if (this.berita.pdf_url) {
+        window.open(this.berita.pdf_url, '_blank')
+      }
     },
 
     async trackView() {
@@ -419,5 +526,49 @@ export default {
   margin: 1.5em 0;
   font-style: italic;
   color: #6b7280;
+}
+
+/* PDF Attachment Styles */
+@media (max-width: 768px) {
+  .pdf-attachment-card {
+    padding: 1rem !important;
+  }
+
+  .pdf-attachment-card .flex {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1rem !important;
+  }
+
+  .pdf-attachment-card .flex > div:last-child {
+    width: 100% !important;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .pdf-attachment-card .flex > div:last-child .flex {
+    justify-content: center !important;
+  }
+
+  .pdf-attachment-card button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .pdf-attachment-card {
+    margin: 1rem 0 !important;
+    padding: 0.75rem !important;
+  }
+
+  .pdf-attachment-card h3 {
+    font-size: 1rem !important;
+  }
+
+  .pdf-attachment-card p {
+    font-size: 0.875rem !important;
+  }
 }
 </style>

@@ -3,15 +3,25 @@
     class="news-card bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer"
     @click="handleClick"
   >
-    <div class="w-full h-32 bg-gray-400 overflow-hidden">
-      <img 
-        v-if="image" 
-        :src="getImageUrl(image)" 
+    <div class="w-full h-32 bg-gray-400 overflow-hidden relative">
+      <img
+        v-if="image"
+        :src="getImageUrl(image)"
         :alt="title"
         class="w-full h-full object-cover"
       />
       <div v-else class="w-full h-full flex items-center justify-center bg-gray-300">
         <span class="text-gray-500 text-sm">No Image</span>
+      </div>
+
+      <!-- PDF Badge Overlay -->
+      <div v-if="hasPdf" class="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-lg">
+        <div class="flex items-center space-x-1">
+          <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
+          </svg>
+          <span>PDF</span>
+        </div>
       </div>
     </div>
     <div class="p-4">
@@ -20,7 +30,7 @@
           {{ category }}
         </span>
       </div>
-      <h4 class="font-semibold text-gray-800 mb-2 line-clamp-2">{{ title }}</h4>
+      <h4 class="font-semibold text-gray-800 mb-2 line-clamp-2">{{ title || 'Judul tidak tersedia' }}</h4>
       <div class="flex items-center justify-between mb-2">
         <p class="text-sm text-gray-500">{{ formatDate(date) }}</p>
         <div class="flex items-center text-sm text-gray-500">
@@ -42,7 +52,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: 'Judul Berita'
+      default: ''
     },
     date: {
       type: String,
@@ -61,12 +71,16 @@ export default {
       default: null
     },
     slug: {
-      type: String, // Tambahkan prop 'slug'
+      type: String,
       default: null
     },
     views: {
       type: Number,
       default: 0
+    },
+    hasPdf: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {

@@ -134,6 +134,17 @@ export const beritaService = {
       console.error('Error incrementing view:', error);
       throw error;
     }
+  },
+
+  // Get adjacent news (previous and next) for navigation
+  async getAdjacentNews(slug) {
+    try {
+      const response = await apiClient.get(`/berita/slug/${slug}/adjacent`);
+      return response;
+    } catch (error) {
+      console.error('Error fetching adjacent news:', error);
+      throw error;
+    }
   }
 };
 

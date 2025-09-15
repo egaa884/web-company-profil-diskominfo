@@ -20,13 +20,14 @@
               <NewsCard
                 v-for="item in displayedNews"
                 :key="item.id"
-                :title="item.title"
+                :title="item.judul"
                 :date="item.created_at"
                 :category="item.category"
-                :description="item.konten"
+                :description="item.deskripsi_singkat || item.konten"
                 :image="item.gambar_url"
                 :slug="item.slug"
                 :views="item.views"
+                :has-pdf="!!item.lampiran_pdf || !!item.pdf_url"
               />
             </div>
 

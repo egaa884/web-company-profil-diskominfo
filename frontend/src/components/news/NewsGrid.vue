@@ -13,16 +13,17 @@
     <!-- News grid -->
     <div v-else-if="newsList.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <NewsCard
-        v-for="(news, index) in newsList"
-        :key="news.id || index"
-        :title="news.judul"
-        :date="formatDate(news.created_at)"
-        :description="news.konten"
-        :image="news.gambar_url"
-        :category="news.category"
-        :slug="news.slug"
-        :views="news.views"
-      />
+         v-for="(news, index) in newsList"
+         :key="news.id || index"
+         :title="news.judul"
+         :date="formatDate(news.created_at)"
+         :description="news.deskripsi_singkat || news.konten"
+         :image="news.gambar_url"
+         :category="news.category"
+         :slug="news.slug"
+         :views="news.views"
+         :has-pdf="!!news.lampiran_pdf || !!news.pdf_url"
+       />
     </div>
     
     <!-- Empty state -->
