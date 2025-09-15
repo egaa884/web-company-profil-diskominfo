@@ -265,7 +265,7 @@ class BeritaController extends Controller
                 'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
                 'images' => 'nullable|array',
                 'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
-                'pdf' => 'nullable|file|mimes:pdf|max:10240',
+                'lampiran_pdf' => 'nullable|file|mimes:pdf|max:10240',
                 'status' => 'required|in:draft,published',
                 'category' => 'required|string',
                 // Hapus validasi ini jika kolom tidak ada di database
@@ -283,8 +283,8 @@ class BeritaController extends Controller
             }
 
             // Menyimpan PDF jika ada
-            if ($request->hasFile('pdf')) {
-                $data['pdf'] = $this->handlePdfUpload($request->file('pdf'));
+            if ($request->hasFile('lampiran_pdf')) {
+                $data['lampiran_pdf'] = $this->handlePdfUpload($request->file('lampiran_pdf'));
             }
 
             // Jika status published, set published_at
@@ -332,7 +332,7 @@ class BeritaController extends Controller
                 'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
                 'images' => 'nullable|array',
                 'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
-                'pdf' => 'nullable|file|mimes:pdf|max:10240',
+                'lampiran_pdf' => 'nullable|file|mimes:pdf|max:10240',
                 'status' => 'required|in:draft,published',
                 'category' => 'required|string',
                 // Hapus validasi ini jika kolom tidak ada di database
@@ -349,8 +349,8 @@ class BeritaController extends Controller
             }
 
             // Memperbarui PDF jika ada
-            if ($request->hasFile('pdf')) {
-                $data['pdf'] = $this->handlePdfUpload($request->file('pdf'), $berita->pdf);
+            if ($request->hasFile('lampiran_pdf')) {
+                $data['lampiran_pdf'] = $this->handlePdfUpload($request->file('lampiran_pdf'), $berita->lampiran_pdf);
             }
 
             // Jika status published dan belum ada published_at
@@ -386,8 +386,8 @@ class BeritaController extends Controller
             }
 
             // Hapus PDF jika ada
-            if ($berita->pdf && Storage::disk('public')->exists($berita->pdf)) {
-                Storage::disk('public')->delete($berita->pdf);
+            if ($berita->lampiran_pdf && Storage::disk('public')->exists($berita->lampiran_pdf)) {
+                Storage::disk('public')->delete($berita->lampiran_pdf);
             }
 
             // Hapus semua gambar terkait

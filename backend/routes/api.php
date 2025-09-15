@@ -40,6 +40,7 @@ Route::get('berita/hot', [BeritaApiController::class, 'hotNews']);
 Route::get('berita/categories', [BeritaApiController::class, 'categories']);
 Route::get('berita/category/{category}', [BeritaApiController::class, 'byCategory']);
 Route::get('berita/slug/{slug}', [BeritaApiController::class, 'showBySlug']);
+Route::get('berita/slug/{slug}/adjacent', [BeritaApiController::class, 'getAdjacentNews']);
 Route::get('berita/{berita}', [BeritaApiController::class, 'show']);
 Route::post('berita/{berita}/increment-view', [BeritaApiController::class, 'incrementView']);
 

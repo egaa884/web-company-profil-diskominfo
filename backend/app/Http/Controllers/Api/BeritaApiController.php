@@ -28,11 +28,17 @@ class BeritaApiController extends Controller
             if ($berita->gambar) {
                 $berita->gambar_url = url('storage/' . $berita->gambar);
             }
-            if ($berita->pdf) {
-                $berita->pdf_url = url('storage/' . $berita->pdf);
+            if ($berita->lampiran_pdf) {
+                // Handle both old format (pdf/filename.pdf) and new format (berita/filename.pdf)
+                $pdfPath = $berita->lampiran_pdf;
+                if (!str_contains($pdfPath, '/')) {
+                    // If no directory specified, assume it's in berita directory
+                    $pdfPath = 'berita/' . $pdfPath;
+                }
+                $berita->pdf_url = url('storage/' . $pdfPath);
             }
         });
-        
+
         return response()->json($beritas);
     }
 
@@ -48,10 +54,16 @@ class BeritaApiController extends Controller
         if ($berita->gambar) {
             $berita->gambar_url = url('storage/' . $berita->gambar);
         }
-        
+
         // Add full PDF URL if PDF exists
-        if ($berita->pdf) {
-            $berita->pdf_url = url('storage/' . $berita->pdf);
+        if ($berita->lampiran_pdf) {
+            // Handle both old format (pdf/filename.pdf) and new format (berita/filename.pdf)
+            $pdfPath = $berita->lampiran_pdf;
+            if (!str_contains($pdfPath, '/')) {
+                // If no directory specified, assume it's in berita directory
+                $pdfPath = 'berita/' . $pdfPath;
+            }
+            $berita->pdf_url = url('storage/' . $pdfPath);
         }
         
         return response()->json($berita);
@@ -73,8 +85,14 @@ class BeritaApiController extends Controller
         }
 
         // Add full PDF URL if PDF exists
-        if ($berita->pdf) {
-            $berita->pdf_url = url('storage/' . $berita->pdf);
+        if ($berita->lampiran_pdf) {
+            // Handle both old format (pdf/filename.pdf) and new format (berita/filename.pdf)
+            $pdfPath = $berita->lampiran_pdf;
+            if (!str_contains($pdfPath, '/')) {
+                // If no directory specified, assume it's in berita directory
+                $pdfPath = 'berita/' . $pdfPath;
+            }
+            $berita->pdf_url = url('storage/' . $pdfPath);
         }
 
         return response()->json($berita);
@@ -107,8 +125,14 @@ class BeritaApiController extends Controller
             if ($berita->gambar) {
                 $berita->gambar_url = url('storage/' . $berita->gambar);
             }
-            if ($berita->pdf) {
-                $berita->pdf_url = url('storage/' . $berita->pdf);
+            if ($berita->lampiran_pdf) {
+                // Handle both old format (pdf/filename.pdf) and new format (berita/filename.pdf)
+                $pdfPath = $berita->lampiran_pdf;
+                if (!str_contains($pdfPath, '/')) {
+                    // If no directory specified, assume it's in berita directory
+                    $pdfPath = 'berita/' . $pdfPath;
+                }
+                $berita->pdf_url = url('storage/' . $pdfPath);
             }
         });
 
@@ -136,8 +160,14 @@ class BeritaApiController extends Controller
             if ($berita->gambar) {
                 $berita->gambar_url = url('storage/' . $berita->gambar);
             }
-            if ($berita->pdf) {
-                $berita->pdf_url = url('storage/' . $berita->pdf);
+            if ($berita->lampiran_pdf) {
+                // Handle both old format (pdf/filename.pdf) and new format (berita/filename.pdf)
+                $pdfPath = $berita->lampiran_pdf;
+                if (!str_contains($pdfPath, '/')) {
+                    // If no directory specified, assume it's in berita directory
+                    $pdfPath = 'berita/' . $pdfPath;
+                }
+                $berita->pdf_url = url('storage/' . $pdfPath);
             }
         });
 
@@ -156,8 +186,14 @@ class BeritaApiController extends Controller
             if ($berita->gambar) {
                 $berita->gambar_url = url('storage/' . $berita->gambar);
             }
-            if ($berita->pdf) {
-                $berita->pdf_url = url('storage/' . $berita->pdf);
+            if ($berita->lampiran_pdf) {
+                // Handle both old format (pdf/filename.pdf) and new format (berita/filename.pdf)
+                $pdfPath = $berita->lampiran_pdf;
+                if (!str_contains($pdfPath, '/')) {
+                    // If no directory specified, assume it's in berita directory
+                    $pdfPath = 'berita/' . $pdfPath;
+                }
+                $berita->pdf_url = url('storage/' . $pdfPath);
             }
         });
 
@@ -173,6 +209,49 @@ class BeritaApiController extends Controller
             ->filter()
             ->values();
         return response()->json($categories);
+    }
+
+    public function getAdjacentNews($slug)
+    {
+        $currentBerita = Berita::where('slug', $slug)->where('status', 'published')->first();
+
+        if (!$currentBerita) {
+            return response()->json(['message' => 'Berita tidak ditemukan'], 404);
+        }
+
+        // Get previous news (older than current)
+        $previous = Berita::where('status', 'published')
+            ->where('created_at', '<', $currentBerita->created_at)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        // Get next news (newer than current)
+        $next = Berita::where('status', 'published')
+            ->where('created_at', '>', $currentBerita->created_at)
+            ->orderBy('created_at', 'asc')
+            ->first();
+
+        $result = [];
+
+        if ($previous) {
+            $result['previous'] = [
+                'id' => $previous->id,
+                'judul' => $previous->judul,
+                'slug' => $previous->slug,
+                'gambar_url' => $previous->gambar ? url('storage/' . $previous->gambar) : null
+            ];
+        }
+
+        if ($next) {
+            $result['next'] = [
+                'id' => $next->id,
+                'judul' => $next->judul,
+                'slug' => $next->slug,
+                'gambar_url' => $next->gambar ? url('storage/' . $next->gambar) : null
+            ];
+        }
+
+        return response()->json($result);
     }
 
     public function incrementView(Request $request, Berita $berita)

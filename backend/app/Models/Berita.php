@@ -11,7 +11,7 @@ class Berita extends Model
     // Nama tabel jika tidak mengikuti konvensi
     protected $table = 'beritas';
 
-    protected $fillable = ['judul', 'konten', 'status', 'gambar', 'pdf', 'views', 'slug', 'admin_id', 'category', 'is_hot'];
+    protected $fillable = ['judul', 'konten', 'status', 'gambar', 'lampiran_pdf', 'views', 'slug', 'admin_id', 'category', 'is_hot', 'deskripsi_singkat', 'nama_pembuat'];
 
     // Tanggal yang di-cast ke objek Carbon
     protected $dates = ['published_at'];
